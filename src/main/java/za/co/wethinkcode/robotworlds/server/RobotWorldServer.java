@@ -1,108 +1,29 @@
 package za.co.wethinkcode.robotworlds.server;
 
-import za.co.wethinkcode.robotworlds.maze.*;
-import za.co.wethinkcode.robotworlds.world.TextWorld;
-
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
-
 public class RobotWorldServer extends Thread{
     private static final int PORT = 5000;
-    private static final List<RobotClientHandler> clients = new ArrayList<>();
-    private static final ServerSocket serverSocket;
+    private static List<RobotClientHandler> clients = new ArrayList<>();
 
-    static {
-        try {
-            serverSocket = new ServerSocket(PORT);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public void shutdown() {
-        // Disconnect all robots
-        for (RobotClientHandler client: clients) {
-            client.disconnectClient();
-        }
-        // Shut down the server
-        closeServer();
-        System.exit(0);
-    }
-
-    public void showWorldState() {
-        // Access the world state and collect information for the dump
-        StringBuilder dump = new StringBuilder();
-
-        // Append information about robots
-//        for (RobotClientHandler client : clients) {
-//            dump.append("Robot: ").append(client.getName()).append("\n");
-//            dump.append("Position: ").append(client.getPosition()).append("\n");
-//            dump.append("Direction: ").append(client.getCurrentDirection().append("\n"));
-//            dump.append("State: ").append(client.getStatus()).append("\n");
-//        }
-
-        // Append information about obstacles or other world elements
-        // Iterate over obstacles and append their positions or any relevant information
-
-        // Print or output the dump to the console
-        System.out.println("World Dump:");
-        System.out.println(dump.toString());
-
-    }
-
-    public void showRobots(TextWorld world) {
-        Set<Robot> robots = world.getRobots().keySet();
-
-        if (robots.isEmpty()) {
-            System.out.println("There are no robots in this world.");
-        } else {
-            int robotCount = 0;
-            for (Robot robot: robots) {
-                System.out.println("Robot "+(robotCount++)+":");
-                System.out.println("========");
-                System.out.println(robot.getName()+"\n");
-            }
-        }
-    }
-
-    public static List<RobotClientHandler> getClients() {
-        return clients;
-    }
-
-    private void closeServer() {
-        try {
-            serverSocket.close();
-        } catch (IOException e) {
-            // handle in calling code
-            throw new RuntimeException(e);
-        }
-    }
-
-    public static void main(String[] args) throws IOException {
-        Maze maze = new SimpleMaze();
-        TextWorld world = new TextWorld(maze);
-
-        RobotWorldServer server = new RobotWorldServer();
-        ServerConsole console = new ServerConsole(server);
-        new Thread(console).start();
-
-        try {
+    public static void main(String[] args) {
+        try (ServerSocket serverSocket = new ServerSocket(PORT)) {
             System.out.println("Server started. Waiting for clients...");
+
             while (true) {
                 Socket clientSocket = serverSocket.accept();
                 System.out.println("Client connected: " + clientSocket);
 
-                RobotClientHandler clientHandler = new RobotClientHandler(clientSocket, world);
+                RobotClientHandler clientHandler = new RobotClientHandler(clientSocket);
                 clients.add(clientHandler);
                 new Thread(clientHandler).start();
             }
-        } finally {
-            System.out.println("Quitting server...");
-            System.exit(0);
+        } catch (IOException e) {
+            System.err.println("Error in the server: " + e.getMessage());
         }
     }
 }

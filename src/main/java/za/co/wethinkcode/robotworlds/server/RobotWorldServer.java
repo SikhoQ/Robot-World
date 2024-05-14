@@ -1,4 +1,4 @@
-package server;
+package za.co.wethinkcode.robotworlds.server;
 
 import java.io.IOException;
 import java.net.ServerSocket;

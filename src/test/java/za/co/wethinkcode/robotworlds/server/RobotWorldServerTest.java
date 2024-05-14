@@ -1,4 +1,5 @@
-package server;
+package za.co.wethinkcode.robotworlds.server;
+
 
 import static org.junit.Assert.*;
 

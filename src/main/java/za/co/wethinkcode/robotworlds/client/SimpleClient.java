@@ -1,4 +1,4 @@
-package za.co.wethinkcode.robotworlds.client;
+package client;
 
 import java.net.*;
 import java.io.*;

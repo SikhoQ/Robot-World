@@ -6,11 +6,54 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
+
 public class RobotWorldServer extends Thread{
     private static final int PORT = 5000;
-    private static List<RobotClientHandler> clients = new ArrayList<>();
+    private static final List<RobotClientHandler> clients = new ArrayList<>();
+
+    @Override
+    public void run() {
+        /*ADD MEANINGFUL CODE FOR SERVER START-UP*/
+    }
+
+    public void shutdown() {
+        /*TODO*/
+    }
+
+    public void showWorldState() {
+        // Access the world state and collect information for the dump
+        StringBuilder dump = new StringBuilder();
+
+        // Append information about robots
+//        for (RobotClientHandler client : clients) {
+//            dump.append("Robot: ").append(client.getName()).append("\n");
+//            dump.append("Position: ").append(client.getPosition()).append("\n");
+//            dump.append("Direction: ").append(client.getCurrentDirection().append("\n"));
+//            dump.append("State: ").append(client.getStatus()).append("\n");
+//        }
+
+        // Append information about obstacles or other world elements
+        // Iterate over obstacles and append their positions or any relevant information
+
+        // Print or output the dump to the console
+        System.out.println("World Dump:");
+        System.out.println(dump.toString());
+
+    }
+
+    public void showRobots() {
+        /*TODO*/
+    }
 
     public static void main(String[] args) {
+        /* when server is started, include
+           starting a new thread of the
+           ServerConsole instance
+        */
+        RobotWorldServer server = new RobotWorldServer();
+        ServerConsole console = new ServerConsole(server);
+        new Thread(console).start();
+
         try (ServerSocket serverSocket = new ServerSocket(PORT)) {
             System.out.println("Server started. Waiting for clients...");
 
@@ -27,4 +70,3 @@ public class RobotWorldServer extends Thread{
         }
     }
 }
-

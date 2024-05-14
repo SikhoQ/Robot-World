@@ -1,4 +1,4 @@
-package server;
+package za.co.wethinkcode.robotworlds.server;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -8,17 +8,11 @@ import java.net.Socket;
 
 public class RobotClientHandler implements Runnable {
     private final Socket clientSocket;
-    //    private World world;
 
-
-
-    //    public RobotClientHandler(Socket clientSocket, World world) {
-    //        this.clientSocket = clientSocket;
-    //        this.world = world;
-    //    }
 
     public RobotClientHandler(Socket clientSocket) {
         this.clientSocket = clientSocket;
+
     }
 
     @Override
@@ -47,14 +41,9 @@ public class RobotClientHandler implements Runnable {
 
     private String processCommand(String command) {
         // Process client command and return response
-        // Example: Handle movement command
-//        if (command.startsWith("move")) {
-//            // Extract movement direction from command
-//            String direction = command.substring(5).trim(); // Assuming command format is "move <direction>"
-//            // Update world state accordingly
-//            return world.moveRobot(direction); // Assuming moveRobot method updates world state and returns response
         if (command.equals("quit")) {
-            return "Goodbye!";
+            // Disconnect all robots and end the world
+            return "Server is shutting down. Goodbye!";
         } else {
             return "Unknown command: " + command;
         }

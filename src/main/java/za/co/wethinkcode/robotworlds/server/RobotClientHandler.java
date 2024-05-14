@@ -1,15 +1,13 @@
 package za.co.wethinkcode.robotworlds.server;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.Socket;
 
 public class RobotClientHandler implements Runnable {
     private final Socket clientSocket;
+    private DataInputStream in;
+    private DataOutputStream out;
     //    private World world;
-
 
 
     //    public RobotClientHandler(Socket clientSocket, World world) {
@@ -58,5 +56,24 @@ public class RobotClientHandler implements Runnable {
         } else {
             return "Unknown command: " + command;
         }
+    }
+
+    public void close() {
+        try {
+            // Close input and output streams
+            if (in != null) {
+                in.close();
+            }
+            if (out != null) {
+                out.close();
+            }
+            // Close client socket
+            if (clientSocket != null && !clientSocket.isClosed()) {
+                clientSocket.close();
+            }
+        } catch (IOException e) {
+            System.err.println("Error closing client connection: " + e.getMessage());
+        }
+
     }
 }

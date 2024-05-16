@@ -1,7 +1,9 @@
 package za.co.wethinkcode.robotworlds.world;
 
 import za.co.wethinkcode.robotworlds.Position;
-import java.util.List;
+import za.co.wethinkcode.robotworlds.Robot;
+
+import java.util.*;
 
 /**
  * Your Text and Turtle worlds must implement this interface.
@@ -79,4 +81,7 @@ public interface IWorld {
      * Gives opportunity to world to draw or list obstacles.
      */
     void showObstacles();
+
+    String launchRobot(Robot robot, String name);
+    Map<Robot, Position> getRobots();
 }

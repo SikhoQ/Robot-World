@@ -1,5 +1,8 @@
 package za.co.wethinkcode.robotworlds.server;
 
+import za.co.wethinkcode.robotworlds.maze.*;
+import za.co.wethinkcode.robotworlds.world.TextWorld;
+
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -10,45 +13,29 @@ import java.util.List;
 public class RobotWorldServer extends Thread{
     private static final int PORT = 5000;
     private static final List<RobotClientHandler> clients = new ArrayList<>();
+    private static final ServerSocket serverSocket;
+
+    static {
+        try {
+            serverSocket = new ServerSocket(PORT);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     @Override
     public void run() {
-        try (ServerSocket serverSocket = new ServerSocket(PORT)) {
-            System.out.println("Server started. Waiting for clients...");
-
-            while (true) {
-                Socket clientSocket = serverSocket.accept();
-                System.out.println("Client connected: " + clientSocket);
-
-                RobotClientHandler clientHandler = new RobotClientHandler(clientSocket);
-                clients.add(clientHandler);
-                new Thread(clientHandler).start();
-            }
-        } catch (IOException e) {
-            System.err.println("Error in the server: " + e.getMessage());
-        }
-
+        /*ADD MEANINGFUL CODE FOR SERVER START-UP*/
     }
 
     public void shutdown() {
-        try {
-            // Close all client connections
-            for (RobotClientHandler client : clients) {
-                client.close(); // Implement close() method in RobotClientHandler class
-            }
-
-            // Close the server socket
-            serverSocket.close();
-
-            // Optionally, perform any additional cleanup tasks
-
-            System.out.println("Server shutdown successfully");
-
-            // Shutdown the program
-            System.exit(0);
-        } catch (IOException e) {
-            System.err.println("Error shutting down the server: " + e.getMessage());
+        // Disconnect all robots
+        for (RobotClientHandler client: clients) {
+            client.disconnectClient();
         }
+        // Shut down the server
+        closeServer();
+        System.exit(0);
     }
 
     public void showWorldState() {
@@ -76,28 +63,39 @@ public class RobotWorldServer extends Thread{
         /*TODO*/
     }
 
+    public static List<RobotClientHandler> getClients() {
+        return clients;
+    }
+
+    private void closeServer() {
+        try {
+            serverSocket.close();
+        } catch (IOException e) {
+            // handle in calling code
+            throw new RuntimeException(e);
+        }
+    }
+
     public static void main(String[] args) {
-        /* when server is started, include
-           starting a new thread of the
-           ServerConsole instance
-        */
+        Maze maze = new SimpleMaze();
+        TextWorld world = new TextWorld(maze);
+
         RobotWorldServer server = new RobotWorldServer();
         ServerConsole console = new ServerConsole(server);
         new Thread(console).start();
 
-        try (ServerSocket serverSocket = new ServerSocket(PORT)) {
+        try {
             System.out.println("Server started. Waiting for clients...");
-
-            while (true) {
+            while (!serverSocket.isClosed()) {
                 Socket clientSocket = serverSocket.accept();
                 System.out.println("Client connected: " + clientSocket);
 
-                RobotClientHandler clientHandler = new RobotClientHandler(clientSocket);
+                RobotClientHandler clientHandler = new RobotClientHandler(clientSocket, world);
                 clients.add(clientHandler);
                 new Thread(clientHandler).start();
             }
         } catch (IOException e) {
-            System.err.println("Error in the server: " + e.getMessage());
+            System.out.println("Server socket closed. Cannot accept new connections.");
         }
     }
 }

@@ -27,9 +27,7 @@ public class ServerConsole implements Runnable {
             server.showRobots();
         } else if (input.equalsIgnoreCase("DUMP")) {
             server.showWorldState();
-        } else if (input.equalsIgnoreCase("TEST")) {
-            System.out.println("SUCCESS");
-        }else {
+        } else {
             System.out.println("Unknown command: " + input);
         }
     }

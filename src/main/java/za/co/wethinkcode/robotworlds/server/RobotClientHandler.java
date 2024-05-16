@@ -6,19 +6,17 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 
+import za.co.wethinkcode.robotworlds.world.TextWorld;
+import za.co.wethinkcode.robotworlds.Robot;
+
+
 public class RobotClientHandler implements Runnable {
     private final Socket clientSocket;
-    //    private World world;
+    private TextWorld world;
 
-
-
-    //    public RobotClientHandler(Socket clientSocket, World world) {
-    //        this.clientSocket = clientSocket;
-    //        this.world = world;
-    //    }
-
-    public RobotClientHandler(Socket clientSocket) {
+    public RobotClientHandler(Socket clientSocket, TextWorld world) {
         this.clientSocket = clientSocket;
+        this.world = world;
     }
 
     @Override
@@ -45,6 +43,15 @@ public class RobotClientHandler implements Runnable {
         }
     }
 
+    public void disconnectClient() {
+        try {
+            this.clientSocket.close();
+        } catch (IOException e) {
+            // handle thrown exception in calling code
+            throw new RuntimeException(e);
+        }
+    }
+
     private String processCommand(String command) {
         // Process client command and return response
         // Example: Handle movement command
@@ -53,9 +60,19 @@ public class RobotClientHandler implements Runnable {
 //            String direction = command.substring(5).trim(); // Assuming command format is "move <direction>"
 //            // Update world state accordingly
 //            return world.moveRobot(direction); // Assuming moveRobot method updates world state and returns response
-        if (command.equals("quit")) {
-            return "Goodbye!";
+        command = command.toUpperCase();
+        if (command.startsWith("MOVE")) {
+            // Implement logic to handle MOVE command
+            return "Moving robot...";
+        } else if (command.startsWith("FIRE")) {
+            // Implement logic to handle FIRE command
+            return "Firing...";
+        } else if (command.startsWith("LAUNCH")) {
+            String name = command.split(" ")[1].toLowerCase();
+            Robot robot = new Robot(name);
+            return world.launchRobot(robot, name);
         } else {
+            // Handle unknown commands
             return "Unknown command: " + command;
         }
     }

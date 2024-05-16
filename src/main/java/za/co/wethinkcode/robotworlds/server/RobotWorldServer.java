@@ -82,6 +82,11 @@ public class RobotWorldServer extends Thread{
         System.out.println("World Dump:");
         System.out.println("===========\n");
         System.out.println(dump);
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
 
     }
 

@@ -18,6 +18,11 @@ public class ServerConsole implements Runnable {
         Scanner scanner = new Scanner(System.in);
         while (true) {
             System.out.print("Server Console > ");
+
+            System.out.println("Available commands:");
+            System.out.println("   Dump     - Displays a representation of the world’s state showing robots, obstacles,");
+            System.out.println("   Robot    - Lists all robots in the world including the robot’s name and state");
+            System.out.println("   Quit     - Disconnects all robots and ends the world\n");
             String input = scanner.nextLine();
             processInput(input);
         }

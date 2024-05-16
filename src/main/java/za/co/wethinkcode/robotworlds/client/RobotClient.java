@@ -29,6 +29,7 @@ public class RobotClient {
                 System.out.print("Enter command > ");
                 String commandInput = scanner.nextLine();
                 // I'll change this to method call later to allow validation in said method
+                System.out.println("your command: "+commandInput);
                 out.println(commandInput);
                 String response = in.readLine();
                 System.out.println(response);

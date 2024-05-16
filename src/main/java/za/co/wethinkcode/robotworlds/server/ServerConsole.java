@@ -11,6 +11,7 @@ public class ServerConsole implements Runnable {
     public ServerConsole(RobotWorldServer server, TextWorld world) {
         this.server = server;
         this.world = world;
+
     }
 
     @Override

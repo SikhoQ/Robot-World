@@ -1,82 +1,116 @@
 package za.co.wethinkcode.robotworlds;
 
+
 public class Robot {
-    private final Position TOP_LEFT = new Position(-100,200);
-    private final Position BOTTOM_RIGHT = new Position(100,-200);
+    private final int MAX_SHIELDS = 10;
+    private final int MAX_SHOTS = 100;
 
-    public static final Position CENTRE = new Position(0,0);
-
+    private final String name;
+    private String status;
+    private int shields;
+    private int shots;
     private Position position;
     private Direction currentDirection;
-    private String status;
-    private String name;
 
-    // to replay commands, robot must handle each command in the array list
-    // store commands in list, filtering out non-movement (store movement in array)
-    // put logic inside handlecommand
 
     public Robot(String name) {
         this.name = name;
         this.status = "Ready";
-        this.position = CENTRE;
-        this.currentDirection = Direction.UP;
+        this.shields = MAX_SHIELDS;
+        this.shots = MAX_SHOTS;
+        this.position = new Position(0, 0);
+        this.currentDirection = Direction.NORTH;
+
     }
 
     public String getStatus() {
-        return this.status;
+        return status;
     }
 
     public Direction getCurrentDirection() {
-        return this.currentDirection;
+        return currentDirection;
     }
 
-    public Position getPosition() {
-        return this.position;
+    public void setCurrentDirection(Direction direction) {
+        this.currentDirection = direction;
     }
 
     public String getName() {
         return name;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
+    public int getShields() {
+        return shields;
     }
 
-    public void setDirection(Direction direction) {
-        this.currentDirection = direction;
+    public int getShots() {
+        return shots;
     }
 
-    public boolean updatePosition(int nrSteps){
-        int newX = this.position.getX();
-        int newY = this.position.getY();
+    public Position getPosition() {
+        return position;
+    }
 
-        if (Direction.UP.equals(this.currentDirection)) {
-            newY += nrSteps;
-        }
+    public void setPosition(Position position) {
+        this.position = position;
+    }
 
-        else if (Direction.DOWN.equals(this.currentDirection)) {
-            newY -= nrSteps;
-        }
+    public boolean updatePosition(int numSteps) {
+        int newX = position.getX();
+        int newY = position.getY();
 
-        else if (Direction.LEFT.equals(this.currentDirection)) {
-            newX -= nrSteps;
-        }
-
-        else if (Direction.RIGHT.equals(this.currentDirection)){
-            newX += nrSteps;
+        switch (currentDirection) {
+            case NORTH:
+                newY += numSteps;
+                break;
+            case SOUTH:
+                newY -= numSteps;
+                break;
+            case WEST:
+                newX -= numSteps;
+                break;
+            case EAST:
+                newX += numSteps;
+                break;
         }
 
         Position newPosition = new Position(newX, newY);
-        if (newPosition.isIn(TOP_LEFT,BOTTOM_RIGHT)){
-            this.position = newPosition;
+        if (isValidPosition(newPosition)) {
+            position = newPosition;
             return true;
         }
         return false;
     }
 
+    private boolean isValidPosition(Position newPosition) {
+        return newPosition.getX() >= -200 && newPosition.getX() <= 100 &&
+                newPosition.getY() >= -200 && newPosition.getY() <= 100;
+    }
+
+    public void updateShields(int hit) {
+        shields -= hit;
+        if (shields < 0) {
+            shields = 0;
+        }
+    }
+
+    public void updateShots(int shotsFired) {
+        shots -= shotsFired;
+        if (shots < 0) {
+            shots = 0;
+        }
+    }
+
+    public void reset() {
+        position = new Position(0, 0);
+        currentDirection = Direction.NORTH;
+        status = "Ready";
+        shields = MAX_SHIELDS;
+        shots = MAX_SHOTS;
+    }
+
     @Override
     public String toString() {
-        return "[" + this.position.getX() + "," + this.position.getY() + "] "
-                + this.name + "> " + this.status;
+        return "[" + position.getX() + "," + position.getY() + "] " + name + "> " + status;
     }
 }

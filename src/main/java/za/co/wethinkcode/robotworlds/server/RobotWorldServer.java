@@ -108,6 +108,7 @@ public class RobotWorldServer extends Thread{
 
         RobotWorldServer server = new RobotWorldServer();
         ServerConsole console = new ServerConsole(server, world);
+
         new Thread(console).start();
 
         try {

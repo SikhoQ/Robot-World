@@ -1,22 +1,27 @@
 package za.co.wethinkcode.robotworlds.server;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.net.Socket;
+
+import za.co.wethinkcode.robotworlds.world.TextWorld;
+import za.co.wethinkcode.robotworlds.Robot;
+
 
 public class RobotClientHandler implements Runnable {
     private final Socket clientSocket;
-    private DataInputStream in;
-    private DataOutputStream out;
-    //    private World world;
-
-
-    //    public RobotClientHandler(Socket clientSocket, World world) {
-    //        this.clientSocket = clientSocket;
-    //        this.world = world;
-    //    }
+    private TextWorld world;
 
     public RobotClientHandler(Socket clientSocket) {
         this.clientSocket = clientSocket;
+        this.world = world;
+    }
+
+    public RobotClientHandler(Socket clientSocket, Socket clientSocket1) {
+
+        this.clientSocket = clientSocket1;
     }
 
     @Override
@@ -43,6 +48,15 @@ public class RobotClientHandler implements Runnable {
         }
     }
 
+    public void disconnectClient() {
+        try {
+            this.clientSocket.close();
+        } catch (IOException e) {
+            // handle thrown exception in calling code
+            throw new RuntimeException(e);
+        }
+    }
+
     private String processCommand(String command) {
         // Process client command and return response
         // Example: Handle movement command
@@ -51,29 +65,28 @@ public class RobotClientHandler implements Runnable {
 //            String direction = command.substring(5).trim(); // Assuming command format is "move <direction>"
 //            // Update world state accordingly
 //            return world.moveRobot(direction); // Assuming moveRobot method updates world state and returns response
-        if (command.equals("quit")) {
-            return "Goodbye!";
+        command = command.toUpperCase();
+        if (command.startsWith("MOVE")) {
+            // Implement logic to handle MOVE command
+            return "Moving robot...";
+        } else if (command.startsWith("FIRE")) {
+            // Implement logic to handle FIRE command
+            return "Firing...";
+        } else if (command.startsWith("LAUNCH")) {
+            String name = command.split(" ")[1].toLowerCase();
+            Robot robot = new Robot(name);
+            return world.launchRobot(robot, name);
         } else {
+            // Handle unknown commands
             return "Unknown command: " + command;
         }
     }
 
     public void close() {
         try {
-            // Close input and output streams
-            if (in != null) {
-                in.close();
-            }
-            if (out != null) {
-                out.close();
-            }
-            // Close client socket
-            if (clientSocket != null && !clientSocket.isClosed()) {
-                clientSocket.close();
-            }
+            clientSocket.close();
         } catch (IOException e) {
-            System.err.println("Error closing client connection: " + e.getMessage());
+            System.err.println("Error closing client socket: " + e.getMessage());
         }
-
     }
 }

@@ -53,26 +53,16 @@ public class RobotClientHandler implements Runnable {
     }
 
     private String processCommand(String command) {
-        // Process client command and return response
-        // Example: Handle movement command
-//        if (command.startsWith("move")) {
-//            // Extract movement direction from command
-//            String direction = command.substring(5).trim(); // Assuming command format is "move <direction>"
-//            // Update world state accordingly
-//            return world.moveRobot(direction); // Assuming moveRobot method updates world state and returns response
         command = command.toUpperCase();
-        if (command.startsWith("MOVE")) {
-            // Implement logic to handle MOVE command
-            return "Moving robot...";
-        } else if (command.startsWith("FIRE")) {
-            // Implement logic to handle FIRE command
-            return "Firing...";
+        if (command.startsWith("LOOK")) {
+            return "Looking around...";
+        } else if (command.startsWith("STATE")) {
+            return "showing state...";
         } else if (command.startsWith("LAUNCH")) {
             String name = command.split(" ")[1].toLowerCase();
             Robot robot = new Robot(name);
             return world.launchRobot(robot, name);
         } else {
-            // Handle unknown commands
             return "Unknown command: " + command;
         }
     }

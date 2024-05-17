@@ -9,6 +9,9 @@ public class RobotClient {
     private static final int PORT = 5000;
 
     public static void main(String[] args) {
+        System.out.println("*********************************************");
+        System.out.println("*             ROBOT WORLD                   *");
+        System.out.println("*********************************************");
         try (
                 Socket socket = new Socket(ADDRESS, PORT);
                 PrintStream out = new PrintStream(socket.getOutputStream());

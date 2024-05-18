@@ -23,11 +23,6 @@ public class RobotWorldServer extends Thread{
         }
     }
 
-    @Override
-    public void run() {
-        /*ADD MEANINGFUL CODE FOR SERVER START-UP*/
-    }
-
     public void shutdown() {
         // Disconnect all robots
         for (RobotClientHandler client: clients) {
@@ -59,8 +54,19 @@ public class RobotWorldServer extends Thread{
 
     }
 
-    public void showRobots() {
-        /*TODO*/
+    public void showRobots(TextWorld world) {
+        Set<Robot> robots = world.getRobots().keySet();
+
+        if (robots.isEmpty()) {
+            System.out.println("There are no robots in this world.");
+        } else {
+            int robotCount = 0;
+            for (Robot robot: robots) {
+                System.out.println("Robot "+(robotCount++)+":");
+                System.out.println("========");
+                System.out.println(robot.getName()+"\n");
+            }
+        }
     }
 
     public static List<RobotClientHandler> getClients() {
@@ -76,7 +82,7 @@ public class RobotWorldServer extends Thread{
         }
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         Maze maze = new SimpleMaze();
         TextWorld world = new TextWorld(maze);
 
@@ -86,7 +92,7 @@ public class RobotWorldServer extends Thread{
 
         try {
             System.out.println("Server started. Waiting for clients...");
-            while (!serverSocket.isClosed()) {
+            while (true) {
                 Socket clientSocket = serverSocket.accept();
                 System.out.println("Client connected: " + clientSocket);
 
@@ -94,8 +100,9 @@ public class RobotWorldServer extends Thread{
                 clients.add(clientHandler);
                 new Thread(clientHandler).start();
             }
-        } catch (IOException e) {
-            System.out.println("Server socket closed. Cannot accept new connections.");
+        } finally {
+            System.out.println("Quitting server...");
+            System.exit(0);
         }
     }
 }

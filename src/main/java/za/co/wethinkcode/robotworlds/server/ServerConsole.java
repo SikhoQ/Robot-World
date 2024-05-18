@@ -1,13 +1,17 @@
 package za.co.wethinkcode.robotworlds.server;
 
-import java.util.Scanner;
+import java.util.*;
+import za.co.wethinkcode.robotworlds.world.TextWorld;
 
 
 public class ServerConsole implements Runnable {
-    private RobotWorldServer server;
+    private final RobotWorldServer server;
+    private final TextWorld world;
 
-    public ServerConsole(RobotWorldServer server) {
+    public ServerConsole(RobotWorldServer server, TextWorld world) {
         this.server = server;
+        this.world = world;
+
     }
 
     @Override
@@ -24,9 +28,9 @@ public class ServerConsole implements Runnable {
         if (input.equalsIgnoreCase("QUIT")) {
             server.shutdown();
         } else if (input.equalsIgnoreCase("ROBOTS")) {
-            server.showRobots();
+            server.showRobots(world);
         } else if (input.equalsIgnoreCase("DUMP")) {
-            server.showWorldState();
+            server.showWorldState(world);
         } else {
             System.out.println("Unknown command: " + input);
         }

@@ -32,11 +32,12 @@ public class RobotClientHandler implements Runnable {
                 String response = processCommand(inputLine);
                 out.println(response);
             }
-        } catch (IOException e) {
-            System.err.println("Error handling client input: " + e.getMessage());
+        } catch (IOException ignored) {
         } finally {
             try {
                 clientSocket.close();
+                System.out.println("Client socket closed.");
+                System.exit(0);
             } catch (IOException e) {
                 System.err.println("Error closing client socket: " + e.getMessage());
             }
@@ -52,6 +53,15 @@ public class RobotClientHandler implements Runnable {
         }
     }
 
+    public void close() {
+        try {
+            clientSocket.close();
+        } catch (IOException e) {
+            System.err.println("Error closing client socket: " + e.getMessage());
+        }
+    }
+
+
     private String processCommand(String command) {
         command = command.toUpperCase();
         if (command.startsWith("LOOK")) {
@@ -60,8 +70,7 @@ public class RobotClientHandler implements Runnable {
             return "showing state...";
         } else if (command.startsWith("LAUNCH")) {
             String name = command.split(" ")[1].toLowerCase();
-            Robot robot = new Robot(name);
-            return world.launchRobot(robot, name);
+            return world.launchRobot(name);
         } else {
             return "Unknown command: " + command;
         }

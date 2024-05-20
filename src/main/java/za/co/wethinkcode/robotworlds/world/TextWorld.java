@@ -141,7 +141,7 @@ public class TextWorld implements IWorld {
 
         robots.put(robot, position);
 
-        return " > '"+name+"' launched at position ["+xCoord+","+yCoord+"]\n";
+        return " > '"+name+"' launched at position ["+xCoord+","+yCoord+"]";
     }
 
     @Override

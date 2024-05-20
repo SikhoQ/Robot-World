@@ -26,16 +26,24 @@ public class RobotWorldServer extends Thread{
         }
     }
 
+    /**
+     * Shuts down the server and all its clients.
+     * This method disconnects all clients and then closes the server socket.
+     * Finally, it terminates the server process.
+     */
     public void shutdown() {
-        // Disconnect all robots
         for (RobotClientHandler client: clients) {
             client.disconnectClient();
         }
-        // Shut down the server
         closeServer();
         System.exit(0);
     }
 
+    /**
+     * Displays the current state of the world, including obstacles and robots.
+     *
+     * @param world The TextWorld object representing the current state of the world.
+     */
     public void showWorldState(TextWorld world) {
         StringBuilder dump = new StringBuilder();
 
@@ -80,6 +88,11 @@ public class RobotWorldServer extends Thread{
 
     }
 
+    /**
+     * Displays the current state of the world, including obstacles and robots.
+     *
+     * @param world The TextWorld object representing the current state of the world.
+     */
     public void showRobots(TextWorld world) {
         Set<Robot> robots = world.getRobots().keySet();
 
@@ -95,6 +108,11 @@ public class RobotWorldServer extends Thread{
         }
     }
 
+    /**
+     * Retrieves the list of active {@link RobotClientHandler} instances.
+     *
+     * @return a list of active {@link RobotClientHandler} instances
+     */
     public static List<RobotClientHandler> getClients() {
         return clients;
     }
@@ -108,6 +126,13 @@ public class RobotWorldServer extends Thread{
         }
     }
 
+    /**
+     * The main entry point of the server.
+     * It initializes the server, sets up the world, and starts accepting client connections.
+     *
+     * @param args Command line arguments, not used in this context.
+     * @throws IOException If an error occurs while accepting client connections.
+     */
     public static void main(String[] args) throws IOException {
         Maze maze = new SimpleMaze();
         TextWorld world = new TextWorld(maze);

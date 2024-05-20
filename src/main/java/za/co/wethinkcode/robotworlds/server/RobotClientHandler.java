@@ -38,7 +38,7 @@ public class RobotClientHandler implements Runnable {
                 out.println(response);
             }
         } catch (IOException e) {
-            System.err.println("Error handling client input: " + e.getMessage());
+//            System.err.println("Error handling client input: " + e.getMessage());
         } finally {
             try {
                 clientSocket.close();

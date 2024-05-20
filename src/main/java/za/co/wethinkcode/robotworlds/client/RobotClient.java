@@ -21,11 +21,11 @@ public class RobotClient {
             Thread.sleep(1000);
 
             System.out.println("Available commands:");
-            System.out.println("   launch [bot type] - launch robot into world");
-            System.out.println("   look              - look around in robot's field of view");
-            System.out.println("   state             - robot state\n");
+            System.out.println("   launch [make] [name] - launch robot into world");
+            System.out.println("   look                 - look around in robot's field of view");
+            System.out.println("   state                - robot state\n");
 
-            while (socket.isConnected()) {
+            do {
                 System.out.print("Enter command > ");
                 String commandInput = scanner.nextLine();
                 // I'll change this to method call later to allow validation in said method
@@ -33,7 +33,7 @@ public class RobotClient {
                 out.println(commandInput);
                 String response = in.readLine();
                 System.out.println(response);
-            }
+            } while (socket.isConnected());
 
         } catch (IOException e) {
             e.printStackTrace();

@@ -1,5 +1,9 @@
 package za.co.wethinkcode.robotworlds.server;
+<<<<<<< HEAD
 //import static org.junit.Assert.*;
+=======
+
+>>>>>>> origin/main-clone
 
 import org.junit.jupiter.api.*;
 
@@ -62,4 +66,24 @@ public class RobotWorldServerTest {
     public void testQuitCommand() {
         assertTrue(true);
     }
+<<<<<<< HEAD
+=======
+
+    @Test
+    public void testClientConnection() {
+        try {
+
+            Socket clientSocket = new Socket("localhost", PORT);
+            assertEquals("Client connected: " + clientSocket + "\n", outContent.toString());
+            clientSocket.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void testQuitCommand() {
+        ;
+    }
+>>>>>>> origin/main-clone
 }

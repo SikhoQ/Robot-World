@@ -42,8 +42,6 @@
             <artifactId>mockito-junit-jupiter</artifactId>
             <version>3.6.28</version>
             <scope>test</scope>
-<<<<<<< HEAD
-=======
         </dependency>
         <dependency>
             <artifactId>junit</artifactId>
@@ -51,9 +49,8 @@
             <version>4.13.2</version>
             <scope>test</scope>
         </dependency>
->>>>>>> origin/main-clone
 
-        </dependency>
     </dependencies>
-    
+
 </project>
+

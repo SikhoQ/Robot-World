@@ -9,15 +9,11 @@ import java.net.Socket;
 import za.co.wethinkcode.robotworlds.world.TextWorld;
 import za.co.wethinkcode.robotworlds.Robot;
 
-<<<<<<< HEAD
-
-=======
 /**
  * Class to handle communication between a server and a single client.
  * It processes commands received from the client and sends responses back to the client.
  * This class implements Runnable to allow handling client communication in a separate thread.
  */
->>>>>>> origin/main-clone
 public class RobotClientHandler implements Runnable {
     private final Socket clientSocket;
     private TextWorld world;
@@ -55,14 +51,11 @@ public class RobotClientHandler implements Runnable {
         }
     }
 
-<<<<<<< HEAD
-=======
     /**
      * Disconnects the client from the server.
      *
      * @throws IOException if an I/O error occurs while closing the client socket
      */
->>>>>>> origin/main-clone
     public void disconnectClient() {
         try {
             this.clientSocket.close();
@@ -72,27 +65,6 @@ public class RobotClientHandler implements Runnable {
         }
     }
 
-<<<<<<< HEAD
-    private String processCommand(String command) {
-        // Process client command and return response
-        // Example: Handle movement command
-//        if (command.startsWith("move")) {
-//            // Extract movement direction from command
-//            String direction = command.substring(5).trim(); // Assuming command format is "move <direction>"
-//            // Update world state accordingly
-//            return world.moveRobot(direction); // Assuming moveRobot method updates world state and returns response
-        command = command.toUpperCase();
-        if (command.startsWith("MOVE")) {
-            // Implement logic to handle MOVE command
-            return "Moving robot...";
-        } else if (command.startsWith("FIRE")) {
-            // Implement logic to handle FIRE command
-            return "Firing...";
-        } else if (command.startsWith("LAUNCH")) {
-            String name = command.split(" ")[1].toLowerCase();
-            Robot robot = new Robot(name);
-            return world.launchRobot(robot, name);
-=======
     /**
      * Closes the client socket.
      *
@@ -115,10 +87,9 @@ public class RobotClientHandler implements Runnable {
         } else if (command.startsWith("LAUNCH")) {
             String name = command.split(" ")[1].toLowerCase();
             return world.launchRobot(name);
->>>>>>> origin/main-clone
         } else {
-            // Handle unknown commands
             return "Unknown command: " + command;
         }
     }
 }
+

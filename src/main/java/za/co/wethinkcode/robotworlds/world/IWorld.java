@@ -82,10 +82,9 @@ public interface IWorld {
      */
     void showObstacles();
 
-<<<<<<< HEAD
-    String launchRobot(Robot robot, String name);
-=======
     String launchRobot(String name);
->>>>>>> origin/main-clone
     Map<Robot, Position> getRobots();
 }
+
+
+

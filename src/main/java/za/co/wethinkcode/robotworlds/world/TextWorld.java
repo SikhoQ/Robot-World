@@ -118,9 +118,8 @@ public class TextWorld implements IWorld {
     }
 
     @Override
-    public String launchRobot(Robot robot, String name) {
+    public String launchRobot(String name) {
         /*have to add check here to see if position is empty*/
-
         System.out.println("Launching "+name+"...");
         try {
             Thread.sleep(1300);
@@ -138,9 +137,11 @@ public class TextWorld implements IWorld {
         int yCoord = random.nextInt((yMax - yMin) + 1) + yMin;
 
         Position position = new Position(xCoord, yCoord);
+        Robot robot = new Robot(name, position);
+
         robots.put(robot, position);
 
-        return " > '"+name+"' launched at position ["+xCoord+","+yCoord+"]\n";
+        return " > '"+name+"' launched at position ["+xCoord+","+yCoord+"]";
     }
 
     @Override

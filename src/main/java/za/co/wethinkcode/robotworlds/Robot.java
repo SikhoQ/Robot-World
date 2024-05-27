@@ -13,12 +13,12 @@ public class Robot {
     private Direction currentDirection;
 
 
-    public Robot(String name) {
+    public Robot(String name, Position position) {
         this.name = name;
         this.status = "Ready";
         this.shields = MAX_SHIELDS;
         this.shots = MAX_SHOTS;
-        this.position = new Position(0, 0);
+        this.position = position;
         this.currentDirection = Direction.NORTH;
 
     }

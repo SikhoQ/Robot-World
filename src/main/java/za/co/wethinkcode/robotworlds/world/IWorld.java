@@ -82,6 +82,6 @@ public interface IWorld {
      */
     void showObstacles();
 
-    String launchRobot(Robot robot, String name);
+    String launchRobot(String name);
     Map<Robot, Position> getRobots();
 }

@@ -7,7 +7,7 @@ import java.util.*;
 /**
  * Class to represent a client application that connects to a robot server.
  * It enables the user to send commands to the server and receive responses.
- * 
+ *
  * The application reads commands from the user through the standard input and sends them to the server.
  * It then prints the server's responses to the standard output.
  */
@@ -36,12 +36,12 @@ public class RobotClient {
                 scanner = new Scanner(System.in);
                 System.out.println("Connected to server on port: "+PORT+"\n");
                 Thread.sleep(1000);
-            
+
                 System.out.println("Available commands:");
                 System.out.println("   launch [make] [name] - launch robot into world");
                 System.out.println("   look                 - look around in robot's field of view");
                 System.out.println("   state                - robot state\n");
-            
+
                 do {
                     System.out.print("Enter command > ");
                     String commandInput = scanner.nextLine();
@@ -49,9 +49,13 @@ public class RobotClient {
                     System.out.println("your command: "+commandInput);
                     out.println(commandInput);
                     String response = in.readLine();
+                    if (response == null) {
+                        System.out.println("Connection to the server has been terminated. You can no longer send commands");
+                        break;
+                    }
                     System.out.println(response);
-                } while (socket.isConnected());
-            
+                } while (true);
+
             } catch (IOException e) {
                 e.printStackTrace();
             } catch (InterruptedException e) {

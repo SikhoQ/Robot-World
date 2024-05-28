@@ -1,6 +1,15 @@
 package za.co.wethinkcode.robotworlds.client;
-
+/**
+ * The UserInput class processes user input for the robot worlds client.
+ * It parses the input command and its arguments, and creates a ClientRequest object.
+ */
 public class UserInput {
+    /**
+     * Handles user input by parsing the command and its arguments.
+     *
+     * @param userInput The raw input string entered by the user.
+     * @return A ClientRequest object containing the parsed command, name, and arguments.
+     */
 
     public UserInput() {}
 

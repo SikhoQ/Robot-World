@@ -1,5 +1,7 @@
 package za.co.wethinkcode.robotworlds;
+import java.util.*;
 
 public enum Direction {
-    NORTH, SOUTH, EAST, WEST
+    UP, DOWN, LEFT, RIGHT;
+
 }

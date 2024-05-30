@@ -1,93 +1,84 @@
 package za.co.wethinkcode.robotworlds.server;
 
+import za.co.wethinkcode.robotworlds.Direction;
+import za.co.wethinkcode.robotworlds.Position;
+import za.co.wethinkcode.robotworlds.maze.*;
+import za.co.wethinkcode.robotworlds.world.Obstacle;
+import za.co.wethinkcode.robotworlds.world.TextWorld;
+import za.co.wethinkcode.robotworlds.Robot;
+
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 
 public class RobotWorldServer extends Thread{
     private static final int PORT = 5000;
     private static final List<RobotClientHandler> clients = new ArrayList<>();
+    private static final ServerSocket serverSocket;
 
-    @Override
-    public void run() {
-        try (ServerSocket serverSocket = new ServerSocket(PORT)) {
-            System.out.println("Server started. Waiting for clients...");
-
-            while (true) {
-                Socket clientSocket = serverSocket.accept();
-                System.out.println("Client connected: " + clientSocket);
-
-                RobotClientHandler clientHandler = new RobotClientHandler(clientSocket);
-                clients.add(clientHandler);
-                new Thread(clientHandler).start();
-            }
-        } catch (IOException e) {
-            System.err.println("Error in the server: " + e.getMessage());
-        }
-
-    }
-
-    public void shutdown() {
+    static {
         try {
-            // Close all client connections
-            for (RobotClientHandler client : clients) {
-                client.close(); // Implement close() method in RobotClientHandler class
-            }
-
-            // Close the server socket
-            serverSocket.close();
-
-            // Optionally, perform any additional cleanup tasks
-
-            System.out.println("Server shutdown successfully");
-
-            // Shutdown the program
-            System.exit(0);
+            serverSocket = new ServerSocket(PORT);
         } catch (IOException e) {
-            System.err.println("Error shutting down the server: " + e.getMessage());
+            throw new RuntimeException(e);
         }
     }
 
-    public void showWorldState() {
-        // Access the world state and collect information for the dump
-        StringBuilder dump = new StringBuilder();
-
-        // Append information about robots
-//        for (RobotClientHandler client : clients) {
-//            dump.append("Robot: ").append(client.getName()).append("\n");
-//            dump.append("Position: ").append(client.getPosition()).append("\n");
-//            dump.append("Direction: ").append(client.getCurrentDirection().append("\n"));
-//            dump.append("State: ").append(client.getStatus()).append("\n");
-//        }
-
-        // Append information about obstacles or other world elements
-        // Iterate over obstacles and append their positions or any relevant information
-
-        // Print or output the dump to the console
-        System.out.println("World Dump:");
-        System.out.println(dump.toString());
-
+    /**
+     * Shuts down the server and all its clients.
+     * This method disconnects all clients and then closes the server socket.
+     * Finally, it terminates the server process.
+     */
+    public void shutdown() {
+        for (RobotClientHandler client: clients) {
+            try {
+                client.disconnectClient();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        closeServer();
+        System.exit(0);
     }
 
-    public void showRobots() {
-        /*TODO*/
+    /**
+     * Retrieves the list of active {@link RobotClientHandler} instances.
+     *
+     * @return a list of active {@link RobotClientHandler} instances
+     */
+    public static List<RobotClientHandler> getClients() {
+        return clients;
     }
 
-    public static void main(String[] args) {
-        /* when server is started, include
-           starting a new thread of the
-           ServerConsole instance
-        */
+    private void closeServer() {
+        try {
+            serverSocket.close();
+        } catch (IOException e) {
+            // handle in calling code
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * The main entry point of the server.
+     * It initializes the server, sets up the world, and starts accepting client connections.
+     *
+     * @param args Command line arguments, not used in this context.
+     * @throws IOException If an error occurs while accepting client connections.
+     */
+    public static void main(String[] args) throws IOException {
+        Maze maze = new SimpleMaze();
+        TextWorld world = new TextWorld(maze);
+
         RobotWorldServer server = new RobotWorldServer();
-        ServerConsole console = new ServerConsole(server);
+        ServerConsole console = new ServerConsole(server, world);
+
         new Thread(console).start();
 
-        try (ServerSocket serverSocket = new ServerSocket(PORT)) {
+        try {
             System.out.println("Server started. Waiting for clients...");
-
             while (true) {
                 Socket clientSocket = serverSocket.accept();
                 System.out.println("Client connected: " + clientSocket);
@@ -96,9 +87,9 @@ public class RobotWorldServer extends Thread{
                 clients.add(clientHandler);
                 new Thread(clientHandler).start();
             }
-        } catch (IOException e) {
-            System.err.println("Error in the server: " + e.getMessage());
+        } finally {
+            System.out.println("Quitting server...");
+            System.exit(0);
         }
     }
 }
-

@@ -1,6 +1,9 @@
 package za.co.wethinkcode.robotworlds.world;
 
+import za.co.wethinkcode.robotworlds.Direction;
 import za.co.wethinkcode.robotworlds.Position;
+import za.co.wethinkcode.robotworlds.Robot;
+import za.co.wethinkcode.robotworlds.Sleep;
 import za.co.wethinkcode.robotworlds.maze.Maze;
 
 import java.util.*;
@@ -9,13 +12,17 @@ import java.util.*;
 public class TextWorld implements IWorld {
     private Position position = CENTRE;
     private final List<Obstacle> obstacles;
-    private Direction heading =Direction.UP;
-    private final Position TOP_LEFT = new Position(-100,200);
-    private final Position BOTTOM_RIGHT = new Position(100,-200);
+    private Direction heading;
+    private final Position TOP_LEFT;
+    private final Position BOTTOM_RIGHT;
+    private final List<Robot> robots;
 
     public TextWorld(Maze maze) {
         obstacles = maze.getObstacles();
         heading = Direction.UP;
+        robots = new ArrayList<>();
+        TOP_LEFT = new Position(-100,200);
+        BOTTOM_RIGHT = new Position(100,-200);
     }
 
     @Override
@@ -114,5 +121,99 @@ public class TextWorld implements IWorld {
         }
         return UpdateResponse.FAILED_OUTSIDE_WORLD;
     }
-}
 
+    @Override
+    public String launchRobot(String name) {
+        System.out.println("Launching "+name+"...");
+        Sleep.sleep(1300);
+        Position position = Position.getRandomPosition();
+        position = validatePosition(position);
+        Direction direction = Direction.getRandomDirection();
+        Robot robot = new Robot(name, position, direction);
+
+        robots.add(robot);
+
+        return " > '"+name+"' launched at position ["+position.getX()+","+position.getY()+"]";
+    }
+
+    @Override
+    public List<Robot> getRobots() {
+        return robots;
+    }
+
+    @Override
+    public Position validatePosition(Position position) {
+        List<Robot> robots = getRobots();
+        for (Robot robot: robots) {
+            while (robot.getPosition().equals(position)) {
+                position = Position.getRandomPosition();
+            }
+        }
+        return position;
+    }
+
+    @Override
+    public void showWorldState() {
+        StringBuilder dump = new StringBuilder();
+
+        List<Obstacle> obstacles = getObstacles();
+
+        dump.append("Obstacles\n---------\n");
+
+        if (!obstacles.isEmpty()) {
+            dump.append(" There are obstacles:\n");
+        } else {
+            dump.append(" No obstacles");
+        }
+
+        for (Obstacle obstacle: obstacles) {
+            String obstacleString = "  - At ["+obstacle.getBottomLeftX()
+                    +","+obstacle.getBottomLeftY()+"] to ["
+                    +obstacle.getBottomLeftX()+4+","
+                    +obstacle.getBottomLeftY()+4+"]";
+            dump.append(obstacleString).append("\n\n");
+        }
+        List<Robot> robots = getRobots();
+        dump.append("Robots\n------\n");
+        if (robots.isEmpty()) {
+            dump.append(" No Robots Launched\n");
+        }
+        for (Robot robot: robots) {
+            String name = robot.getName();
+
+            Position position = robot.getPosition();
+            int xCoord = position.getX();
+            int yCoord = position.getY();
+            String positionString = "["+xCoord+","+yCoord+"]";
+
+            Direction direction = robot.getCurrentDirection();
+            String status = robot.getStatus();
+
+            dump.append("Robot: ").append(name).append("\n");
+            dump.append("Position: ").append(positionString).append("\n");
+            dump.append("Direction: ").append(direction).append("\n");
+            dump.append("State: ").append(status).append("\n\n");
+        }
+
+        System.out.println("World Dump:");
+        System.out.println("===========\n");
+        System.out.println(dump);
+
+    }
+
+    @Override
+    public void showRobots() {
+        List<Robot> robots = getRobots();
+        if (robots.isEmpty()) {
+            System.out.println("There are no robots in this world.");
+        } else {
+            int robotCount = 1;
+            System.out.println("There are robots:");
+            for (Robot robot: robots) {
+                System.out.println(" Robot "+(robotCount++)+":");
+                System.out.println(" ========");
+                System.out.println(robot.getName()+"\n");
+            }
+        }
+    }
+}

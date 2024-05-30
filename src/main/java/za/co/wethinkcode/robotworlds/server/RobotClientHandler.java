@@ -5,94 +5,88 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.util.HashMap;
-import java.util.Map;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import za.co.wethinkcode.robotworlds.Json;
-import za.co.wethinkcode.robotworlds.client.ClientRequest;
-import za.co.wethinkcode.robotworlds.command.Command;
 import za.co.wethinkcode.robotworlds.world.TextWorld;
+import za.co.wethinkcode.robotworlds.Robot;
 
-/**
- * Class to handle communication between a server and a single client.
- * It processes commands received from the client and sends responses back to the client.
- * This class implements Runnable to allow handling client communication in a separate thread.
- */
+
 public class RobotClientHandler implements Runnable {
     private final Socket clientSocket;
+    private TextWorld world;
 
     public RobotClientHandler(Socket clientSocket) {
         this.clientSocket = clientSocket;
+        this.world = world;
     }
 
-    /**
-     * Handles communication with the client.
-     */
+    public RobotClientHandler(Socket clientSocket, Socket clientSocket1) {
+
+        this.clientSocket = clientSocket1;
+    }
+
     @Override
     public void run() {
         try {
+            // Initialize input and output streams for communication with the client
             BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
             PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
 
-            String clientRequest;
-            while ((clientRequest = in.readLine()) != null) {
-                String response = processRequest(clientRequest);
+            // Handle communication with the client
+            String inputLine;
+            while ((inputLine = in.readLine()) != null) {
+                String response = processCommand(inputLine);
                 out.println(response);
             }
-        } catch (IOException ignored) {
+        } catch (IOException e) {
+//            System.err.println("Error handling client input: " + e.getMessage());
         } finally {
             try {
                 clientSocket.close();
-                System.out.println("Client socket closed.");
-                System.exit(0);
             } catch (IOException e) {
                 System.err.println("Error closing client socket: " + e.getMessage());
             }
         }
     }
 
-    /**
-     * Disconnects the client from the server.
-     *
-     * @throws IOException if an I/O error occurs while closing the client socket
-     */
-    public void disconnectClient() throws IOException {
-        this.clientSocket.close();
-    }
-
-    /**
-     * Closes the client socket.
-     *
-     * @throws IOException if an I/O error occurs while closing the client socket
-     */
-    public void close() throws IOException {
-        clientSocket.close();
-    }
-
-    private String processRequest(String clientRequest) {
-        // return server response json string from this method
-        JsonNode rootNode = Json.jsonFieldAccess(clientRequest);
+    public void disconnectClient() {
         try {
-            Command commandObject = Command.create(rootNode);
-            try {
-                return Json.toJson(commandObject);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        } catch (IllegalArgumentException e) {
-            // return 'unsupported command' error upon exception
-            // a.k.a response for badly formed request
-            Map<String, String> data = new HashMap<>();
-            data.put("message", "Unsupported command");
-            Map<String, Object> dataCopy = new HashMap<>(data);
-            try {
-                return Json.toJson(new ServerResponse("ERROR", dataCopy));
-            } catch (IOException ex) {
-                throw new RuntimeException(ex);
-            }
+            this.clientSocket.close();
+        } catch (IOException e) {
+            // handle thrown exception in calling code
+            throw new RuntimeException(e);
+        }
+    }
+
+    private String processCommand(String command) {
+        // Process client command and return response
+        // Example: Handle movement command
+//        if (command.startsWith("move")) {
+//            // Extract movement direction from command
+//            String direction = command.substring(5).trim(); // Assuming command format is "move <direction>"
+//            // Update world state accordingly
+//            return world.moveRobot(direction); // Assuming moveRobot method updates world state and returns response
+        command = command.toUpperCase();
+        if (command.startsWith("MOVE")) {
+            // Implement logic to handle MOVE command
+            return "Moving robot...";
+        } else if (command.startsWith("FIRE")) {
+            // Implement logic to handle FIRE command
+            return "Firing...";
+        } else if (command.startsWith("LAUNCH")) {
+            String name = command.split(" ")[1].toLowerCase();
+            Robot robot = new Robot(name);
+            return world.launchRobot(robot, name);
+        } else {
+            // Handle unknown commands
+            return "Unknown command: " + command;
+        }
+    }
+
+    public void close() {
+        try {
+            clientSocket.close();
+        } catch (IOException e) {
+            System.err.println("Error closing client socket: " + e.getMessage());
         }
     }
 }

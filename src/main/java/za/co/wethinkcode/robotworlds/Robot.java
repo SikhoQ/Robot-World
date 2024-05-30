@@ -13,13 +13,13 @@ public class Robot {
     private Direction currentDirection;
 
 
-    public Robot(String name, Position position, Direction direction) {
+    public Robot(String name, Position position) {
         this.name = name;
         this.status = "Ready";
         this.shields = MAX_SHIELDS;
         this.shots = MAX_SHOTS;
         this.position = position;
-        this.currentDirection = direction;
+        this.currentDirection = Direction.NORTH;
 
     }
 
@@ -60,16 +60,16 @@ public class Robot {
         int newY = position.getY();
 
         switch (currentDirection) {
-            case UP:
+            case NORTH:
                 newY += numSteps;
                 break;
-            case DOWN:
+            case SOUTH:
                 newY -= numSteps;
                 break;
-            case LEFT:
+            case WEST:
                 newX -= numSteps;
                 break;
-            case RIGHT:
+            case EAST:
                 newX += numSteps;
                 break;
         }
@@ -103,7 +103,7 @@ public class Robot {
 
     public void reset() {
         position = new Position(0, 0);
-        currentDirection = Direction.UP;
+        currentDirection = Direction.NORTH;
         status = "Ready";
         shields = MAX_SHIELDS;
         shots = MAX_SHOTS;

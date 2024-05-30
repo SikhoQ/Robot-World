@@ -33,14 +33,79 @@ public class RobotWorldServer extends Thread{
      */
     public void shutdown() {
         for (RobotClientHandler client: clients) {
-            try {
-                client.disconnectClient();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
+            client.disconnectClient();
         }
         closeServer();
         System.exit(0);
+    }
+
+    /**
+     * Displays the current state of the world, including obstacles and robots.
+     *
+     * @param world The TextWorld object representing the current state of the world.
+     */
+    public void showWorldState(TextWorld world) {
+        StringBuilder dump = new StringBuilder();
+
+        List<Obstacle> obstacles = world.getObstacles();
+
+        dump.append("Obstacles\n---------\n");
+
+        if (!obstacles.isEmpty()) {
+            dump.append("There are obstacles:");
+        } else {
+            dump.append("No obstacles");
+        }
+
+        for (Obstacle obstacle: obstacles) {
+            String obstacleString = " - At ["+obstacle.getBottomLeftX()
+                                    +","+obstacle.getBottomLeftY()+"] to ["
+                                    +obstacle.getBottomLeftX()+4+","
+                                    +obstacle.getBottomLeftY()+4+"]";
+            dump.append(obstacleString).append("\n\n");
+        }
+        dump.append("Robots\n------\n");
+        for (Robot robot: world.getRobots().keySet()) {
+            String name = robot.getName();
+
+            Position position = robot.getPosition();
+            int xCoord = position.getX();
+            int yCoord = position.getY();
+            String positionString = "["+xCoord+","+yCoord+"]";
+
+            Direction direction = robot.getCurrentDirection();
+            String status = robot.getStatus();
+
+            dump.append("Robot: ").append(name).append("\n");
+            dump.append("Position: ").append(positionString).append("\n");
+            dump.append("Direction: ").append(direction).append("\n");
+            dump.append("State: ").append(status).append("\n\n");
+        }
+
+        System.out.println("World Dump:");
+        System.out.println("===========");
+        System.out.println(dump);
+
+    }
+
+    /**
+     * Displays the current state of the world, including obstacles and robots.
+     *
+     * @param world The TextWorld object representing the current state of the world.
+     */
+    public void showRobots(TextWorld world) {
+        Set<Robot> robots = world.getRobots().keySet();
+
+        if (robots.isEmpty()) {
+            System.out.println("There are no robots in this world.");
+        } else {
+            int robotCount = 0;
+            for (Robot robot: robots) {
+                System.out.println("Robot "+(robotCount++)+":");
+                System.out.println("========");
+                System.out.println(robot.getName()+"\n");
+            }
+        }
     }
 
     /**
@@ -83,7 +148,7 @@ public class RobotWorldServer extends Thread{
                 Socket clientSocket = serverSocket.accept();
                 System.out.println("Client connected: " + clientSocket);
 
-                RobotClientHandler clientHandler = new RobotClientHandler(clientSocket);
+                RobotClientHandler clientHandler = new RobotClientHandler(clientSocket, world);
                 clients.add(clientHandler);
                 new Thread(clientHandler).start();
             }

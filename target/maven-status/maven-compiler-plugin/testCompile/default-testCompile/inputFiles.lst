@@ -1,0 +1,5 @@
+/home/wtc/my_work/dbn_14_robot_worlds/src/test/java/za/co/wethinkcode/robotworlds/command/RobotCommandsTest.java
+/home/wtc/my_work/dbn_14_robot_worlds/src/test/java/za/co/wethinkcode/robotworlds/server/RobotWorldServerTest.java
+/home/wtc/my_work/dbn_14_robot_worlds/src/test/java/za/co/wethinkcode/robotworlds/command/QuitCommandTest.java
+/home/wtc/my_work/dbn_14_robot_worlds/src/test/java/za/co/wethinkcode/robotworlds/command/DumpCommandTest.java
+/home/wtc/my_work/dbn_14_robot_worlds/src/test/java/za/co/wethinkcode/robotworlds/command/CommandTest.java

@@ -3,34 +3,35 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import za.co.wethinkcode.robotworlds.Robot;
+import za.co.wethinkcode.robotworlds.server.ServerResponse;
 
 public abstract class Command {
-    private final String name;
+    private final String command;
     private String argument1;
     private String argument2;
 
-    public abstract boolean execute(Robot target);
+    public abstract ServerResponse execute(Robot target);
 
-    public Command(String name){
-        this.name = name.trim().toLowerCase();
+    public Command(String command){
+        this.command = command.trim().toLowerCase();
         this.argument1 = "";
         this.argument2 = "";
     }
 
-    public Command(String name, String argument) {
-        this(name);
+    public Command(String command, String argument) {
+        this(command);
         this.argument1 = argument.trim();
         this.argument2 = "";
     }
 
-    public Command(String name, String argument1, String argument2) {
-        this(name);
+    public Command(String command, String argument1, String argument2) {
+        this(command);
         this.argument1 = argument1.trim();
         this.argument2 = argument2.trim();
     }
 
-    public String getName() {
-        return name;
+    public String getCommand() {
+        return command;
     }
 
     public String getArgument1() {
@@ -46,7 +47,6 @@ public abstract class Command {
         String name = rootNode.get("robot").asText();
         String command = rootNode.get("command").asText();
         String[] arguments;
-
         try {
             arguments = objectMapper.treeToValue(rootNode.get("arguments"), String[].class);
         } catch (JsonProcessingException e) {

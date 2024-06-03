@@ -1,24 +1,23 @@
 package za.co.wethinkcode.robotworlds.command;
 
 import za.co.wethinkcode.robotworlds.Robot;
-import za.co.wethinkcode.robotworlds.command.Command;
 import za.co.wethinkcode.robotworlds.server.ServerResponse;
 
 /**
- * The LookCommand class allows a robot to look around in its field of view.
- * This command is triggered by typing "look".
+ * The UnknownCommand class handles commands that are not recognized by the system.
+ * This command is triggered when an unrecognized command is issued.
  */
-public class LookCommand extends Command {
+public class UnknownCommand extends Command {
 
     /**
-     * Constructs a LookCommand object with the command name set to "look".
+     * Constructs an UnknownCommand object with the command name set to "unknown".
      */
-    public LookCommand() {
-        super("look");
+    public UnknownCommand() {
+        super("unknown");
     }
 
     /**
-     * Executes the LookCommand, which enables the robot to look around.
+     * Executes the UnknownCommand, which handles the case of an unrecognized command.
      * The current implementation returns null, as it may be intended to be overridden or extended.
      *
      * @param target The robot that the command is executed on.

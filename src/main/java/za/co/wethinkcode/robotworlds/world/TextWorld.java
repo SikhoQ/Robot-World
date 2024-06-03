@@ -5,6 +5,7 @@ import za.co.wethinkcode.robotworlds.Position;
 import za.co.wethinkcode.robotworlds.Robot;
 import za.co.wethinkcode.robotworlds.Sleep;
 import za.co.wethinkcode.robotworlds.maze.Maze;
+import za.co.wethinkcode.robotworlds.maze.SimpleMaze;
 
 import java.util.*;
 
@@ -16,13 +17,41 @@ public class TextWorld implements IWorld {
     private final Position TOP_LEFT;
     private final Position BOTTOM_RIGHT;
     private final List<Robot> robots;
+    private final int visibility;
+    private final int reload;
+    private final int repair;
+    private final int shields;
 
-    public TextWorld(Maze maze) {
-        obstacles = maze.getObstacles();
-        heading = Direction.UP;
+    @Override
+    public int getReload() {
+        return reload;
+    }
+
+    @Override
+    public int getRepair() {
+        return repair;
+    }
+
+    @Override
+    public int getShields() {
+        return shields;
+    }
+
+    @Override
+    public int getVisibility() {
+        return visibility;
+    }
+
+    public TextWorld() {
+        obstacles = new SimpleMaze().getObstacles();
+        heading = Direction.NORTH;
         robots = new ArrayList<>();
         TOP_LEFT = new Position(-100,200);
         BOTTOM_RIGHT = new Position(100,-200);
+        visibility = 50;
+        reload = 5;
+        repair = 5;
+        shields = 10;
     }
 
     @Override
@@ -54,7 +83,7 @@ public class TextWorld implements IWorld {
     @Override
     public void reset() {
         position = CENTRE;
-        heading = Direction.UP;
+        heading = Direction.NORTH;
     }
 
     @Override
@@ -85,10 +114,10 @@ public class TextWorld implements IWorld {
     @Override
     public void updateDirection(boolean turnRight) {
         if (turnRight) {
-            heading = Direction.RIGHT;
+            heading = Direction.EAST;
         }
         else {
-            heading = Direction.LEFT;
+            heading = Direction.WEST;
         }
     }
 
@@ -97,19 +126,19 @@ public class TextWorld implements IWorld {
         int newX = position.getX();
         int newY = position.getY();
 
-        if (Direction.UP.equals(heading)) {
+        if (Direction.NORTH.equals(heading)) {
             newY += nrSteps;
         }
 
-        else if (Direction.DOWN.equals(heading)) {
+        else if (Direction.SOUTH.equals(heading)) {
             newY -= nrSteps;
         }
 
-        else if (Direction.LEFT.equals(heading)) {
+        else if (Direction.WEST.equals(heading)) {
             newX -= nrSteps;
         }
 
-        else if (Direction.RIGHT.equals(heading)){
+        else if (Direction.EAST.equals(heading)){
             newX += nrSteps;
         }
 
@@ -123,17 +152,19 @@ public class TextWorld implements IWorld {
     }
 
     @Override
-    public String launchRobot(String name) {
-        System.out.println("Launching "+name+"...");
+    public Robot launchRobot(String make, String name) {
+        // change this to use make to create relevant robot
         Sleep.sleep(1300);
         Position position = Position.getRandomPosition();
         position = validatePosition(position);
         Direction direction = Direction.getRandomDirection();
         Robot robot = new Robot(name, position, direction);
 
+        System.out.println(name+" ("+make+")"+" joined.");
+
         robots.add(robot);
 
-        return " > '"+name+"' launched at position ["+position.getX()+","+position.getY()+"]";
+        return robot;
     }
 
     @Override

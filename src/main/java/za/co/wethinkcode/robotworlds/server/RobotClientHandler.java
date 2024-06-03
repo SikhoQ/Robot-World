@@ -12,8 +12,11 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import za.co.wethinkcode.robotworlds.Json;
+import za.co.wethinkcode.robotworlds.Robot;
 import za.co.wethinkcode.robotworlds.client.ClientRequest;
 import za.co.wethinkcode.robotworlds.command.Command;
+import za.co.wethinkcode.robotworlds.command.LaunchCommand;
+import za.co.wethinkcode.robotworlds.world.IWorld;
 import za.co.wethinkcode.robotworlds.world.TextWorld;
 
 /**
@@ -23,9 +26,11 @@ import za.co.wethinkcode.robotworlds.world.TextWorld;
  */
 public class RobotClientHandler implements Runnable {
     private final Socket clientSocket;
+    private final IWorld world;
 
-    public RobotClientHandler(Socket clientSocket) {
+    public RobotClientHandler(Socket clientSocket, IWorld world) {
         this.clientSocket = clientSocket;
+        this.world = world;
     }
 
     /**
@@ -38,9 +43,23 @@ public class RobotClientHandler implements Runnable {
             PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
 
             String clientRequest;
+            Robot robot = null;
+            Json json = new Json();
             while ((clientRequest = in.readLine()) != null) {
-                String response = processRequest(clientRequest);
-                out.println(response);
+                // process request to create relevant command class
+                Command command = getCommand(clientRequest);
+                // in conditional, use getCommand:
+                //   if command is launch, set robot to LaunchCommand.getRobot
+                // this part will ideally happen once, after which 'robot'
+                // will continue being the initially launched instance
+                if (command.getCommand().equalsIgnoreCase("launch")) {
+                    LaunchCommand launchCommand = (LaunchCommand) command;
+                    robot = launchCommand.createRobot(world);
+                }
+                // call the created command's execute, passing robot
+                ServerResponse serverResponseObject = command.execute(robot);
+                String serverResponse = json.toJson(serverResponseObject);
+                out.println(serverResponse);
             }
         } catch (IOException ignored) {
         } finally {
@@ -72,27 +91,19 @@ public class RobotClientHandler implements Runnable {
         clientSocket.close();
     }
 
+    public Command getCommand(String clientRequest) {
+        Json json = new Json();
+        JsonNode rootNode = json.jsonFieldAccess(clientRequest);
+        return Command.create(rootNode);
+    }
+
     private String processRequest(String clientRequest) {
-        // return server response json string from this method
-        JsonNode rootNode = Json.jsonFieldAccess(clientRequest);
-        try {
-            Command commandObject = Command.create(rootNode);
-            try {
-                return Json.toJson(commandObject);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        } catch (IllegalArgumentException e) {
-            // return 'unsupported command' error upon exception
-            // a.k.a response for badly formed request
-            Map<String, String> data = new HashMap<>();
-            data.put("message", "Unsupported command");
-            Map<String, Object> dataCopy = new HashMap<>(data);
-            try {
-                return Json.toJson(new ServerResponse("ERROR", dataCopy));
-            } catch (IOException ex) {
-                throw new RuntimeException(ex);
-            }
-        }
+        // return 'unsupported command' error upon exception
+        // a.k.a response for badly formed request
+//        Map<String, String> data = new HashMap<>();
+//        data.put("message", "Unsupported command");
+//        Map<String, Object> dataCopy = new HashMap<>(data);
+//        return json.toJson(new ServerResponse("ERROR", dataCopy));
+        return  "";
     }
 }

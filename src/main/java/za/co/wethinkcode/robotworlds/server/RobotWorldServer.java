@@ -26,6 +26,8 @@ public class RobotWorldServer extends Thread{
         }
     }
 
+    public void run() {}
+
     /**
      * Shuts down the server and all its clients.
      * This method disconnects all clients and then closes the server socket.
@@ -69,8 +71,7 @@ public class RobotWorldServer extends Thread{
      * @throws IOException If an error occurs while accepting client connections.
      */
     public static void main(String[] args) throws IOException {
-        Maze maze = new SimpleMaze();
-        TextWorld world = new TextWorld(maze);
+        TextWorld world = new TextWorld();
 
         RobotWorldServer server = new RobotWorldServer();
         ServerConsole console = new ServerConsole(server, world);
@@ -79,14 +80,15 @@ public class RobotWorldServer extends Thread{
 
         try {
             System.out.println("Server started. Waiting for clients...");
-            while (true) {
-                Socket clientSocket = serverSocket.accept();
-                System.out.println("Client connected: " + clientSocket);
+            Socket clientSocket;
+            do {
+                clientSocket = serverSocket.accept();
+                System.out.println("Client connected on port: " + clientSocket.getPort());
 
-                RobotClientHandler clientHandler = new RobotClientHandler(clientSocket);
+                RobotClientHandler clientHandler = new RobotClientHandler(clientSocket, world);
                 clients.add(clientHandler);
                 new Thread(clientHandler).start();
-            }
+            } while (console.getRunningState());
         } finally {
             System.out.println("Quitting server...");
             System.exit(0);

@@ -70,6 +70,18 @@ public class RobotClient {
         client.run(robotName);
     }
 
+    /**
+     * Launches a robot based on user input and communicates with the server.
+     *
+     * This method prompts the user to enter a command to launch a robot in the format
+     * 'launch <make> <name>'. It processes the input to create a ClientRequest object,
+     * serializes this request to JSON, and sends it to the server. After receiving
+     * the server's response, it deserializes the response, extracts relevant data, and
+     * prints the robot's position, direction, and status. Finally, it returns the name
+     * of the robot.
+     *
+     * @return the name of the robot that was launched
+     */
     public String launchRobot() {
         // prompt user for launch and get input
         String userInput = getInput("Launch a robot.\nUse 'launch <make> <name>'");
@@ -95,6 +107,16 @@ public class RobotClient {
         return robotName;
     }
 
+    /**
+     * Handles the interaction loop with the user for issuing commands to a specific robot.
+     *
+     * This method continuously prompts the user to input commands for the specified robot
+     * until the user enters "exit". For each command, it creates a ClientRequest object,
+     * serializes it to JSON, and sends it to the server. It then receives the server's response,
+     * deserializes it into a ServerResponse object, and prompts the user for the next command.
+     *
+     * @param robotName the name of the robot for which commands are being issued
+     */
     private void run(String robotName) {
         String userInput = getInput(robotName+"> What must I do next?");
         while (!userInput.equalsIgnoreCase("exit")) {
@@ -115,6 +137,18 @@ public class RobotClient {
         }
     }
 
+    /**
+     * Prompts the user for input with the specified prompt message and returns the input.
+     *
+     * This method repeatedly prompts the user with the given message until a non-blank
+     * input is received. It prints the prompt message, reads the input from the inputReader,
+     * and ensures that the input is not blank before returning it. If an IOException occurs
+     * while reading the input, it throws a RuntimeException.
+     *
+     * @param prompt the message to display to the user
+     * @return the user's input as a non-blank string
+     * @throws RuntimeException if an IOException occurs while reading the input
+     */
     private String getInput(String prompt) {
         String input;
         do {
@@ -128,6 +162,16 @@ public class RobotClient {
         return input;
     }
 
+    /**
+     * Reads the server response from the input stream.
+     *
+     * This method reads a line from the input stream `in` and returns it as a string.
+     * If an `IOException` occurs while reading, it prints an error message and throws
+     * a `RuntimeException`.
+     *
+     * @return the server response as a string
+     * @throws RuntimeException if an IOException occurs while reading the server response
+     */
     private String getServerResponse() {
         String serverResponse = null;
         try {
@@ -138,6 +182,15 @@ public class RobotClient {
         }
     }
 
+    /**
+     * Converts a JSON string representing a server response into a ServerResponse object.
+     *
+     * This method uses the `Json` class to deserialize the provided JSON string into
+     * a `ServerResponse` object.
+     *
+     * @param serverResponse the JSON string representing the server response
+     * @return the deserialized `ServerResponse` object
+     */
     private ServerResponse getServerResponseObject(String serverResponse) {
         Json json = new Json();
         return json.fromJson(serverResponse);

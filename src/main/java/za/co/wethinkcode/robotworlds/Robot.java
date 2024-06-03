@@ -1,6 +1,8 @@
 package za.co.wethinkcode.robotworlds;
 
-
+/**
+ * The Robot class represents a robot in the world.
+ */
 public class Robot {
     private final int MAX_SHIELDS = 10;
     private final int MAX_SHOTS = 100;
@@ -13,6 +15,13 @@ public class Robot {
     private Direction currentDirection;
 
 
+    /**
+     * Constructs a Robot object with the specified name, position, and direction.
+     *
+     * @param name The name of the robot.
+     * @param position The initial position of the robot.
+     * @param direction The initial direction of the robot.
+     */
     public Robot(String name, Position position, Direction direction) {
         this.name = name;
         this.status = "Ready";
@@ -54,6 +63,12 @@ public class Robot {
         this.position = position;
     }
 
+    /**
+     * Updates the position of the robot based on the current direction and the specified number of steps.
+     *
+     * @param numSteps The number of steps to move the robot.
+     * @return True if the new position is valid and the update was successful, false otherwise.
+     */
     public boolean updatePosition(int numSteps) {
         int newX = position.getX();
         int newY = position.getY();
@@ -86,6 +101,11 @@ public class Robot {
                 newPosition.getY() >= -200 && newPosition.getY() <= 100;
     }
 
+    /**
+     * Updates the shields of the robot after being hit.
+     *
+     * @param hit The damage received by the robot.
+     */
     public void updateShields(int hit) {
         shields -= hit;
         if (shields < 0) {
@@ -93,6 +113,11 @@ public class Robot {
         }
     }
 
+    /**
+     * Updates the shots of the robot after firing shots.
+     *
+     * @param shotsFired The number of shots fired by the robot.
+     */
     public void updateShots(int shotsFired) {
         shots -= shotsFired;
         if (shots < 0) {
@@ -100,6 +125,9 @@ public class Robot {
         }
     }
 
+    /**
+     * Resets the robot to its initial state.
+     */
     public void reset() {
         position = new Position(0, 0);
         currentDirection = Direction.NORTH;
@@ -108,6 +136,11 @@ public class Robot {
         shots = MAX_SHOTS;
     }
 
+    /**
+     * Returns a string representation of the robot's current state.
+     *
+     * @return A string containing the position, name, and status of the robot.
+     */
     @Override
     public String toString() {
         return "[" + position.getX() + "," + position.getY() + "] " + name + "> " + status;

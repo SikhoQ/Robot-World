@@ -200,8 +200,8 @@ public class TextWorld implements IWorld {
         for (Obstacle obstacle: obstacles) {
             String obstacleString = "  - At ["+obstacle.getBottomLeftX()
                     +","+obstacle.getBottomLeftY()+"] to ["
-                    +obstacle.getBottomLeftX()+4+","
-                    +obstacle.getBottomLeftY()+4+"]";
+                    +(obstacle.getBottomLeftX()+4)+","
+                    +(obstacle.getBottomLeftY()+4)+"]";
             dump.append(obstacleString).append("\n\n");
         }
         List<Robot> robots = getRobots();

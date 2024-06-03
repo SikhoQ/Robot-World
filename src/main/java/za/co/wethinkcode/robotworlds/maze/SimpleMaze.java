@@ -1,0 +1,54 @@
+package za.co.wethinkcode.robotworlds.maze;
+
+import za.co.wethinkcode.robotworlds.world.Obstacle;
+import za.co.wethinkcode.robotworlds.world.SquareObstacle;
+import za.co.wethinkcode.robotworlds.Position;
+
+import java.util.*;
+
+public class SimpleMaze implements Maze {
+
+    List<Obstacle> obstacles;
+
+    public SimpleMaze() {
+        this.obstacles = new ArrayList<>();
+    }
+
+    @Override
+    public List<Obstacle> getObstacles() {
+        createObstacles();
+        return obstacles;
+    }
+
+    @Override
+    public boolean blocksPath(Position start, Position dest) {
+        // change obstacles to array
+        Obstacle[] obstaclesArray = obstacles.toArray(new Obstacle[obstacles.size() - 1]);
+        // iterate and return true if any path is blocked
+        for (Obstacle obs: obstaclesArray) {
+            // vertical path
+            if (start.getX() == dest.getX()) {
+                if ((obs.getBottomLeftY() >= Math.min(start.getY(), dest.getY())
+                        && obs.getBottomLeftY() <= Math.max(start.getY(), dest.getY()))
+                        && (start.getX() >= obs.getBottomLeftX() && start.getX() <= obs.getBottomLeftX() + 4)) {
+                    return true;
+                }
+            }
+            // horizontal
+            else {
+                if ((obs.getBottomLeftX() >= Math.min(start.getX(), dest.getX())
+                        && obs.getBottomLeftX() <= Math.max(start.getX(), dest.getX()))
+                        && (start.getY() >= obs.getBottomLeftY() && start.getY() <= obs.getBottomLeftY() + 4)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private void createObstacles() {
+        SquareObstacle obstacle = new SquareObstacle(1, 1);
+        obstacles.add(obstacle);
+    }
+}
+

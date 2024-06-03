@@ -1,9 +1,12 @@
+# Robot World Flowchart
+
+```mermaid
 graph TD
-A1[Start Server] --> A2[Initialize Server Socket]
-A2 --> A3[Start Listening for Client Connections]
-A3 -->|Client Connects| B1[Create RobotClientHandler]
-B1 --> B2[Add ClientHandler to Active Clients]
-B2 --> B3[Start New Thread for Client Communication]
+    A1[Start Server] --> A2[Initialize Server Socket]
+    A2 --> A3[Start Listening for Client Connections]
+    A3 -->|Client Connects| B1[Create RobotClientHandler]
+    B1 --> B2[Add ClientHandler to Active Clients]
+    B2 --> B3[Start New Thread for Client Communication]
 
     B3 --> C1[Receive Client Request]
     C1 --> C2[Parse JSON Request]

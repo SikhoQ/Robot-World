@@ -90,7 +90,7 @@ public interface IWorld {
      */
     void showObstacles();
 
-    String launchRobot(String name);
+    Robot launchRobot(String make, String name);
     List<Robot> getRobots();
     Position validatePosition(Position position);
 
@@ -103,4 +103,12 @@ public interface IWorld {
      * Displays the current state of the world, including obstacles and robots.
      */
     void showRobots();
+
+    int getVisibility();
+
+    int getReload();
+
+    int getRepair();
+
+    int getShields();
 }

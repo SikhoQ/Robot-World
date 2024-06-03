@@ -2,7 +2,9 @@ package za.co.wethinkcode.robotworlds.client;
 
 import za.co.wethinkcode.robotworlds.Json;
 import za.co.wethinkcode.robotworlds.Position;
+import za.co.wethinkcode.robotworlds.Robot;
 import za.co.wethinkcode.robotworlds.Sleep;
+import za.co.wethinkcode.robotworlds.server.ServerResponse;
 
 import java.io.*;
 import java.net.Socket;
@@ -21,17 +23,31 @@ public class RobotClient {
     private Socket clientSocket;
     private PrintWriter out;
     private BufferedReader in;
-    private boolean robotLaunched = false;
+    private BufferedReader inputReader;
 
-    public void startConnection(String ipAddress, int port) throws IOException {
-        clientSocket = new Socket(ADDRESS, PORT);
-        out = new PrintWriter(clientSocket.getOutputStream(), true);
-        in = new BufferedReader(new InputStreamReader(
-                clientSocket.getInputStream()));
+    public void startConnection(String ipAddress, int port) {
+        try {
+            clientSocket = new Socket(ADDRESS, PORT);
+        } catch (IOException e) {
+            throw new RuntimeException("clientSocket exception: "+e);
+        }
+        try {
+            out = new PrintWriter(clientSocket.getOutputStream(), true);
+        } catch (IOException e) {
+            throw new RuntimeException("out exception: "+e);
+        }
+        try {
+            in = new BufferedReader(new InputStreamReader(
+                    clientSocket.getInputStream()));
+        } catch (IOException e) {
+            throw new RuntimeException("in exception: "+e);
+        }
+        inputReader = new BufferedReader(new InputStreamReader(System.in));
+
         System.out.println("Connected to server on port: " + PORT + "\n");
     }
 
-    public void stopConnection() {
+    public void stopConnection() throws IOException {
         in.close();
         out.close();
         clientSocket.close();
@@ -48,59 +64,82 @@ public class RobotClient {
         System.out.println("*********************************************\n");
 
         RobotClient client = new RobotClient();
-        // handle exception here
+
         client.startConnection(ADDRESS, PORT);
-//        launchRobot()
+        String robotName = client.launchRobot();
+        client.run(robotName);
     }
 
-    private void run() {
-        try (
-                Socket socket = new Socket(ADDRESS, PORT);
-                BufferedReader inputReader = new BufferedReader(new InputStreamReader(System.in));
+    public String launchRobot() {
+        // prompt user for launch and get input
+        String userInput = getInput("Launch a robot.\nUse 'launch <make> <name>'");
+        // process input and get relevant ClientRequest instance
+        ClientRequest request = UserInput.handleUserInput(userInput);
+        // use this instance to serialize user input as client request to send to server
+        Json json = new Json();
+        String clientRequest = json.toJson(request);
+        // send serialized request to server
+        out.println(clientRequest);
+        // get server response
+        String serverResponse = getServerResponse();
+        // get server response object
+        ServerResponse serverResponseObject = getServerResponseObject(serverResponse);
 
-        ) {
-            System.out.println("Connected to server on port: " + PORT + "\n");
-            Sleep.sleep(1000);
+        Map<String, Object> data = serverResponseObject.getData();
+        Map<String, Object> state = serverResponseObject.getState();
+        String robotName = request.getRobot();
+        Object position = data.get("position");
+        Object direction = state.get("direction");
+        Object status = state.get("status");
+        System.out.println(position+" "+"["+direction+"]"+" "+robotName+"> "+status);
+        return robotName;
+    }
 
-            do {
-                System.out.print("Enter command > ");
-
-                String userInput = inputReader.readLine();
-
-                // Check for exit command
-                if ("exit".equalsIgnoreCase(userInput.trim())) {
-                    System.out.println("Exiting Robot World Client.");
-                    break;
-                }
-
-                // Process user input
-                ClientRequest request = UserInput.handleUserInput(userInput);
-
-                if (request.getCommand().equalsIgnoreCase("launch")) {
-                    // NEED TO ADD A WAY TO VALIDATING ROBOT LAUNCH BEFORE
-                    // UPDATING THIS FLAG VALUE
-                    robotLaunched = true;
-                }
-
-                if (robotLaunched) {
-                    // Convert ClientRequest obj to JSON format string
-                    Json json = new Json();
-                    String jsonString = json.toJson(request);
-
-                    // Send over to server
-                    out.println(jsonString);
-                    System.out.println("Client request JSON string:\n" + jsonString);
-
-                    String response = in.readLine();
-                    System.out.println("Server response JSON string:\n" + response);
-                    // Add more code to read and process server response
-                } else {
-                    System.out.println("You need to launch a robot first.");
-                    System.out.println("Use 'launch <make> <name>'");
-                }
-            } while (socket.isConnected());
-        } catch (IOException e) {
-            e.printStackTrace();
+    private void run(String robotName) {
+        String userInput = getInput(robotName+"> What must I do next?");
+        while (!userInput.equalsIgnoreCase("exit")) {
+            // get ClientRequest obj using user input
+            ClientRequest request = UserInput.handleUserInput(userInput);
+            Json json = new Json();
+            // convert to json String
+            String clientRequest = json.toJson(request);
+            // send to server
+            out.println(clientRequest);
+            // get server response as json String
+            String serverResponse = getServerResponse();
+            // convert json String to ServerResponse object
+            ServerResponse serverResponseObject = getServerResponseObject(serverResponse);
+            // at this point, the command has already been carried out on the server side,
+            // use this server response object to print relevant fields to user
+            userInput = getInput(robotName+"> What must I do next?");
         }
+    }
+
+    private String getInput(String prompt) {
+        String input;
+        do {
+            System.out.println(prompt);
+            try {
+                input = inputReader.readLine();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        } while (input.isBlank());
+        return input;
+    }
+
+    private String getServerResponse() {
+        String serverResponse = null;
+        try {
+            return in.readLine();
+        } catch (IOException e) {
+            System.out.println("serverResponse exception");
+            throw new RuntimeException();
+        }
+    }
+
+    private ServerResponse getServerResponseObject(String serverResponse) {
+        Json json = new Json();
+        return json.fromJson(serverResponse);
     }
 }

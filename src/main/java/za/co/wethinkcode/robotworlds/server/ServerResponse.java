@@ -1,5 +1,8 @@
 package za.co.wethinkcode.robotworlds.server;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.Map;
 
 public class ServerResponse {
@@ -15,8 +18,9 @@ public class ServerResponse {
         this.data = data;
     }
 
-    public ServerResponse(String result, Map<String, Object> data,
-                          Map<String, Object> state) {
+    @JsonCreator
+    public ServerResponse(@JsonProperty("robot") String result, @JsonProperty("command") Map<String, Object> data,
+                          @JsonProperty("arguments") Map<String, Object> state) {
         this(result, data);
         this.state = state;
     }

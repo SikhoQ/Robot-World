@@ -3,13 +3,14 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import za.co.wethinkcode.robotworlds.Robot;
+import za.co.wethinkcode.robotworlds.server.ServerResponse;
 
 public abstract class Command {
     private final String command;
     private String argument1;
     private String argument2;
 
-    public abstract boolean execute(Robot target);
+    public abstract ServerResponse execute(Robot target);
 
     public Command(String command){
         this.command = command.trim().toLowerCase();

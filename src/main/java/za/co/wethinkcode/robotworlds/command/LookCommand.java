@@ -2,6 +2,7 @@ package za.co.wethinkcode.robotworlds.command;
 
 import za.co.wethinkcode.robotworlds.Robot;
 import za.co.wethinkcode.robotworlds.command.Command;
+import za.co.wethinkcode.robotworlds.server.ServerResponse;
 
 public class LookCommand extends Command {
     public LookCommand() {
@@ -9,7 +10,7 @@ public class LookCommand extends Command {
     }
 
     @Override
-    public boolean execute(Robot target) {
-        return true;
+    public ServerResponse execute(Robot target) {
+        return null;
     }
 }

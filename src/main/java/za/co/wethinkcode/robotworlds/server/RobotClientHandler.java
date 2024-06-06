@@ -5,19 +5,13 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.util.HashMap;
-import java.util.Map;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import za.co.wethinkcode.robotworlds.Json;
-import za.co.wethinkcode.robotworlds.Robot;
-import za.co.wethinkcode.robotworlds.client.ClientRequest;
+import za.co.wethinkcode.robotworlds.world.Robot;
 import za.co.wethinkcode.robotworlds.command.Command;
 import za.co.wethinkcode.robotworlds.command.LaunchCommand;
 import za.co.wethinkcode.robotworlds.world.IWorld;
-import za.co.wethinkcode.robotworlds.world.TextWorld;
 
 /**
  * Class to handle communication between a server and a single client.
@@ -57,7 +51,7 @@ public class RobotClientHandler implements Runnable {
                     robot = launchCommand.createRobot(world);
                 }
                 // call the created command's execute, passing robot
-                ServerResponse serverResponseObject = command.execute(robot);
+                ServerResponse serverResponseObject = command.execute(robot, world);
                 String serverResponse = json.toJson(serverResponseObject);
                 out.println(serverResponse);
             }
@@ -97,6 +91,10 @@ public class RobotClientHandler implements Runnable {
         return Command.create(rootNode);
     }
 
+    /*
+    * use this function to handle error responses since each command's execute
+    * returns a ServerResponse object
+    * */
     private String processRequest(String clientRequest) {
         // return 'unsupported command' error upon exception
         // a.k.a response for badly formed request

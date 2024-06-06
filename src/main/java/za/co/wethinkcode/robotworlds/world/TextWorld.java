@@ -2,10 +2,9 @@ package za.co.wethinkcode.robotworlds.world;
 
 import za.co.wethinkcode.robotworlds.Direction;
 import za.co.wethinkcode.robotworlds.Position;
-import za.co.wethinkcode.robotworlds.Robot;
 import za.co.wethinkcode.robotworlds.Sleep;
-import za.co.wethinkcode.robotworlds.maze.Maze;
-import za.co.wethinkcode.robotworlds.maze.SimpleMaze;
+import za.co.wethinkcode.robotworlds.maze.RandomMaze;
+import za.co.wethinkcode.robotworlds.world.configuration.Config;
 
 import java.util.*;
 
@@ -16,11 +15,45 @@ public class TextWorld implements IWorld {
     private Direction heading;
     private final Position TOP_LEFT;
     private final Position BOTTOM_RIGHT;
+    private final Edge worldEdges;
     private final List<Robot> robots;
-    private final int visibility;
-    private final int reload;
-    private final int repair;
-    private final int shields;
+    private int worldHeight;
+    private int worldWidth;
+    private int visibility;
+    private int reload;
+    private int repair;
+    private int shields;
+
+    public TextWorld() {
+        obstacles = new RandomMaze().getObstacles();
+        heading = Direction.NORTH;
+        robots = new ArrayList<>();
+        setupWorld();
+        int worldX = worldWidth / 2;
+        int worldY = worldHeight / 2;
+        TOP_LEFT = new Position(-worldX,worldY);
+        BOTTOM_RIGHT = new Position(worldX,-worldY);
+        worldEdges = new Edge(TOP_LEFT, BOTTOM_RIGHT);
+    }
+
+    private void setupWorld() {
+        Config config = Config.readConfiguration();
+        if (config != null) {
+            worldWidth = config.getWorldSize().getWidth();
+            worldHeight = config.getWorldSize().getHeight();
+            visibility = config.getVisibility();
+            reload = config.getReload();
+            repair = config.getRepair();
+            shields = config.getShields();
+        } else {
+            worldWidth = 200;
+            worldHeight = 400;
+            visibility = 50;
+            reload = 5;
+            repair = 5;
+            shields = 5;
+        }
+    }
 
     @Override
     public int getReload() {
@@ -42,16 +75,8 @@ public class TextWorld implements IWorld {
         return visibility;
     }
 
-    public TextWorld() {
-        obstacles = new SimpleMaze().getObstacles();
-        heading = Direction.NORTH;
-        robots = new ArrayList<>();
-        TOP_LEFT = new Position(-100,200);
-        BOTTOM_RIGHT = new Position(100,-200);
-        visibility = 50;
-        reload = 5;
-        repair = 5;
-        shields = 10;
+    public Edge getWorldEdges() {
+        return worldEdges;
     }
 
     @Override
@@ -200,8 +225,8 @@ public class TextWorld implements IWorld {
         for (Obstacle obstacle: obstacles) {
             String obstacleString = "  - At ["+obstacle.getBottomLeftX()
                     +","+obstacle.getBottomLeftY()+"] to ["
-                    +(obstacle.getBottomLeftX()+4)+","
-                    +(obstacle.getBottomLeftY()+4)+"]";
+                    +obstacle.getBottomLeftX()+4+","
+                    +obstacle.getBottomLeftY()+4+"]";
             dump.append(obstacleString).append("\n\n");
         }
         List<Robot> robots = getRobots();

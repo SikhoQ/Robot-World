@@ -1,5 +1,8 @@
-package za.co.wethinkcode.robotworlds;
+package za.co.wethinkcode.robotworlds.world;
 
+
+import za.co.wethinkcode.robotworlds.Direction;
+import za.co.wethinkcode.robotworlds.Position;
 
 public class Robot {
     private final int MAX_SHIELDS = 10;

@@ -1,11 +1,6 @@
 package za.co.wethinkcode.robotworlds.server;
 
-import za.co.wethinkcode.robotworlds.Direction;
-import za.co.wethinkcode.robotworlds.Position;
-import za.co.wethinkcode.robotworlds.maze.*;
-import za.co.wethinkcode.robotworlds.world.Obstacle;
 import za.co.wethinkcode.robotworlds.world.TextWorld;
-import za.co.wethinkcode.robotworlds.Robot;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -80,15 +75,14 @@ public class RobotWorldServer extends Thread{
 
         try {
             System.out.println("Server started. Waiting for clients...");
-            Socket clientSocket;
-            do {
-                clientSocket = serverSocket.accept();
-                System.out.println("Client connected on port: " + clientSocket.getPort());
+            while (true) {
+                Socket clientSocket = serverSocket.accept();
+                System.out.println("Client connected on port: "+clientSocket.getPort());
 
                 RobotClientHandler clientHandler = new RobotClientHandler(clientSocket, world);
                 clients.add(clientHandler);
                 new Thread(clientHandler).start();
-            } while (console.getRunningState());
+            }
         } finally {
             System.out.println("Quitting server...");
             System.exit(0);

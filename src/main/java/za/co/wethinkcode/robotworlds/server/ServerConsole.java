@@ -10,12 +10,10 @@ import java.util.Scanner;
 public class ServerConsole implements Runnable {
     private final RobotWorldServer server;
     private final TextWorld world;
-    private boolean isRunning;
 
     public ServerConsole(RobotWorldServer server, TextWorld world) {
         this.server = server;
         this.world = world;
-        this.isRunning = true;
     }
 
     /**
@@ -40,7 +38,6 @@ public class ServerConsole implements Runnable {
     private void processInput(String input) {
         if (input.equalsIgnoreCase("QUIT")) {
             // should move shutdown method to world class
-            this.isRunning = false;
             server.shutdown();
         } else if (input.equalsIgnoreCase("ROBOTS")) {
             world.showRobots();
@@ -49,9 +46,5 @@ public class ServerConsole implements Runnable {
         } else {
             System.out.println("Unknown command: " + input);
         }
-    }
-
-    public boolean getRunningState() {
-        return this.isRunning;
     }
 }

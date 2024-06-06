@@ -1,9 +1,6 @@
 package za.co.wethinkcode.robotworlds.client;
 
 import za.co.wethinkcode.robotworlds.Json;
-import za.co.wethinkcode.robotworlds.Position;
-import za.co.wethinkcode.robotworlds.Robot;
-import za.co.wethinkcode.robotworlds.Sleep;
 import za.co.wethinkcode.robotworlds.server.ServerResponse;
 
 import java.io.*;
@@ -86,32 +83,46 @@ public class RobotClient {
         ServerResponse serverResponseObject = getServerResponseObject(serverResponse);
 
         Map<String, Object> data = serverResponseObject.getData();
-        Map<String, Object> state = serverResponseObject.getState();
         String robotName = request.getRobot();
         Object position = data.get("position");
-        Object direction = state.get("direction");
-        Object status = state.get("status");
-        System.out.println(position+" "+"["+direction+"]"+" "+robotName+"> "+status);
+        System.out.println(robotName+" launched at "+position);
         return robotName;
     }
 
     private void run(String robotName) {
         String userInput = getInput(robotName+"> What must I do next?");
         while (!userInput.equalsIgnoreCase("exit")) {
-            // get ClientRequest obj using user input
             ClientRequest request = UserInput.handleUserInput(userInput);
             Json json = new Json();
-            // convert to json String
             String clientRequest = json.toJson(request);
-            // send to server
             out.println(clientRequest);
-            // get server response as json String
             String serverResponse = getServerResponse();
-            // convert json String to ServerResponse object
             ServerResponse serverResponseObject = getServerResponseObject(serverResponse);
-            // at this point, the command has already been carried out on the server side,
-            // use this server response object to print relevant fields to user
+            printRequestResult(robotName, request.getCommand(), serverResponseObject);
             userInput = getInput(robotName+"> What must I do next?");
+        }
+    }
+
+    private void printRequestResult(String robotName, String command, ServerResponse serverResponse) {
+        // look command
+        if (command.equalsIgnoreCase("LOOK")) {
+            Map<String, Object> data = serverResponse.getData();
+            Set<Map.Entry<String, Object>> entry = data.entrySet();
+
+            @SuppressWarnings("unchecked") // entryItem is certainly of type Map<String, List<Map<String, Object>>>
+            Map<String, List<Map<String, Object>>> entryItem =
+                    (Map<String, List<Map<String, Object>>>) entry.toArray()[0];
+
+            List<Map<String, Object>> objects = entryItem.get("objects");
+
+            // each Map of String to Object
+            // Object will be value of 'object' fields
+            // from data Map returned, get value of the single entry
+            if (!objects.isEmpty()) {
+                System.out.println(robotName+"> Objects detected");
+            } else {
+                System.out.println(robotName+"> No objects detected");
+            }
         }
     }
 
@@ -129,7 +140,6 @@ public class RobotClient {
     }
 
     private String getServerResponse() {
-        String serverResponse = null;
         try {
             return in.readLine();
         } catch (IOException e) {

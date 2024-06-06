@@ -1,6 +1,7 @@
 package za.co.wethinkcode.robotworlds.command;
 
-import za.co.wethinkcode.robotworlds.Robot;
+import za.co.wethinkcode.robotworlds.world.IWorld;
+import za.co.wethinkcode.robotworlds.world.Robot;
 import za.co.wethinkcode.robotworlds.server.ServerResponse;
 
 public class UnknownCommand extends Command {
@@ -9,7 +10,7 @@ public class UnknownCommand extends Command {
     }
 
     @Override
-    public ServerResponse execute(Robot target) {
+    public ServerResponse execute(Robot target, IWorld world) {
         return null;
     }
 }

@@ -81,7 +81,6 @@ public class RandomMaze implements Maze {
 
             obstacles.add(new SquareObstacle(xCoord, yCoord));
         }
-
     }
 }
 

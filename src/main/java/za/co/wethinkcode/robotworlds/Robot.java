@@ -13,13 +13,14 @@ public class Robot {
     private Direction currentDirection;
 
 
-    public Robot(String name, Position position, Direction direction) {
+    public Robot(String name, Position position) {
         this.name = name;
         this.status = "Ready";
         this.shields = MAX_SHIELDS;
         this.shots = MAX_SHOTS;
         this.position = position;
-        this.currentDirection = direction;
+        this.currentDirection = Direction.NORTH;
+
     }
 
     public String getStatus() {
@@ -103,7 +104,7 @@ public class Robot {
     public void reset() {
         position = new Position(0, 0);
         currentDirection = Direction.NORTH;
-        status = "NORMAL";
+        status = "Ready";
         shields = MAX_SHIELDS;
         shots = MAX_SHOTS;
     }

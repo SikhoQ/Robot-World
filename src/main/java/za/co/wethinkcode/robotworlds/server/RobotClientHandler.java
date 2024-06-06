@@ -5,19 +5,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.util.HashMap;
-import java.util.Map;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import za.co.wethinkcode.robotworlds.Json;
-import za.co.wethinkcode.robotworlds.Robot;
-import za.co.wethinkcode.robotworlds.client.ClientRequest;
-import za.co.wethinkcode.robotworlds.command.Command;
-import za.co.wethinkcode.robotworlds.command.LaunchCommand;
-import za.co.wethinkcode.robotworlds.world.IWorld;
 import za.co.wethinkcode.robotworlds.world.TextWorld;
+import za.co.wethinkcode.robotworlds.Robot;
 
 /**
  * Class to handle communication between a server and a single client.
@@ -26,15 +16,17 @@ import za.co.wethinkcode.robotworlds.world.TextWorld;
  */
 public class RobotClientHandler implements Runnable {
     private final Socket clientSocket;
-    private final IWorld world;
+    private TextWorld world;
 
-    public RobotClientHandler(Socket clientSocket, IWorld world) {
+    public RobotClientHandler(Socket clientSocket, TextWorld world) {
         this.clientSocket = clientSocket;
         this.world = world;
     }
 
     /**
      * Handles communication with the client.
+     *
+     * @throws IOException if an I/O error occurs
      */
     @Override
     public void run() {
@@ -42,24 +34,10 @@ public class RobotClientHandler implements Runnable {
             BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
             PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
 
-            String clientRequest;
-            Robot robot = null;
-            Json json = new Json();
-            while ((clientRequest = in.readLine()) != null) {
-                // process request to create relevant command class
-                Command command = getCommand(clientRequest);
-                // in conditional, use getCommand:
-                //   if command is launch, set robot to LaunchCommand.getRobot
-                // this part will ideally happen once, after which 'robot'
-                // will continue being the initially launched instance
-                if (command.getCommand().equalsIgnoreCase("launch")) {
-                    LaunchCommand launchCommand = (LaunchCommand) command;
-                    robot = launchCommand.createRobot(world);
-                }
-                // call the created command's execute, passing robot
-                ServerResponse serverResponseObject = command.execute(robot);
-                String serverResponse = json.toJson(serverResponseObject);
-                out.println(serverResponse);
+            String inputLine;
+            while ((inputLine = in.readLine()) != null) {
+                String response = processCommand(inputLine);
+                out.println(response);
             }
         } catch (IOException ignored) {
         } finally {
@@ -78,8 +56,13 @@ public class RobotClientHandler implements Runnable {
      *
      * @throws IOException if an I/O error occurs while closing the client socket
      */
-    public void disconnectClient() throws IOException {
-        this.clientSocket.close();
+    public void disconnectClient() {
+        try {
+            this.clientSocket.close();
+        } catch (IOException e) {
+            // handle thrown exception in calling code
+            throw new RuntimeException(e);
+        }
     }
 
     /**
@@ -87,23 +70,25 @@ public class RobotClientHandler implements Runnable {
      *
      * @throws IOException if an I/O error occurs while closing the client socket
      */
-    public void close() throws IOException {
-        clientSocket.close();
+    public void close() {
+        try {
+            clientSocket.close();
+        } catch (IOException e) {
+            System.err.println("Error closing client socket: " + e.getMessage());
+        }
     }
 
-    public Command getCommand(String clientRequest) {
-        Json json = new Json();
-        JsonNode rootNode = json.jsonFieldAccess(clientRequest);
-        return Command.create(rootNode);
-    }
-
-    private String processRequest(String clientRequest) {
-        // return 'unsupported command' error upon exception
-        // a.k.a response for badly formed request
-//        Map<String, String> data = new HashMap<>();
-//        data.put("message", "Unsupported command");
-//        Map<String, Object> dataCopy = new HashMap<>(data);
-//        return json.toJson(new ServerResponse("ERROR", dataCopy));
-        return  "";
+    private String processCommand(String command) {
+        command = command.toUpperCase();
+        if (command.startsWith("LOOK")) {
+            return "Looking around...";
+        } else if (command.startsWith("STATE")) {
+            return "showing state...";
+        } else if (command.startsWith("LAUNCH")) {
+            String name = command.split(" ")[1].toLowerCase();
+            return world.launchRobot(name);
+        } else {
+            return "Unknown command: " + command;
+        }
     }
 }

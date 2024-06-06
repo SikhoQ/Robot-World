@@ -1,6 +1,5 @@
 package za.co.wethinkcode.robotworlds.world;
 
-import za.co.wethinkcode.robotworlds.Direction;
 import za.co.wethinkcode.robotworlds.Position;
 import za.co.wethinkcode.robotworlds.Robot;
 
@@ -13,15 +12,8 @@ public interface IWorld {
     /**
      * Enum used to track direction
      */
-    enum WorldDirection {
-        UP, DOWN, LEFT, RIGHT;
-
-        public static WorldDirection fromOrdinal(int ordinal) {
-            if (ordinal < 0 || ordinal >= Direction.values().length) {
-                throw new IllegalArgumentException("Invalid ordinal.");
-            }
-            return values()[ordinal];
-        }
+    enum Direction {
+        UP, RIGHT, DOWN, LEFT
     }
 
     /**
@@ -90,25 +82,6 @@ public interface IWorld {
      */
     void showObstacles();
 
-    Robot launchRobot(String make, String name);
-    List<Robot> getRobots();
-    Position validatePosition(Position position);
-
-    /**
-     * Displays the current state of the world, including obstacles and robots.
-     */
-    void showWorldState();
-
-    /**
-     * Displays the current state of the world, including obstacles and robots.
-     */
-    void showRobots();
-
-    int getVisibility();
-
-    int getReload();
-
-    int getRepair();
-
-    int getShields();
+    String launchRobot(String name);
+    Map<Robot, Position> getRobots();
 }

@@ -20,7 +20,6 @@ public class Robot {
         this.shots = MAX_SHOTS;
         this.position = position;
         this.currentDirection = direction;
-
     }
 
     public String getStatus() {
@@ -60,16 +59,16 @@ public class Robot {
         int newY = position.getY();
 
         switch (currentDirection) {
-            case UP:
+            case NORTH:
                 newY += numSteps;
                 break;
-            case DOWN:
+            case SOUTH:
                 newY -= numSteps;
                 break;
-            case LEFT:
+            case WEST:
                 newX -= numSteps;
                 break;
-            case RIGHT:
+            case EAST:
                 newX += numSteps;
                 break;
         }
@@ -103,8 +102,8 @@ public class Robot {
 
     public void reset() {
         position = new Position(0, 0);
-        currentDirection = Direction.UP;
-        status = "Ready";
+        currentDirection = Direction.NORTH;
+        status = "NORMAL";
         shields = MAX_SHIELDS;
         shots = MAX_SHOTS;
     }

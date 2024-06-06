@@ -1,8 +1,11 @@
 package za.co.wethinkcode.robotworlds.world;
 
+import za.co.wethinkcode.robotworlds.Direction;
 import za.co.wethinkcode.robotworlds.Position;
-import za.co.wethinkcode.robotworlds.Robot;
-import za.co.wethinkcode.robotworlds.maze.Maze;
+import za.co.wethinkcode.robotworlds.Sleep;
+import za.co.wethinkcode.robotworlds.maze.RandomMaze;
+import za.co.wethinkcode.robotworlds.maze.SimpleMaze;
+import za.co.wethinkcode.robotworlds.world.configuration.Config;
 
 import java.util.*;
 
@@ -10,14 +13,72 @@ import java.util.*;
 public class TextWorld implements IWorld {
     private Position position = CENTRE;
     private final List<Obstacle> obstacles;
-    private Direction heading =Direction.UP;
-    private final Position TOP_LEFT = new Position(-100,200);
-    private final Position BOTTOM_RIGHT = new Position(100,-200);
-    private final Map<Robot, Position> robots = new HashMap<>();
+    private Direction heading;
+    private final Position TOP_LEFT;
+    private final Position BOTTOM_RIGHT;
+    private final Edge worldEdges;
+    private final List<Robot> robots;
+    private int worldHeight;
+    private int worldWidth;
+    private int visibility;
+    private int reload;
+    private int repair;
+    private int shields;
 
-    public TextWorld(Maze maze) {
-        obstacles = maze.getObstacles();
-        heading = Direction.UP;
+    public TextWorld() {
+        obstacles = new RandomMaze().getObstacles();
+        heading = Direction.NORTH;
+        robots = new ArrayList<>();
+        setupWorld();
+        int worldX = worldWidth / 2;
+        int worldY = worldHeight / 2;
+        TOP_LEFT = new Position(-worldX,worldY);
+        BOTTOM_RIGHT = new Position(worldX,-worldY);
+        worldEdges = new Edge(TOP_LEFT, BOTTOM_RIGHT);
+    }
+
+    private void setupWorld() {
+        Config config = Config.readConfiguration();
+        if (config != null) {
+            worldWidth = config.getWorldSize().getWidth();
+            worldHeight = config.getWorldSize().getHeight();
+            visibility = config.getVisibility();
+            reload = config.getReload();
+            repair = config.getRepair();
+            shields = config.getShields();
+        } else {
+            worldWidth = 200;
+            worldHeight = 400;
+            visibility = 50;
+            reload = 5;
+            repair = 5;
+            shields = 5;
+        }
+    }
+
+    @Override
+    public int getReload() {
+        return reload;
+    }
+
+    @Override
+    public int getRepair() {
+        return repair;
+    }
+
+    @Override
+    public int getShields() {
+        return shields;
+    }
+
+    @Override
+    public int getVisibility() {
+        return visibility;
+    }
+
+    @Override
+    public Edge getWorldEdges() {
+        return worldEdges;
     }
 
     @Override
@@ -49,7 +110,7 @@ public class TextWorld implements IWorld {
     @Override
     public void reset() {
         position = CENTRE;
-        heading = Direction.UP;
+        heading = Direction.NORTH;
     }
 
     @Override
@@ -80,10 +141,10 @@ public class TextWorld implements IWorld {
     @Override
     public void updateDirection(boolean turnRight) {
         if (turnRight) {
-            heading = Direction.RIGHT;
+            heading = Direction.EAST;
         }
         else {
-            heading = Direction.LEFT;
+            heading = Direction.WEST;
         }
     }
 
@@ -92,19 +153,19 @@ public class TextWorld implements IWorld {
         int newX = position.getX();
         int newY = position.getY();
 
-        if (Direction.UP.equals(heading)) {
+        if (Direction.NORTH.equals(heading)) {
             newY += nrSteps;
         }
 
-        else if (Direction.DOWN.equals(heading)) {
+        else if (Direction.SOUTH.equals(heading)) {
             newY -= nrSteps;
         }
 
-        else if (Direction.LEFT.equals(heading)) {
+        else if (Direction.WEST.equals(heading)) {
             newX -= nrSteps;
         }
 
-        else if (Direction.RIGHT.equals(heading)){
+        else if (Direction.EAST.equals(heading)){
             newX += nrSteps;
         }
 
@@ -118,34 +179,99 @@ public class TextWorld implements IWorld {
     }
 
     @Override
-    public String launchRobot(String name) {
-        /*have to add check here to see if position is empty*/
-        System.out.println("Launching "+name+"...");
-        try {
-            Thread.sleep(1300);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
+    public Robot launchRobot(String make, String name) {
+        // change this to use make to create relevant robot
+        Sleep.sleep(1300);
+        Position position = Position.getRandomPosition();
+        position = validatePosition(position);
+        Direction direction = Direction.getRandomDirection();
+        Robot robot = new Robot(name, position, direction);
 
-        Random random = new Random();
-        int xMin = -100;
-        int xMax = 100;
-        int yMin = -200;
-        int yMax = 200;
+        System.out.println(name+" ("+make+")"+" joined.");
 
-        int xCoord = random.nextInt((xMax - xMin) + 1) + xMin;
-        int yCoord = random.nextInt((yMax - yMin) + 1) + yMin;
+        robots.add(robot);
 
-        Position position = new Position(xCoord, yCoord);
-        Robot robot = new Robot(name, position);
-
-        robots.put(robot, position);
-
-        return " > '"+name+"' launched at position ["+xCoord+","+yCoord+"]";
+        return robot;
     }
 
     @Override
-    public Map<Robot, Position> getRobots() {
+    public List<Robot> getRobots() {
         return robots;
+    }
+
+    @Override
+    public Position validatePosition(Position position) {
+        List<Robot> robots = getRobots();
+        for (Robot robot: robots) {
+            while (robot.getPosition().equals(position)) {
+                position = Position.getRandomPosition();
+            }
+        }
+        return position;
+    }
+
+    @Override
+    public void showWorldState() {
+        StringBuilder dump = new StringBuilder();
+
+        List<Obstacle> obstacles = getObstacles();
+
+        dump.append("Obstacles\n---------\n");
+
+        if (!obstacles.isEmpty()) {
+            dump.append(" There are obstacles:\n");
+        } else {
+            dump.append(" No obstacles");
+        }
+
+        for (Obstacle obstacle: obstacles) {
+            String obstacleString = "  - At ["+obstacle.getBottomLeftX()
+                    +","+obstacle.getBottomLeftY()+"] to ["
+                    +(obstacle.getBottomLeftX()+4)+","
+                    +(obstacle.getBottomLeftY()+4)+"]";
+            dump.append(obstacleString).append("\n\n");
+        }
+        List<Robot> robots = getRobots();
+        dump.append("Robots\n------\n");
+        if (robots.isEmpty()) {
+            dump.append(" No Robots Launched\n");
+        }
+        for (Robot robot: robots) {
+            String name = robot.getName();
+
+            Position position = robot.getPosition();
+            int xCoord = position.getX();
+            int yCoord = position.getY();
+            String positionString = "["+xCoord+","+yCoord+"]";
+
+            Direction direction = robot.getCurrentDirection();
+            String status = robot.getStatus();
+
+            dump.append("Robot: ").append(name).append("\n");
+            dump.append("Position: ").append(positionString).append("\n");
+            dump.append("Direction: ").append(direction).append("\n");
+            dump.append("State: ").append(status).append("\n\n");
+        }
+
+        System.out.println("World Dump:");
+        System.out.println("===========\n");
+        System.out.println(dump);
+
+    }
+
+    @Override
+    public void showRobots() {
+        List<Robot> robots = getRobots();
+        if (robots.isEmpty()) {
+            System.out.println("There are no robots in this world.");
+        } else {
+            int robotCount = 1;
+            System.out.println("There are robots:");
+            for (Robot robot: robots) {
+                System.out.println(" Robot "+(robotCount++)+":");
+                System.out.println(" ========");
+                System.out.println(robot.getName()+"\n");
+            }
+        }
     }
 }

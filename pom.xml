@@ -119,12 +119,6 @@
             <version>3.6.28</version>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <artifactId>junit</artifactId>
-            <groupId>junit</groupId>
-            <version>4.13.2</version>
-            <scope>test</scope>
-        </dependency>
 
         <!-- Objenesis dependency -->
         <dependency>

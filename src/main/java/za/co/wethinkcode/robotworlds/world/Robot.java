@@ -1,5 +1,8 @@
-package za.co.wethinkcode.robotworlds;
+package za.co.wethinkcode.robotworlds.world;
 
+
+import za.co.wethinkcode.robotworlds.Direction;
+import za.co.wethinkcode.robotworlds.Position;
 
 public class Robot {
     private final int MAX_SHIELDS = 10;
@@ -13,18 +16,21 @@ public class Robot {
     private Direction currentDirection;
 
 
-    public Robot(String name, Position position) {
+    public Robot(String name, Position position, Direction direction) {
         this.name = name;
-        this.status = "Ready";
+        this.status = "NORMAL";
         this.shields = MAX_SHIELDS;
         this.shots = MAX_SHOTS;
         this.position = position;
-        this.currentDirection = Direction.NORTH;
-
+        this.currentDirection = direction;
     }
 
     public String getStatus() {
         return status;
+    }
+
+    public void setStatus(String newStatus) {
+        status = newStatus;
     }
 
     public Direction getCurrentDirection() {
@@ -88,23 +94,21 @@ public class Robot {
     }
 
     public void updateShields(int hit) {
-        shields -= hit;
-        if (shields < 0) {
-            shields = 0;
+        if (shields > 0) {
+            shields -= hit;
         }
     }
 
     public void updateShots(int shotsFired) {
-        shots -= shotsFired;
-        if (shots < 0) {
-            shots = 0;
+        if (shots > 0) {
+            shots -= shotsFired;
         }
     }
 
     public void reset() {
         position = new Position(0, 0);
         currentDirection = Direction.NORTH;
-        status = "Ready";
+        status = "NORMAL";
         shields = MAX_SHIELDS;
         shots = MAX_SHOTS;
     }

@@ -2,15 +2,16 @@ package za.co.wethinkcode.robotworlds.command;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import za.co.wethinkcode.robotworlds.Robot;
+import za.co.wethinkcode.robotworlds.world.Robot;
 import za.co.wethinkcode.robotworlds.server.ServerResponse;
+import za.co.wethinkcode.robotworlds.world.IWorld;
 
 public abstract class Command {
     private final String command;
     private String argument1;
     private String argument2;
 
-    public abstract ServerResponse execute(Robot target);
+    public abstract ServerResponse execute(Robot target, IWorld world);
 
     public Command(String command){
         this.command = command.trim().toLowerCase();
@@ -57,6 +58,7 @@ public abstract class Command {
             case "LAUNCH" -> new LaunchCommand(arguments[0], name);
             case "LOOK" -> new LookCommand();
             case "STATE" -> new StateCommand();
+            case "FORWARD" -> new ForwardCommand(String.valueOf(arguments[0]));
             default -> throw new IllegalArgumentException();
         };
     }

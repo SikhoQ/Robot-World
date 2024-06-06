@@ -37,11 +37,12 @@ public class ServerConsole implements Runnable {
 
     private void processInput(String input) {
         if (input.equalsIgnoreCase("QUIT")) {
+            // should move shutdown method to world class
             server.shutdown();
         } else if (input.equalsIgnoreCase("ROBOTS")) {
-            server.showRobots(world);
+            world.showRobots();
         } else if (input.equalsIgnoreCase("DUMP")) {
-            server.showWorldState(world);
+            world.showWorldState();
         } else {
             System.out.println("Unknown command: " + input);
         }

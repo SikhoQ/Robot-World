@@ -104,27 +104,28 @@ public class RobotClient {
     }
 
     private void printRequestResult(String robotName, String command, ServerResponse serverResponse) {
-        // look command
+        Map<String, Object> data = serverResponse.getData();
+        @SuppressWarnings("unchecked")
+        List<Map<String, Object>> objects = (List<Map<String, Object>>) data.get("objects");
+
+        // Check if the command is "LOOK"
         if (command.equalsIgnoreCase("LOOK")) {
-            Map<String, Object> data = serverResponse.getData();
-            Set<Map.Entry<String, Object>> entry = data.entrySet();
-
-            @SuppressWarnings("unchecked") // entryItem is certainly of type Map<String, List<Map<String, Object>>>
-            Map<String, List<Map<String, Object>>> entryItem =
-                    (Map<String, List<Map<String, Object>>>) entry.toArray()[0];
-
-            List<Map<String, Object>> objects = entryItem.get("objects");
-
-            // each Map of String to Object
-            // Object will be value of 'object' fields
-            // from data Map returned, get value of the single entry
+            // Get the data map from the server response
             if (!objects.isEmpty()) {
-                System.out.println(robotName+"> Objects detected");
+                System.out.println("Objects detected by " + robotName + ":");
+                for (Map<String, Object> object : objects) {
+                    String direction = (String) object.get("direction");
+                    String type = (String) object.get("type");
+                    int distance = (int) object.get("distance");
+
+                    System.out.println(" - Direction: " + direction + ", Type: " + type + ", Distance: " + distance);
+                }
             } else {
-                System.out.println(robotName+"> No objects detected");
+                System.out.println("No objects detected by " + robotName);
             }
         }
     }
+
 
     private String getInput(String prompt) {
         String input;

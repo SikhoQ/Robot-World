@@ -58,6 +58,7 @@ public abstract class Command {
             case "LAUNCH" -> new LaunchCommand(arguments[0], name);
             case "LOOK" -> new LookCommand();
             case "STATE" -> new StateCommand();
+            case "FORWARD" -> new ForwardCommand(String.valueOf(arguments[0]));
             default -> throw new IllegalArgumentException();
         };
     }

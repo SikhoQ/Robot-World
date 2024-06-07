@@ -1,6 +1,7 @@
 package za.co.wethinkcode.robotworlds.client;
 
 import za.co.wethinkcode.robotworlds.Json;
+import za.co.wethinkcode.robotworlds.Position;
 import za.co.wethinkcode.robotworlds.server.ServerResponse;
 
 import java.io.*;
@@ -82,15 +83,21 @@ public class RobotClient {
         // get server response object
         ServerResponse serverResponseObject = getServerResponseObject(serverResponse);
 
-        Map<String, Object> data = serverResponseObject.getData();
-        String robotName = request.getRobot();
-        Object position = data.get("position");
-        System.out.println(robotName+" launched at "+position);
+        Map<String, Object> state = serverResponseObject.getState();
+        String robotName = request.robot();
+
+        @SuppressWarnings("unchecked")
+        Map<String, Integer> position = (Map<String, Integer>) state.get("position");
+        int xCoord = position.get("x");
+        int yCoord = position.get("y");
+        String direction = (String) state.get("direction");
+
+        System.out.println(robotName+" launched at ["+xCoord+","+yCoord+"], facing "+direction);
         return robotName;
     }
 
     private void run(String robotName) {
-        String userInput = getInput(robotName+"> What must I do next?");
+        String userInput = getInput("\n"+robotName+"> What must I do next?");
         while (!userInput.equalsIgnoreCase("exit")) {
             ClientRequest request = UserInput.handleUserInput(userInput);
             Json json = new Json();
@@ -98,30 +105,47 @@ public class RobotClient {
             out.println(clientRequest);
             String serverResponse = getServerResponse();
             ServerResponse serverResponseObject = getServerResponseObject(serverResponse);
-            printRequestResult(robotName, request.getCommand(), serverResponseObject);
-            userInput = getInput(robotName+"> What must I do next?");
+            printRequestResult(robotName, request.command(), serverResponseObject, request);
+            userInput = getInput("\n"+robotName+"> What must I do next?");
         }
     }
 
-    private void printRequestResult(String robotName, String command, ServerResponse serverResponse) {
+    private void printRequestResult(String robotName, String command, ServerResponse serverResponse, ClientRequest request) {
         Map<String, Object> data = serverResponse.getData();
-        @SuppressWarnings("unchecked")
-        List<Map<String, Object>> objects = (List<Map<String, Object>>) data.get("objects");
 
-        // Check if the command is "LOOK"
+        // "LOOK" command
         if (command.equalsIgnoreCase("LOOK")) {
+            // "data" for "LOOK" command is a list of maps
+            @SuppressWarnings("unchecked")
+            List<Map<String, Object>> objects = (List<Map<String, Object>>) data.get("objects");
             // Get the data map from the server response
             if (!objects.isEmpty()) {
-                System.out.println("Objects detected by " + robotName + ":");
+                System.out.println(robotName + "> Objects detected:");
                 for (Map<String, Object> object : objects) {
                     String direction = (String) object.get("direction");
                     String type = (String) object.get("type");
                     int distance = (int) object.get("distance");
 
-                    System.out.println(" - Direction: " + direction + ", Type: " + type + ", Distance: " + distance);
+                    System.out.println(" - Direction: [" + direction + "], Type: [" + type + "], Distance: [" + distance + "]");
                 }
             } else {
-                System.out.println("No objects detected by " + robotName);
+                System.out.println(robotName + "> No objects detected:");
+            }
+
+        } else if (command.equalsIgnoreCase("FORWARD")) {
+            if (serverResponse.getResult().equalsIgnoreCase("OK")) {
+                // print moved forward message
+                Map<String, Object> state = serverResponse.getState();
+                @SuppressWarnings("unchecked")
+                Map<String, Integer> position = (Map<String, Integer>) state.get("position");
+
+                int xCoord = position.get("x");
+                int yCoord = position.get("y");
+                String direction = (String) state.get("direction");
+
+                System.out.println(data.get("message"));
+                // print now at message with position and direction
+                System.out.println("Now at ["+xCoord+","+yCoord+"], facing "+direction);
             }
         }
     }

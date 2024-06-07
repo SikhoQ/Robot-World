@@ -4,19 +4,20 @@ import za.co.wethinkcode.robotworlds.Direction;
 import za.co.wethinkcode.robotworlds.Position;
 import za.co.wethinkcode.robotworlds.Sleep;
 import za.co.wethinkcode.robotworlds.maze.RandomMaze;
+import za.co.wethinkcode.robotworlds.maze.SimpleMaze;
 import za.co.wethinkcode.robotworlds.world.configuration.Config;
 
 import java.util.*;
 
 
 public class TextWorld implements IWorld {
-    private Position position = CENTRE;
     private final List<Obstacle> obstacles;
+    private final List<Robot> robots;
     private Direction heading;
+    private Position position = CENTRE;
     private final Position TOP_LEFT;
     private final Position BOTTOM_RIGHT;
     private final Edge worldEdges;
-    private final List<Robot> robots;
     private int worldHeight;
     private int worldWidth;
     private int visibility;
@@ -75,6 +76,7 @@ public class TextWorld implements IWorld {
         return visibility;
     }
 
+    @Override
     public Edge getWorldEdges() {
         return worldEdges;
     }
@@ -180,10 +182,10 @@ public class TextWorld implements IWorld {
     public Robot launchRobot(String make, String name) {
         // change this to use make to create relevant robot
         Sleep.sleep(1300);
-        Position position = Position.getRandomPosition();
+        Position position = Position.getRandomPosition(this);
         position = validatePosition(position);
-        Direction direction = Direction.getRandomDirection();
-        Robot robot = new Robot(name, position, direction);
+        Direction direction = Direction.NORTH;
+        Robot robot = new Robot(name, position, direction, this);
 
         System.out.println(name+" ("+make+")"+" joined.");
 
@@ -199,10 +201,14 @@ public class TextWorld implements IWorld {
 
     @Override
     public Position validatePosition(Position position) {
-        List<Robot> robots = getRobots();
         for (Robot robot: robots) {
             while (robot.getPosition().equals(position)) {
-                position = Position.getRandomPosition();
+                position = Position.getRandomPosition(this);
+            }
+        }
+        for (Obstacle obstacle: obstacles) {
+            while (obstacle.blocksPosition(position)) {
+                position = Position.getRandomPosition(this);
             }
         }
         return position;

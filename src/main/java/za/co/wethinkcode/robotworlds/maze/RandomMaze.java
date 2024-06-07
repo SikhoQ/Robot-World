@@ -3,17 +3,19 @@ package za.co.wethinkcode.robotworlds.maze;
 import za.co.wethinkcode.robotworlds.world.Obstacle;
 import za.co.wethinkcode.robotworlds.world.SquareObstacle;
 import za.co.wethinkcode.robotworlds.Position;
+import za.co.wethinkcode.robotworlds.world.configuration.Config;
 
+import java.io.IOException;
 import java.util.*;
 
 /**
  * Class to represent a simple maze implementation containing obstacles.
  */
-public class SimpleMaze implements Maze {
+public class RandomMaze implements Maze {
 
     List<Obstacle> obstacles;
 
-    public SimpleMaze() {
+    public RandomMaze() {
         this.obstacles = new ArrayList<>();
     }
 
@@ -61,8 +63,24 @@ public class SimpleMaze implements Maze {
     }
 
     private void createObstacles() {
-        SquareObstacle obstacle = new SquareObstacle(1, 1);
-        obstacles.add(obstacle);
+        Random random = new Random();
+        Config config = Config.readConfiguration();
+
+        // total co-ords will be world length x width
+        int worldSize = config.getWorldSize().getHeight() * config.getWorldSize().getWidth();
+        // num of obstacles will be random between 20%-25% of 'total co-ords'
+        int minimumObstacles = (int) (worldSize * 0.2);
+        int maximumObstacles = (int) (worldSize * 0.25);
+        int numberOfObstacles = random.nextInt((maximumObstacles - minimumObstacles) + 1) + minimumObstacles;
+        int worldX = config.getWorldSize().getWidth() / 2;
+        int worldY = config.getWorldSize().getHeight() / 2;
+
+        for (int i = 0; i < numberOfObstacles; i++) {
+            int xCoord = random.nextInt((worldX + worldX) + 1) - worldX;
+            int yCoord = random.nextInt((worldY + worldY) + 1) - worldY;
+
+            obstacles.add(new SquareObstacle(xCoord, yCoord));
+        }
     }
 }
 

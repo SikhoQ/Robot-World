@@ -1,0 +1,10 @@
+{
+  "worldSize": {
+    "width": 200,
+    "height": 400
+  },
+  "visibility": 50,
+  "reload": 5,
+  "repair": 5,
+  "shields": 5
+}

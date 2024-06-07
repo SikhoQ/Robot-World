@@ -1,10 +1,8 @@
 package za.co.wethinkcode.robotworlds.command;
 
-import za.co.wethinkcode.robotworlds.Robot;
-import za.co.wethinkcode.robotworlds.command.Command;
+import za.co.wethinkcode.robotworlds.world.Robot;
 import za.co.wethinkcode.robotworlds.server.ServerResponse;
 import za.co.wethinkcode.robotworlds.world.IWorld;
-import za.co.wethinkcode.robotworlds.world.TextWorld;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -21,8 +19,7 @@ public class LaunchCommand extends Command {
     }
 
     @Override
-    public ServerResponse execute (Robot target) {
-        IWorld world = new TextWorld();
+    public ServerResponse execute (Robot target, IWorld world) {
         // result field of response
         String result = "OK";
         // data field of response

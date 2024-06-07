@@ -10,7 +10,7 @@ public enum Direction {
         return Direction.fromOrdinal(directionOrdinal);
     }
 
-    private static Direction fromOrdinal(int ordinal) {
+    public static Direction fromOrdinal(int ordinal) {
         if (ordinal < 0 || ordinal >= Direction.values().length) {
             throw new IllegalArgumentException("Invalid ordinal.");
         }

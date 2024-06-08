@@ -23,6 +23,7 @@ public class ServerResponse {
     public ServerResponse(String result, Map<String, Object> data) {
         this.result = result;
         this.data = data;
+
     }
 
     /**

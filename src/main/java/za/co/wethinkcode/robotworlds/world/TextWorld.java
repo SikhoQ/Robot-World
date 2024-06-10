@@ -183,7 +183,7 @@ public class TextWorld implements IWorld {
         // change this to use make to create relevant robot
         Sleep.sleep(1300);
         Position position = Position.getRandomPosition();
-        position = validatePosition(position);
+        position = validateLaunchPosition(position);
         Direction direction = Direction.getRandomDirection();
         Robot robot = new Robot(name, position, direction);
 
@@ -200,10 +200,16 @@ public class TextWorld implements IWorld {
     }
 
     @Override
-    public Position validatePosition(Position position) {
+    public Position validateLaunchPosition(Position position) {
         List<Robot> robots = getRobots();
+        List<Obstacle> obstacles = getObstacles();
         for (Robot robot: robots) {
             while (robot.getPosition().equals(position)) {
+                position = Position.getRandomPosition();
+            }
+        }
+        for (Obstacle obstacle: obstacles) {
+            while (obstacle.blocksPosition(position)) {
                 position = Position.getRandomPosition();
             }
         }

@@ -92,7 +92,7 @@ public interface IWorld {
 
     Robot launchRobot(String make, String name);
     List<Robot> getRobots();
-    Position validatePosition(Position position);
+    Position validateLaunchPosition(Position position);
 
     /**
      * Displays the current state of the world, including obstacles and robots.

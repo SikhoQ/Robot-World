@@ -77,8 +77,7 @@ public class RobotWorldServer extends Thread{
             System.out.println("Server started. Waiting for clients...");
             while (true) {
                 Socket clientSocket = serverSocket.accept();
-                System.out.println("Client connected on port: "+clientSocket.getPort());
-
+                System.out.println("\nNew client connected on local port: "+clientSocket.getPort());
                 RobotClientHandler clientHandler = new RobotClientHandler(clientSocket, world);
                 clients.add(clientHandler);
                 new Thread(clientHandler).start();

@@ -8,7 +8,7 @@ import java.net.Socket;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import za.co.wethinkcode.robotworlds.Json;
-import za.co.wethinkcode.robotworlds.world.Robot;
+import za.co.wethinkcode.robotworlds.robot.Robot;
 import za.co.wethinkcode.robotworlds.command.Command;
 import za.co.wethinkcode.robotworlds.command.LaunchCommand;
 import za.co.wethinkcode.robotworlds.world.IWorld;
@@ -59,8 +59,8 @@ public class RobotClientHandler implements Runnable {
         } finally {
             try {
                 clientSocket.close();
-                System.out.println("Client socket closed.");
-                System.exit(0);
+                System.out.println("Client on port "+clientSocket.getPort()+" disconnected");
+//                System.exit(0);
             } catch (IOException e) {
                 System.err.println("Error closing client socket: " + e.getMessage());
             }

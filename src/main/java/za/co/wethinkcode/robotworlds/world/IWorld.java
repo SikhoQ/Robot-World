@@ -2,6 +2,7 @@ package za.co.wethinkcode.robotworlds.world;
 
 import za.co.wethinkcode.robotworlds.Direction;
 import za.co.wethinkcode.robotworlds.Position;
+import za.co.wethinkcode.robotworlds.robot.Robot;
 
 import java.util.*;
 

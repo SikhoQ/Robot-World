@@ -2,7 +2,8 @@ package za.co.wethinkcode.robotworlds.command;
 
 
 
-public class RightCommand {
+public class
+RightCommand {
 
 
 }

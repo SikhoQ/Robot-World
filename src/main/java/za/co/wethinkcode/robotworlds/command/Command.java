@@ -65,7 +65,7 @@ public abstract class Command {
                 case "LOOK" -> new LookCommand();
                 case "STATE" -> new StateCommand();
                 case "FORWARD" -> new ForwardCommand(String.valueOf(arguments[0]));
-
+                case "BACK" -> new BackCommand(String.valueOf(arguments[0]));
 
                 case "ORIENTATION" -> new OrientationCommand();
                 default -> new InvalidCommand("UNKNOWN COMMAND");

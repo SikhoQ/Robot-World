@@ -19,7 +19,7 @@ public class UserInput {
 
         String command = commandInput.toLowerCase();
         String name = "";
-        Object[] arguments = new Object[] {};
+        String[] arguments = new String[] {};
 
         if (commandInput.equals("LAUNCH") && userInputArray.length > 1) {
             String[] argsArray = userInputArray[1].trim().split(" ");
@@ -27,8 +27,6 @@ public class UserInput {
             if (argsArray.length > 1) {
                 name = argsArray[1].trim().toLowerCase();
             }
-        } else if (commandInput.equals("FORWARD") && userInputArray.length > 1) {
-            arguments = new Integer[] {Integer.parseInt(userInputArray[1])};
         }
         return new ClientRequest(name, command, arguments);
     }

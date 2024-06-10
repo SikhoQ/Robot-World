@@ -188,7 +188,7 @@ public class LookCommand extends Command {
         // edges
         if (direction.equalsIgnoreCase("EAST") && x == worldEdges.getMaximumX() ||
                 direction.equalsIgnoreCase("WEST") && x == worldEdges.getMinimumX() ||
-                direction.equalsIgnoreCase("NORTH") && x == worldEdges.getMaximumY() ||
+                direction.equalsIgnoreCase("NORTH") && x == worldEdges.getMaxmimumY() ||
                 direction.equalsIgnoreCase("SOUTH") && x == worldEdges.getMinimumY()) {
             return worldEdges;
         }

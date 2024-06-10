@@ -18,7 +18,7 @@ public class Robot {
 
     public Robot(String name, Position position, Direction direction) {
         this.name = name;
-        this.status = "Ready";
+        this.status = "NORMAL";
         this.shields = MAX_SHIELDS;
         this.shots = MAX_SHOTS;
         this.position = position;
@@ -27,6 +27,10 @@ public class Robot {
 
     public String getStatus() {
         return status;
+    }
+
+    public void setStatus(String newStatus) {
+        status = newStatus;
     }
 
     public Direction getCurrentDirection() {
@@ -90,16 +94,14 @@ public class Robot {
     }
 
     public void updateShields(int hit) {
-        shields -= hit;
-        if (shields < 0) {
-            shields = 0;
+        if (shields > 0) {
+            shields -= hit;
         }
     }
 
     public void updateShots(int shotsFired) {
-        shots -= shotsFired;
-        if (shots < 0) {
-            shots = 0;
+        if (shots > 0) {
+            shots -= shotsFired;
         }
     }
 

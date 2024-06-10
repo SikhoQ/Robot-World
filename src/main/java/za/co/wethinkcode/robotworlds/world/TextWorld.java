@@ -4,6 +4,7 @@ import za.co.wethinkcode.robotworlds.Direction;
 import za.co.wethinkcode.robotworlds.Position;
 import za.co.wethinkcode.robotworlds.Sleep;
 import za.co.wethinkcode.robotworlds.maze.RandomMaze;
+import za.co.wethinkcode.robotworlds.robot.Robot;
 import za.co.wethinkcode.robotworlds.world.configuration.Config;
 
 import java.util.*;
@@ -75,6 +76,7 @@ public class TextWorld implements IWorld {
         return visibility;
     }
 
+    @Override
     public Edge getWorldEdges() {
         return worldEdges;
     }
@@ -113,17 +115,17 @@ public class TextWorld implements IWorld {
 
     @Override
     public boolean isNewPositionAllowed(Position position) {
-        boolean flag = true;
-
         for (Obstacle obstacle: obstacles) {
             if (obstacle.blocksPosition(position)) {
-                flag = false;
+                return false;
             }
         }
-        if (!position.isIn(TOP_LEFT, BOTTOM_RIGHT)) {
-            flag = false;
+        for (Robot robot: robots) {
+            if (robot.blocksPosition(position)) {
+                return false;
+            }
         }
-        return flag;
+        return position.isIn(TOP_LEFT, BOTTOM_RIGHT);
     }
 
     @Override
@@ -217,22 +219,22 @@ public class TextWorld implements IWorld {
         dump.append("Obstacles\n---------\n");
 
         if (!obstacles.isEmpty()) {
-            dump.append(" There are obstacles:\n");
+            dump.append("* There are ").append(obstacles.size()).append(" obstacle:\n");
         } else {
             dump.append(" No obstacles");
         }
 
         for (Obstacle obstacle: obstacles) {
-            String obstacleString = "  - At ["+obstacle.getBottomLeftX()
-                    +","+obstacle.getBottomLeftY()+"] to ["
+            String obstacleString = "  - At ("+obstacle.getBottomLeftX()
+                    +","+obstacle.getBottomLeftY()+") to ("
                     +(obstacle.getBottomLeftX()+4)+","
-                    +(obstacle.getBottomLeftY()+4)+"]";
-            dump.append(obstacleString).append("\n\n");
+                    +(obstacle.getBottomLeftY()+4)+")";
+            dump.append(obstacleString).append("\n");
         }
         List<Robot> robots = getRobots();
-        dump.append("Robots\n------\n");
+        dump.append("\nRobots\n------\n");
         if (robots.isEmpty()) {
-            dump.append(" No Robots Launched\n");
+            dump.append("* No Robots Launched\n");
         }
         for (Robot robot: robots) {
             String name = robot.getName();
@@ -242,7 +244,7 @@ public class TextWorld implements IWorld {
             int yCoord = position.getY();
             String positionString = "["+xCoord+","+yCoord+"]";
 
-            Direction direction = robot.getCurrentDirection();
+            Direction direction = robot.getDirection();
             String status = robot.getStatus();
 
             dump.append("Robot: ").append(name).append("\n");
@@ -251,7 +253,7 @@ public class TextWorld implements IWorld {
             dump.append("State: ").append(status).append("\n\n");
         }
 
-        System.out.println("World Dump:");
+        System.out.println("\n===========\nWorld State");
         System.out.println("===========\n");
         System.out.println(dump);
 
@@ -268,7 +270,7 @@ public class TextWorld implements IWorld {
             for (Robot robot: robots) {
                 System.out.println(" Robot "+(robotCount++)+":");
                 System.out.println(" ========");
-                System.out.println(robot.getName()+"\n");
+                System.out.println(" "+robot.getName()+"\n");
             }
         }
     }

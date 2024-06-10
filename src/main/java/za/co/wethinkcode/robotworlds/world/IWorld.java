@@ -90,8 +90,9 @@ public interface IWorld {
      */
     void showObstacles();
 
-    Robot launchRobot(String make, String name);
-    List<Robot> getRobots();
+    Robot launchRobot(String make, String name, int PORT);
+    void removeRobot(int PORT);
+    Map<Integer, Robot> getRobots();
     Position validateLaunchPosition(Position position);
 
     /**

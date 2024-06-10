@@ -2,6 +2,8 @@ package za.co.wethinkcode.robotworlds.command;
 
 import za.co.wethinkcode.robotworlds.Position;
 import za.co.wethinkcode.robotworlds.robot.Robot;
+import za.co.wethinkcode.robotworlds.robot.SimpleBot;
+import za.co.wethinkcode.robotworlds.robot.SniperBot;
 import za.co.wethinkcode.robotworlds.world.*;
 import za.co.wethinkcode.robotworlds.server.ServerResponse;
 import java.util.ArrayList;
@@ -131,7 +133,7 @@ public class LookCommand extends Command {
         // it takes obstacle list, robots list, world instance, and x,y values of current position, it returns Object List
         // in the method, iterate through each list and check if objects are in line of sight
         List<Obstacle> obstacles = world.getObstacles();
-        List<Robot> robots = world.getRobots();
+        Map<Integer, Robot> robots = world.getRobots();
         Edge worldEdges = world.getWorldEdges();
 
         // SHOULD PROBABLY BREAK AFTER DETECTING OBJECT,
@@ -148,7 +150,8 @@ public class LookCommand extends Command {
         }
 
         // robots
-        for (Robot robot: robots) {
+        for (Map.Entry<Integer, Robot> entry: robots.entrySet()) {
+            Robot robot = entry.getValue();
             if (robot.getPosition().equals(new Position(x, y))) {
                 return robot;
             }
@@ -172,7 +175,8 @@ public class LookCommand extends Command {
         if (detectedObject.getClass().equals(SquareObstacle.class)) {
             type = "OBSTACLE";
         }
-        else if (detectedObject.getClass().equals(Robot.class)) {
+        else if (detectedObject.getClass().equals(SimpleBot.class) ||
+        detectedObject.getClass().equals(SniperBot.class)) {
             type = "ROBOT";
         }
         else if (detectedObject.getClass().equals(Edge.class)) {

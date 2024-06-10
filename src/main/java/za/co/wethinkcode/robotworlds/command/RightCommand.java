@@ -1,9 +1,9 @@
 package za.co.wethinkcode.robotworlds.command;
 
 import za.co.wethinkcode.robotworlds.Direction;
+import za.co.wethinkcode.robotworlds.robot.Robot;
 import za.co.wethinkcode.robotworlds.server.ServerResponse;
 import za.co.wethinkcode.robotworlds.world.IWorld;
-import za.co.wethinkcode.robotworlds.robot.Robot;
 
 import java.util.HashMap;
 import java.util.Map;

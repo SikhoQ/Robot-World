@@ -2,6 +2,7 @@ package za.co.wethinkcode.robotworlds.client;
 
 import za.co.wethinkcode.robotworlds.Json;
 import za.co.wethinkcode.robotworlds.Position;
+import za.co.wethinkcode.robotworlds.Sleep;
 import za.co.wethinkcode.robotworlds.server.ServerResponse;
 
 import java.io.*;
@@ -42,6 +43,8 @@ public class RobotClient {
     }
 
     public void startConnection(String ipAddress, int port) {
+        System.out.println("Connecting...");
+        Sleep.sleep(1500);
         try {
             clientSocket = new Socket(ADDRESS, PORT);
         } catch (IOException e) {
@@ -73,7 +76,15 @@ public class RobotClient {
         ClientRequest request;
         while (true) {
             // prompt user for launch and get input
-            String userInput = getInput("\nLaunch a robot:\nUse 'launch <make> <name>'");
+            String prompt = "\nLaunch a robot:\nUse 'launch <make> <name>'" +
+                    "Available robot makes:\n* SNIPERBOT\n* SIMPLEBOT";
+            String userInput = getInput(prompt);
+            if (userInput.equalsIgnoreCase("EXIT")) {
+                try {
+                    stopConnection();
+                } catch (IOException ignored) {}
+                System.exit(0);
+            }
             // process input and get relevant ClientRequest instance
             request = UserInput.handleUserInput(userInput);
             // use this instance to serialize user input as client request to send to server
@@ -92,7 +103,7 @@ public class RobotClient {
         }
 
         Map<String, Object> state = serverResponseObject.getState();
-        String robotName = request.robot();
+        String robotName = (String) request.arguments()[1];
 
         @SuppressWarnings("unchecked")
         Map<String, Integer> position = (Map<String, Integer>) state.get("position");
@@ -110,12 +121,17 @@ public class RobotClient {
             ClientRequest request = UserInput.handleUserInput(userInput);
             Json json = new Json();
             String clientRequest = json.toJson(request);
-            out.println(clientRequest);
+            sendClientRequest(clientRequest);
             String serverResponse = getServerResponse();
             ServerResponse serverResponseObject = getServerResponseObject(serverResponse);
             printRequestResult(robotName, request.command(), serverResponseObject, request);
             userInput = getInput("\n"+robotName+"> What must I do next?");
         }
+
+    }
+
+    private void sendClientRequest(String clientRequest) {
+        out.println(clientRequest);
     }
 
     private void printRequestResult(String robotName, String command, ServerResponse serverResponse, ClientRequest request) {
@@ -194,6 +210,7 @@ public class RobotClient {
     }
 
     private String getServerResponse() {
+
         try {
             return in.readLine();
         } catch (IOException e) {

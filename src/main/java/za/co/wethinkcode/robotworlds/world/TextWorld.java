@@ -5,6 +5,8 @@ import za.co.wethinkcode.robotworlds.Position;
 import za.co.wethinkcode.robotworlds.Sleep;
 import za.co.wethinkcode.robotworlds.maze.RandomMaze;
 import za.co.wethinkcode.robotworlds.robot.Robot;
+import za.co.wethinkcode.robotworlds.robot.SimpleBot;
+import za.co.wethinkcode.robotworlds.robot.SniperBot;
 import za.co.wethinkcode.robotworlds.world.configuration.Config;
 
 import java.util.*;
@@ -17,7 +19,7 @@ public class TextWorld implements IWorld {
     private final Position TOP_LEFT;
     private final Position BOTTOM_RIGHT;
     private final Edge worldEdges;
-    private final List<Robot> robots;
+    private final Map<Integer, Robot> robots;
     private int worldHeight;
     private int worldWidth;
     private int visibility;
@@ -28,7 +30,7 @@ public class TextWorld implements IWorld {
     public TextWorld() {
         obstacles = new RandomMaze().getObstacles();
         heading = Direction.NORTH;
-        robots = new ArrayList<>();
+        robots = new HashMap<>();
         setupWorld();
         int worldX = worldWidth / 2;
         int worldY = worldHeight / 2;
@@ -120,8 +122,8 @@ public class TextWorld implements IWorld {
                 return false;
             }
         }
-        for (Robot robot: robots) {
-            if (robot.blocksPosition(position)) {
+        for (Map.Entry<Integer, Robot> entry: robots.entrySet()) {
+            if (entry.getValue().blocksPosition(position)) {
                 return false;
             }
         }
@@ -179,32 +181,42 @@ public class TextWorld implements IWorld {
     }
 
     @Override
-    public Robot launchRobot(String make, String name) {
+    public Robot launchRobot(String make, String name, int PORT) {
         // change this to use make to create relevant robot
         Sleep.sleep(1300);
         Position position = Position.getRandomPosition();
         position = validateLaunchPosition(position);
         Direction direction = Direction.getRandomDirection();
-        Robot robot = new Robot(name, position, direction);
+        Robot robot;
+
+        // should try to fix this method to work similar to
+        // Command class
+        if (make.equalsIgnoreCase("SIMPLEBOT"))
+            robot = new SimpleBot(name, position, direction);
+        else
+            robot = new SniperBot(name, position, direction);
 
         System.out.println(name+" ("+make+")"+" joined.");
-
-        robots.add(robot);
-
+        robots.put(PORT, robot);
         return robot;
     }
 
     @Override
-    public List<Robot> getRobots() {
+    public void removeRobot(int PORT) {
+        robots.remove(PORT);
+    }
+
+    @Override
+    public Map<Integer, Robot> getRobots() {
         return robots;
     }
 
     @Override
     public Position validateLaunchPosition(Position position) {
-        List<Robot> robots = getRobots();
+        Map<Integer, Robot> robots = getRobots();
         List<Obstacle> obstacles = getObstacles();
-        for (Robot robot: robots) {
-            while (robot.getPosition().equals(position)) {
+        for (Map.Entry<Integer, Robot> entry: robots.entrySet()) {
+            while (entry.getValue().getPosition().equals(position)) {
                 position = Position.getRandomPosition();
             }
         }
@@ -237,12 +249,13 @@ public class TextWorld implements IWorld {
                     +(obstacle.getBottomLeftY()+4)+")";
             dump.append(obstacleString).append("\n");
         }
-        List<Robot> robots = getRobots();
+        Map<Integer, Robot> robots = getRobots();
         dump.append("\nRobots\n------\n");
         if (robots.isEmpty()) {
             dump.append("* No Robots Launched\n");
         }
-        for (Robot robot: robots) {
+        for (Map.Entry<Integer, Robot> entry: robots.entrySet()) {
+            Robot robot = entry.getValue();
             String name = robot.getName();
 
             Position position = robot.getPosition();
@@ -267,16 +280,16 @@ public class TextWorld implements IWorld {
 
     @Override
     public void showRobots() {
-        List<Robot> robots = getRobots();
+        Map<Integer, Robot> robots = getRobots();
         if (robots.isEmpty()) {
             System.out.println("There are no robots in this world.");
         } else {
             int robotCount = 1;
             System.out.println("There are robots:");
-            for (Robot robot: robots) {
+            for (Map.Entry<Integer, Robot> entry: robots.entrySet()) {
                 System.out.println(" Robot "+(robotCount++)+":");
                 System.out.println(" ========");
-                System.out.println(" "+robot.getName()+"\n");
+                System.out.println(" "+entry.getValue().getName()+"\n");
             }
         }
     }

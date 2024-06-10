@@ -8,7 +8,7 @@ import java.net.Socket;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import za.co.wethinkcode.robotworlds.Json;
-import za.co.wethinkcode.robotworlds.world.Robot;
+import za.co.wethinkcode.robotworlds.robot.Robot;
 import za.co.wethinkcode.robotworlds.command.Command;
 import za.co.wethinkcode.robotworlds.command.LaunchCommand;
 import za.co.wethinkcode.robotworlds.world.IWorld;
@@ -27,6 +27,10 @@ public class RobotClientHandler implements Runnable {
         this.world = world;
     }
 
+    public Socket getClientSocket() {
+        return clientSocket;
+    }
+
     /**
      * Handles communication with the client.
      */
@@ -40,17 +44,11 @@ public class RobotClientHandler implements Runnable {
             Robot robot = null;
             Json json = new Json();
             while ((clientRequest = in.readLine()) != null) {
-                // process request to create relevant command class
-                Command command = getCommand(clientRequest);
-                // in conditional, use getCommand:
-                //   if command is launch, set robot to LaunchCommand.getRobot
-                // this part will ideally happen once, after which 'robot'
-                // will continue being the initially launched instance
-                if (command.getCommand().equalsIgnoreCase("launch")) {
+                Command command = getCommand(clientRequest, world);
+                if (command.getCommand().equalsIgnoreCase("LAUNCH")) {
                     LaunchCommand launchCommand = (LaunchCommand) command;
-                    robot = launchCommand.createRobot(world);
+                    robot = launchCommand.createRobot(world, clientSocket.getPort());
                 }
-                // call the created command's execute, passing robot
                 ServerResponse serverResponseObject = command.execute(robot, world);
                 String serverResponse = json.toJson(serverResponseObject);
                 out.println(serverResponse);
@@ -58,9 +56,7 @@ public class RobotClientHandler implements Runnable {
         } catch (IOException ignored) {
         } finally {
             try {
-                clientSocket.close();
-                System.out.println("Client socket closed.");
-                System.exit(0);
+                disconnectClient();
             } catch (IOException e) {
                 System.err.println("Error closing client socket: " + e.getMessage());
             }
@@ -76,19 +72,11 @@ public class RobotClientHandler implements Runnable {
         this.clientSocket.close();
     }
 
-    /**
-     * Closes the client socket.
-     *
-     * @throws IOException if an I/O error occurs while closing the client socket
-     */
-    public void close() throws IOException {
-        clientSocket.close();
-    }
 
-    public Command getCommand(String clientRequest) {
+    public Command getCommand(String clientRequest, IWorld world) {
         Json json = new Json();
         JsonNode rootNode = json.jsonFieldAccess(clientRequest);
-        return Command.create(rootNode);
+        return Command.create(rootNode, world);
     }
 
     /*

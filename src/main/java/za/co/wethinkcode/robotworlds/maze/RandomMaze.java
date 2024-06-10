@@ -68,7 +68,7 @@ public class RandomMaze implements Maze {
 
         int worldSize = config.getWorldSize().getHeight() * config.getWorldSize().getWidth();
         int minimumObstacles = (int) (worldSize * 0.001);
-        int maximumObstacles = (int) (worldSize * 0.001);
+        int maximumObstacles = (int) (worldSize * 0.002);
         int numberOfObstacles = random.nextInt((maximumObstacles - minimumObstacles) + 1) + minimumObstacles;
         int worldX = config.getWorldSize().getWidth() / 2;
         int worldY = config.getWorldSize().getHeight() / 2;
@@ -77,6 +77,12 @@ public class RandomMaze implements Maze {
             int xCoord = random.nextInt((worldX + worldX) + 1) - worldX;
             int yCoord = random.nextInt((worldY + worldY) + 1) - worldY;
 
+            for (Obstacle obstacle: obstacles) {
+                while (obstacle.blocksPosition(new Position(xCoord, yCoord))) {
+                    xCoord = random.nextInt((worldX + worldX) + 1) - worldX;
+                    yCoord = random.nextInt((worldY + worldY) + 1) - worldY;
+                }
+            }
             obstacles.add(new SquareObstacle(xCoord, yCoord));
         }
     }

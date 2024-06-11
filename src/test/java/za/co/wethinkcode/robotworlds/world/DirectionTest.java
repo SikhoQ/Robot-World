@@ -20,10 +20,18 @@ public class DirectionTest {
     }
 
     @Test
-    public void fromOrdinalException(){
+    public void fromOrdinalExceptionGreaterThanFour(){
         assertThrows(IllegalArgumentException.class,
                 ()->{
-            Direction.fromOrdinal(7);
+            Direction.fromOrdinal(5);
+                });
+    }
+
+    @Test
+    public void fromOrdinalExceptionLessThanOne(){
+        assertThrows(IllegalArgumentException.class,
+                ()->{
+            Direction.fromOrdinal(-1);
                 });
     }
 }

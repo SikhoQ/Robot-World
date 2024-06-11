@@ -2,6 +2,7 @@ package za.co.wethinkcode.robotworlds.world;
 
 import za.co.wethinkcode.robotworlds.Direction;
 import za.co.wethinkcode.robotworlds.Position;
+import za.co.wethinkcode.robotworlds.robot.Robot;
 
 import java.util.*;
 
@@ -89,9 +90,10 @@ public interface IWorld {
      */
     void showObstacles();
 
-    Robot launchRobot(String make, String name);
-    List<Robot> getRobots();
-    Position validatePosition(Position position);
+    Robot launchRobot(String make, String name, int PORT);
+    void removeRobot(int PORT);
+    Map<Integer, Robot> getRobots();
+    Position validateLaunchPosition(Position position);
 
     /**
      * Displays the current state of the world, including obstacles and robots.

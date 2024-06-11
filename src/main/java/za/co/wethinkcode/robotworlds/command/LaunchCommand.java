@@ -1,6 +1,6 @@
 package za.co.wethinkcode.robotworlds.command;
 
-import za.co.wethinkcode.robotworlds.world.Robot;
+import za.co.wethinkcode.robotworlds.robot.Robot;
 import za.co.wethinkcode.robotworlds.server.ServerResponse;
 import za.co.wethinkcode.robotworlds.world.IWorld;
 
@@ -12,10 +12,10 @@ public class LaunchCommand extends Command {
         super("launch", make, name);
     }
 
-    public Robot createRobot(IWorld world) {
+    public Robot createRobot(IWorld world, int PORT) {
         String make = super.getArgument1();
         String name = super.getArgument2();
-        return world.launchRobot(make, name);
+        return world.launchRobot(make, name, PORT);
     }
 
     @Override
@@ -32,7 +32,7 @@ public class LaunchCommand extends Command {
         // state field of response
         Map<String, Object> state = new HashMap<>();
         state.put("position", target.getPosition());
-        state.put("direction", target.getCurrentDirection());
+        state.put("direction", target.getDirection());
         state.put("shields", target.getShields());
         state.put("shots", target.getShots());
         state.put("status", target.getStatus());

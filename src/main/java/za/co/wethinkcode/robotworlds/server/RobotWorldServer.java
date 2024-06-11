@@ -9,19 +9,45 @@ import java.util.*;
 
 
 public class RobotWorldServer extends Thread{
-    private static final int PORT = 5000;
-    private static final List<RobotClientHandler> clients = new ArrayList<>();
-    private static final ServerSocket serverSocket;
+    private final List<RobotClientHandler> clients;
+    private final ServerSocket serverSocket;
+    private final TextWorld world;
 
-    static {
+
+    public RobotWorldServer() {
+        int PORT = 5000;
+        clients = new ArrayList<>();
+        world = new TextWorld();
         try {
             serverSocket = new ServerSocket(PORT);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Failed to connect server on port: "+PORT);
         }
     }
 
-    public void run() {}
+    public void run() {
+        ServerConsole console = new ServerConsole(this, world);
+        new Thread(console).start();
+        // RemoveClient is supposed to run an infinite loop checking for disconnected clients
+        // and remove them from the list (therefore from the world)
+        // -----currently not working------
+
+
+        try {
+            System.out.println("Server started. Waiting for clients...");
+            while (true) {
+                RemoveClient checkDisconnectedClient = new RemoveClient(this);
+                checkDisconnectedClient.start();
+                Socket clientSocket = serverSocket.accept();
+                System.out.println("\nNew client connected on local port: "+clientSocket.getPort());
+                RobotClientHandler clientHandler = new RobotClientHandler(clientSocket, world);
+                clients.add(clientHandler);
+                new Thread(clientHandler).start();
+            }
+        } catch (IOException e) {
+            System.out.println("Quitting server...");
+        }
+    }
 
     /**
      * Shuts down the server and all its clients.
@@ -45,8 +71,13 @@ public class RobotWorldServer extends Thread{
      *
      * @return a list of active {@link RobotClientHandler} instances
      */
-    public static List<RobotClientHandler> getClients() {
+    public List<RobotClientHandler> getClients() {
         return clients;
+    }
+
+    public void removeClient(RobotClientHandler disconnectedClient) {
+        clients.remove(disconnectedClient);
+        world.removeRobot(disconnectedClient.getClientSocket().getPort());
     }
 
     private void closeServer() {
@@ -66,26 +97,7 @@ public class RobotWorldServer extends Thread{
      * @throws IOException If an error occurs while accepting client connections.
      */
     public static void main(String[] args) throws IOException {
-        TextWorld world = new TextWorld();
-
         RobotWorldServer server = new RobotWorldServer();
-        ServerConsole console = new ServerConsole(server, world);
-
-        new Thread(console).start();
-
-        try {
-            System.out.println("Server started. Waiting for clients...");
-            while (true) {
-                Socket clientSocket = serverSocket.accept();
-                System.out.println("Client connected on port: "+clientSocket.getPort());
-
-                RobotClientHandler clientHandler = new RobotClientHandler(clientSocket, world);
-                clients.add(clientHandler);
-                new Thread(clientHandler).start();
-            }
-        } finally {
-            System.out.println("Quitting server...");
-            System.exit(0);
-        }
+        server.start();
     }
 }

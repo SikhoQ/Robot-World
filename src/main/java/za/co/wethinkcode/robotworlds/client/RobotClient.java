@@ -118,6 +118,8 @@ public class RobotClient {
     private void run(String robotName) {
         String userInput = getInput("\n"+robotName+"> What must I do next?");
         while (!userInput.equalsIgnoreCase("exit")) {
+
+
             ClientRequest request = UserInput.handleUserInput(userInput);
             Json json = new Json();
             String clientRequest = json.toJson(request);

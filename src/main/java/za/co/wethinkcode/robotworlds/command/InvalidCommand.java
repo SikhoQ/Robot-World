@@ -26,4 +26,3 @@ public class InvalidCommand extends Command {
         return new ServerResponse(result, data, state);
     }
 }
-

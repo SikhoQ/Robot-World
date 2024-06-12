@@ -131,13 +131,6 @@
             <version>3.1</version>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>org.mockito</groupId>
-            <artifactId>mockito-core</artifactId>
-            <version>3.6.28</version> <!-- or the latest version -->
-            <scope>test</scope>
-        </dependency>
-
 
         <!-- OpenTest4J dependency -->
         <dependency>

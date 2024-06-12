@@ -76,8 +76,8 @@ public class RobotClient {
         ClientRequest request;
         while (true) {
             // prompt user for launch and get input
-            String prompt = "\nLaunch a robot:\nUse 'launch <make> <name>'" +
-                    "Available robot makes:\n* SNIPERBOT\n* SIMPLEBOT";
+            String prompt = "\nLaunch a robot:\nUse 'launch <Bot type> <Bot name>'\n" +
+                    "Available robot types:\n* SNIPERBOT\n* SIMPLEBOT";
             String userInput = getInput(prompt);
             if (userInput.equalsIgnoreCase("EXIT")) {
                 try {

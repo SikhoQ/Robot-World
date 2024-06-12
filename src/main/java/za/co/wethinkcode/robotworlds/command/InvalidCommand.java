@@ -20,9 +20,9 @@ public class InvalidCommand extends Command {
         Map<String, Object> data = new HashMap<>();
         Map<String, Object> state = new HashMap<>() {};
         if (error.equals("UNKNOWN COMMAND"))
-            data.put("message", "Unsupported command");
+            data.put("message", "Unsupported command. Please type 'help' for available commands");
         else
-            data.put("message", "Could not parse arguments");
+            data.put("message", " Could you specify which direction you'd like me to turn? Please type 'turn <direction>'");
         return new ServerResponse(result, data, state);
     }
 }

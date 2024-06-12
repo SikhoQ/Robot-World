@@ -26,7 +26,7 @@ public class HelpCommand extends Command {
     @Override
     public ServerResponse execute(Robot target, IWorld world) {
         System.out.println("Available commands:");
-        System.out.println("   launch [make] [name] - launch robot into world");
+        System.out.println("   launch [Bot type] [Bot name] - launch robot into world");
         System.out.println("   look                 - look around in robot's field of view");
         System.out.println("   state                - robot state\n");
 

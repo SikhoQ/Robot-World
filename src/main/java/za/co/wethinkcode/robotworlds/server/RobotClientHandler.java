@@ -80,9 +80,9 @@ public class RobotClientHandler implements Runnable {
     }
 
     /*
-    * use this function to handle error responses since each command's execute
-    * returns a ServerResponse object
-    * */
+     * use this function to handle error responses since each command's execute
+     * returns a ServerResponse object
+     * */
     private String processRequest(String clientRequest) {
         // return 'unsupported command' error upon exception
         // a.k.a response for badly formed request

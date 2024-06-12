@@ -5,65 +5,31 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Map;
 
-/**
- * The ServerResponse class represents the response returned by the server
- * after executing a command. It contains the result, data, and state of the response.
- */
 public class ServerResponse {
-    private String result;
-    private Map<String, Object> data;
-    private Map<String, Object> state;
+    String result;
+    Map<String, Object> data;
+    Map<String, Object> state;
 
-    /**
-     * Constructs a ServerResponse object with the specified result and data.
-     *
-     * @param result The result of the command execution.
-     * @param data The data related to the command execution.
-     */
-    public ServerResponse(String result, Map<String, Object> data) {
-        this.result = result;
-        this.data = data;
+    // provide the data as a 2D array of 2 items
+    // type-cast the 2nd item in the constructors
+    // or create new correct instance and copy contents before passing on call
 
-    }
-
-    /**
-     * Constructs a ServerResponse object with the specified result, data, and state.
-     * This constructor is used for JSON deserialization.
-     *
-     * @param result The result of the command execution.
-     * @param data The data related to the command execution.
-     * @param state The state related to the command execution.
-     */
     @JsonCreator
     public ServerResponse(@JsonProperty("robot") String result, @JsonProperty("command") Map<String, Object> data,
                           @JsonProperty("arguments") Map<String, Object> state) {
-        this(result, data);
+        this.result = result;
+        this.data = data;
         this.state = state;
     }
 
-    /**
-     * Gets the result of the command execution.
-     *
-     * @return The result of the command execution.
-     */
     public String getResult() {
         return result;
     }
 
-    /**
-     * Gets the data related to the command execution.
-     *
-     * @return The data related to the command execution.
-     */
     public Map<String, Object> getData() {
         return data;
     }
 
-    /**
-     * Gets the state related to the command execution.
-     *
-     * @return The state related to the command execution.
-     */
     public Map<String, Object> getState() {
         return state;
     }

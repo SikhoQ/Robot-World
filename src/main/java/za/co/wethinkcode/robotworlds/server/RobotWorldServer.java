@@ -1,95 +1,103 @@
 package za.co.wethinkcode.robotworlds.server;
 
+import za.co.wethinkcode.robotworlds.world.TextWorld;
+
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 
 public class RobotWorldServer extends Thread{
-    private static final int PORT = 5000;
-    private static final List<RobotClientHandler> clients = new ArrayList<>();
+    private final List<RobotClientHandler> clients;
+    private final ServerSocket serverSocket;
+    private final TextWorld world;
 
-    @Override
+
+    public RobotWorldServer() {
+        int PORT = 5000;
+        clients = new ArrayList<>();
+        world = new TextWorld();
+        try {
+            serverSocket = new ServerSocket(PORT);
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to connect server on port: "+PORT);
+        }
+    }
+
     public void run() {
-        try (ServerSocket serverSocket = new ServerSocket(PORT)) {
+        ServerConsole console = new ServerConsole(this, world);
+        new Thread(console).start();
+        // RemoveClient is supposed to run an infinite loop checking for disconnected clients
+        // and remove them from the list (therefore from the world)
+        // -----currently not working------
+
+
+        try {
             System.out.println("Server started. Waiting for clients...");
-
             while (true) {
+                RemoveClient checkDisconnectedClient = new RemoveClient(this);
+                checkDisconnectedClient.start();
                 Socket clientSocket = serverSocket.accept();
-                System.out.println("Client connected: " + clientSocket);
-
-                RobotClientHandler clientHandler = new RobotClientHandler(clientSocket);
+                System.out.println("\nNew client connected on local port: "+clientSocket.getPort());
+                RobotClientHandler clientHandler = new RobotClientHandler(clientSocket, world);
                 clients.add(clientHandler);
                 new Thread(clientHandler).start();
             }
         } catch (IOException e) {
-            System.err.println("Error in the server: " + e.getMessage());
+            System.out.println("Quitting server...");
         }
-
     }
 
+    /**
+     * Shuts down the server and all its clients.
+     * This method disconnects all clients and then closes the server socket.
+     * Finally, it terminates the server process.
+     */
     public void shutdown() {
-        // Close all client connections
-        for (RobotClientHandler client : clients) {
-            client.close(); // Implement close() method in RobotClientHandler class
+        for (RobotClientHandler client: clients) {
+            try {
+                client.disconnectClient();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         }
-
-        System.out.println("Server shutdown successfully");
-
-        // Shutdown the program
+        closeServer();
         System.exit(0);
     }
 
-    public void showWorldState() {
-        // Access the world state and collect information for the dump
-        StringBuilder dump = new StringBuilder();
-
-        // Append information about robots
-//        for (RobotClientHandler client : clients) {
-//            dump.append("Robot: ").append(client.getName()).append("\n");
-//            dump.append("Position: ").append(client.getPosition()).append("\n");
-//            dump.append("Direction: ").append(client.getCurrentDirection().append("\n"));
-//            dump.append("State: ").append(client.getStatus()).append("\n");
-//        }
-
-        // Append information about obstacles or other world elements
-        // Iterate over obstacles and append their positions or any relevant information
-
-        // Print or output the dump to the console
-        System.out.println("World Dump:");
-        System.out.println(dump.toString());
-
+    /**
+     * Retrieves the list of active {@link RobotClientHandler} instances.
+     *
+     * @return a list of active {@link RobotClientHandler} instances
+     */
+    public List<RobotClientHandler> getClients() {
+        return clients;
     }
 
-    public void showRobots() {
-        /*TODO*/
+    public void removeClient(RobotClientHandler disconnectedClient) {
+        clients.remove(disconnectedClient);
+        world.removeRobot(disconnectedClient.getClientSocket().getPort());
     }
 
-    public static void main(String[] args) {
-        /* when server is started, include
-           starting a new thread of the
-           ServerConsole instance
-        */
-        RobotWorldServer server = new RobotWorldServer();
-        ServerConsole console = new ServerConsole(server);
-        new Thread(console).start();
-
-        try (ServerSocket serverSocket = new ServerSocket(PORT)) {
-            System.out.println("Server started. Waiting for clients...");
-
-            while (true) {
-                Socket clientSocket = serverSocket.accept();
-                System.out.println("Client connected: " + clientSocket);
-
-                RobotClientHandler clientHandler = new RobotClientHandler(clientSocket);
-                clients.add(clientHandler);
-                new Thread(clientHandler).start();
-            }
+    private void closeServer() {
+        try {
+            serverSocket.close();
         } catch (IOException e) {
-            System.err.println("Error in the server: " + e.getMessage());
+            // handle in calling code
+            throw new RuntimeException(e);
         }
     }
-}
 
+    /**
+     * The main entry point of the server.
+     * It initializes the server, sets up the world, and starts accepting client connections.
+     *
+     * @param args Command line arguments, not used in this context.
+     * @throws IOException If an error occurs while accepting client connections.
+     */
+    public static void main(String[] args) throws IOException {
+        RobotWorldServer server = new RobotWorldServer();
+        server.start();
+    }
+}

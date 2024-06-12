@@ -6,27 +6,65 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import za.co.wethinkcode.robotworlds.client.ClientRequest;
 import za.co.wethinkcode.robotworlds.command.Command;
+import za.co.wethinkcode.robotworlds.server.ServerResponse;
 
 import java.io.IOException;
 
-public class
-Json {
-    public static String toJson(Object object) throws IOException {
-        ObjectMapper mapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
-        return mapper.writeValueAsString(object);
+/**
+ * The Json class provides methods for converting objects to and from JSON format.
+ */
+public class Json {
+    private final ObjectMapper objectMapper;
+
+    /**
+     * Constructs a Json object with a default ObjectMapper.
+     */
+    public Json() {
+        objectMapper = new ObjectMapper();
     }
 
-    public static Command fromJson(String json) throws IOException {
-        ObjectMapper mapper = new ObjectMapper();
-        return mapper.readValue(json, Command.class);
+    /**
+     * Converts an object to its JSON representation.
+     *
+     * @param object The object to be converted.
+     * @return The JSON representation of the object.
+     * @throws RuntimeException if an error occurs during JSON serialization.
+     */
+    public String toJson(Object object) {
+        try {
+            return objectMapper.writeValueAsString(object);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException("Json.toJson exception: " + e);
+        }
     }
 
-    public static JsonNode jsonFieldAccess(String jsonString) {
-        ObjectMapper objectMapper = new ObjectMapper();
+    /**
+     * Converts a JSON string to a ServerResponse object.
+     *
+     * @param json The JSON string to be converted.
+     * @return The ServerResponse object parsed from the JSON string.
+     * @throws RuntimeException if an error occurs during JSON deserialization.
+     */
+    public ServerResponse fromJson(String json) {
+        try {
+            return objectMapper.readValue(json, ServerResponse.class);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException("Json.fromJson exception: " + e);
+        }
+    }
+
+    /**
+     * Extracts a specific field from a JSON string as a JsonNode.
+     *
+     * @param jsonString The JSON string from which to extract the field.
+     * @return The JsonNode representing the extracted field.
+     * @throws RuntimeException if an error occurs during JSON parsing.
+     */
+    public JsonNode jsonFieldAccess(String jsonString) {
         try {
             return objectMapper.readTree(jsonString);
         } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Json.jsonFieldAccess exception: " + e);
         }
     }
 }

@@ -1,7 +1,10 @@
 package za.co.wethinkcode.robotworlds.world;
 
+import za.co.wethinkcode.robotworlds.Direction;
 import za.co.wethinkcode.robotworlds.Position;
-import java.util.List;
+import za.co.wethinkcode.robotworlds.robot.Robot;
+
+import java.util.*;
 
 /**
  * Your Text and Turtle worlds must implement this interface.
@@ -10,8 +13,15 @@ public interface IWorld {
     /**
      * Enum used to track direction
      */
-    enum Direction {
-        UP, RIGHT, DOWN, LEFT
+    enum WorldDirection {
+        UP, DOWN, LEFT, RIGHT;
+
+        public static WorldDirection fromOrdinal(int ordinal) {
+            if (ordinal < 0 || ordinal >= Direction.values().length) {
+                throw new IllegalArgumentException("Invalid ordinal.");
+            }
+            return values()[ordinal];
+        }
     }
 
     /**
@@ -79,4 +89,29 @@ public interface IWorld {
      * Gives opportunity to world to draw or list obstacles.
      */
     void showObstacles();
+
+    Robot launchRobot(String make, String name, int PORT);
+    void removeRobot(int PORT);
+    Map<Integer, Robot> getRobots();
+    Position validateLaunchPosition(Position position);
+
+    /**
+     * Displays the current state of the world, including obstacles and robots.
+     */
+    void showWorldState();
+
+    /**
+     * Displays the current state of the world, including obstacles and robots.
+     */
+    void showRobots();
+
+    int getVisibility();
+
+    int getReload();
+
+    int getRepair();
+
+    int getShields();
+
+    Edge getWorldEdges();
 }

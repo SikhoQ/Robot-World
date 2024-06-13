@@ -5,14 +5,22 @@ Welcome to the Robot World (DBN_14) project! This project is a team effort to bu
 
 ## Table of Contents
 
-- Introduction
-- Client/Server Architecture
-- How to Use
-- Commands and Protocol
-- Testing
-- Flow Chart
-- FAQ
-- [Appendix](#appendix)
+1. Introduction
+2. Client/Server Architecture
+    The Server
+    The Robot Client
+    Robot World Protocol
+3. Getting Started
+    Prerequisites
+    Starting the Server
+    Connecting a Client
+4. Usage
+    Commands
+    Protocol
+
+5. Testing
+6. Team Members
+7. More Information
 
 ## Introduction
 
@@ -40,7 +48,7 @@ The client is a standalone Java program that:
 
 A common messaging protocol allowing client programs to connect to any server on the network was implemented. This ensures interoperability between different implementations.
 
-## How to Use
+## Getting Started
 
 ### Prerequisites
 
@@ -55,7 +63,7 @@ A common messaging protocol allowing client programs to connect to any server on
     
 3. Once connected, you can send commands such as forward, back, left, right, look, fire, state, repair, and reload through the client's interface.
 
-## Commands and Protocol
+## Usage
 
 The user can use the following commands when playing the game. These commands allow the player to interact with their robot in various ways, providing control over its movement, state, and interactions within the robot world.
 
@@ -83,11 +91,11 @@ To run the tests:
 mvn test
 
 ## Team Members
-Bongiwe Ntshantsha
-Lindani Jonase 
-Nomonde Bhengu
-Nonhle Sibiya
-Sikho Qangule
+* Bongiwe Ntshantsha
+* Lindani Jonase 
+* Nomonde Bhengu
+* Nonhle Sibiya
+* Sikho Qangule
 
 ## More Information
 

@@ -1,5 +1,8 @@
 package za.co.wethinkcode.robotworlds;
 
+import za.co.wethinkcode.robotworlds.world.IWorld;
+import za.co.wethinkcode.robotworlds.world.configuration.Config;
+
 import java.util.Random;
 
 public class Position {
@@ -38,12 +41,12 @@ public class Position {
         return withinTop && withinBottom && withinLeft && withinRight;
     }
     
-    public static Position getRandomPosition() {
+    public static Position getRandomPosition(IWorld world) {
         Random random = new Random();
-        int xMin = -100;
-        int xMax = 100;
-        int yMin = -200;
-        int yMax = 200;
+        int xMin = world.getWorldEdges().getMinimumX();
+        int xMax = world.getWorldEdges().getMaximumX();
+        int yMin = world.getWorldEdges().getMinimumY();
+        int yMax = world.getWorldEdges().getMaximumY();
 
         int xCoord = random.nextInt((xMax - xMin) + 1) + xMin;
         int yCoord = random.nextInt((yMax - yMin) + 1) + yMin;

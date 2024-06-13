@@ -67,8 +67,10 @@ public class RandomMaze implements Maze {
         Config config = Config.readConfiguration();
 
         int worldSize = config.getWorldSize().getHeight() * config.getWorldSize().getWidth();
-        int minimumObstacles = (int) (worldSize * 0.001);
-        int maximumObstacles = (int) (worldSize * 0.002);
+        int minimumObstacles = 1;
+        int maximumObstacles = 3;
+        //        int minimumObstacles = (int) (worldSize * 0.001);
+        //        int maximumObstacles = (int) (worldSize * 0.002);
         int numberOfObstacles = random.nextInt((maximumObstacles - minimumObstacles) + 1) + minimumObstacles;
         int worldX = config.getWorldSize().getWidth() / 2;
         int worldY = config.getWorldSize().getHeight() / 2;

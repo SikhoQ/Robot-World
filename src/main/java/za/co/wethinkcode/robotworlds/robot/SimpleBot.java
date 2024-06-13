@@ -5,68 +5,60 @@ import za.co.wethinkcode.robotworlds.Direction;
 import za.co.wethinkcode.robotworlds.Position;
 import za.co.wethinkcode.robotworlds.world.IWorld;
 
-public class SimpleBot implements Robot {
+public class SimpleBot {
 
     private final String name;
     private String status;
     private Position position;
     private Direction direction;
-    private int shields;
-    private int shots;
+    protected int shields;
     private final int MAX_SHIELDS = 10;
-    private final int MAX_SHOTS = 100;
-
+    private Gun gun;
 
     public SimpleBot(String name, Position position, Direction direction) {
         this.name = name;
         this.status = "NORMAL";
         this.shields = MAX_SHIELDS;
-        this.shots = MAX_SHOTS;
         this.position = position;
         this.direction = direction;
     }
 
-    @Override
     public String getStatus() {
         return status;
     }
 
-    @Override
     public void setStatus(String newStatus) {
         status = newStatus;
     }
 
-    @Override
     public Direction getDirection() {
         return direction;
     }
 
-    @Override
     public void setDirection(Direction direction) {
         this.direction = direction;
     }
 
-    @Override
     public String getName() {
         return name;
     }
 
-    @Override
     public int getShields() {
         return shields;
     }
 
-    @Override
-    public int getShots() {
-        return shots;
+    public void setGun(int maximumShots) {
+        this.gun = new Gun(maximumShots);
     }
 
-    @Override
+    public Gun getGun() {
+        return gun;
+    }
+
     public Position getPosition() {
         return position;
     }
 
-    @Override
     public String updatePosition(int numSteps, IWorld world) {
         int newX = position.getX();
         int newY = position.getY();
@@ -97,32 +89,21 @@ public class SimpleBot implements Robot {
         return "Done";
     }
 
-    @Override
     public boolean blocksPosition(Position position) {
         return this.getPosition().equals(position);
     }
 
-    @Override
     public void updateShields(int hit) {
         if (shields > 0) {
             shields -= hit;
         }
     }
 
-    @Override
-    public void updateShots(int shotsFired) {
-        if (shots > 0) {
-            shots -= shotsFired;
-        }
-    }
-
-    @Override
-    public void reset() {
+    public void resetRobot() {
         position = new Position(0, 0);
         direction = Direction.NORTH;
         status = "NORMAL";
         shields = MAX_SHIELDS;
-        shots = MAX_SHOTS;
     }
 
     @Override

@@ -66,12 +66,14 @@ public abstract class Command {
                 case "STATE" -> new StateCommand();
                 case "FORWARD" -> new ForwardCommand(String.valueOf(arguments[0]));
                 case "BACK" -> new BackCommand(String.valueOf(arguments[0]));
+                case "HELP" -> new HelpCommand();
                 case "TURN" -> {
                     if (arguments[0].equalsIgnoreCase("RIGHT"))
                         yield new RightCommand();
                     else
                         yield new LeftCommand();
                 }
+
                 case "ORIENTATION" -> new OrientationCommand();
                 default -> new InvalidCommand("UNKNOWN COMMAND");
             };
@@ -81,7 +83,7 @@ public abstract class Command {
     }
 
     private static String validateCommand(String command, String[] arguments, IWorld world) {
-        List<String> validCommands = new ArrayList<>(Arrays.asList("LAUNCH", "LOOK", "STATE",
+        List<String> validCommands = new ArrayList<>(Arrays.asList("LAUNCH", "LOOK", "STATE", "HELP",
                                                                     "FORWARD", "BACK", "TURN", "ORIENTATION"));
         List<String> validRobotMakes = new ArrayList<>(Arrays.asList("SIMPLEBOT", "SNIPERBOT"));
 

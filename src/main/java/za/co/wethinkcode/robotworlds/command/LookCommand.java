@@ -184,18 +184,8 @@ public class LookCommand extends Command {
         }
         int distance = switch (direction) {
             case "NORTH" -> entry.getValue().getY() - target.getPosition().getY();
-            case "SOUTH" -> {
-                if (type.equals("OBSTACLE"))
-                    yield target.getPosition().getY() - (entry.getValue().getY() + 4);
-                else
-                    yield target.getPosition().getY() - entry.getValue().getY();
-            }
-            case "WEST" -> {
-                if (type.equals("OBSTACLE"))
-                    yield target.getPosition().getX() - (entry.getValue().getX() + 4);
-                else
-                    yield target.getPosition().getX() - entry.getValue().getX();
-            }
+            case "SOUTH" -> target.getPosition().getY() - (entry.getValue().getY() + 4);
+            case "WEST" -> target.getPosition().getX() - (entry.getValue().getX() + 4);
             case "EAST" -> entry.getValue().getX() - target.getPosition().getX();
             default -> 0;
         };

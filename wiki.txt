@@ -1,0 +1,185 @@
+Robot World Documentation
+Table of Contents
+
+    Introduction
+    Client/Server Architecture
+    The World Server
+    The Robot Client
+    Robot World Protocol
+    Iterations
+        Iteration 1
+        Iteration 2
+        Iteration 3
+    FAQ
+
+Introduction
+
+In this team project,a client/server Robot World consisting of two programs : the server and the client was built. The server manages a world with obstacles, robots, and other artefacts. The client controls a robot in this world by sending and receiving messages to and from the server.
+Client/Server Architecture
+
+A client/server architecture involves a server program that listens for incoming requests from client programs over a network. Clients connect to the server, send requests, and receive responses. This request/response mechanism forms the protocol between the client and server.
+Example
+
+A web server (server) and a web browser (client) communicate using the HTTP protocol. The browser sends requests, and the server responds with content.
+The World Server
+
+The server is a standalone console Java program that:
+
+    Builds the robot world with obstacles and artefacts.
+    Listens on a network port for incoming robot connections.
+    Manages multiple robots concurrently.
+    Updates the world based on robot instructions and sends responses back to clients.
+
+The Robot Client
+
+The client is a standalone Java program that:
+
+    Connects to the robot world server over a network.
+    Launches a robot into the world.
+    Sends commands to the robot, receives updates, and adjusts the robot's state accordingly.
+    Has no prior knowledge of the world and learns about it as the robot moves.
+
+Robot World Protocol
+
+A common messaging protocol allowing client programs to connect to any server on the network was implemented. This ensures interoperability between different implementations.
+Iterations
+
+Development of the project is divided into three iterations, each adding more functionality.
+Iteration 1
+Server
+
+    World Creation: Create a world with a hard-coded size and one obstacle.
+    Commands:
+        quit: Shut down the server.
+        robots: List robots in the world without their state.
+        dump: Output the current state of the world.
+    Concurrency: Support multiple client connections simultaneously.
+
+Client
+
+    Multiple Robots: Launch more than one robot into the world.
+    Commands:
+        look: View the world without visibility constraints.
+        state: Display the robot's state with default values.
+
+Iteration 2
+Server
+
+    Configurable World Size: Remove hard-coded size and make it configurable.
+    Multiple Obstacles: Implement more than one obstacle.
+    Enhanced Robots Command: Show the state of each robot.
+
+Client
+
+    Movement: Implement forward, back, left, and right commands.
+    Obstacle Handling: Ensure movement commands respect obstacles, edges, and other robots.
+    Visibility Constraints: Implement constraints for the look command.
+    Combat: Implement fire command, considering the number of shots and bullet travel distance (ignore hits for now).
+
+Iteration 3
+Server
+
+    Configuration: Implement settings for visibility, shields, and weapon reloading.
+
+Client
+
+    Shields: Implement shields for robots and track hits taken.
+    Commands:
+        repair: Repair the robot.
+        reload: Reload the robot's weapons.
+    Robot Removal: Remove a robot from the world if it is killed (i.e., shot when shields are zero).
+
+FAQ
+How do I start the server?
+To start the server, run the ServerMain class from the command line:
+java ServerMain
+
+How do I connect a client to the server?
+To connect a client, run the ClientMain class and provide the server's IP address and port:
+java ClientMain <server-ip> <port>
+
+How do I send commands to the robot?
+Once connected, you can send commands such as forward, back, left, right, look, fire, state, repair, and reload through the client's interface.
+
+// ##another template to use :
+Article/Page Template
+
+Title: Installing XYZ
+
+Introduction
+
+This guide will walk you through the steps to install XYZ on your system. Whether you're a beginner or an advanced user, this guide provides all the necessary details to get XYZ up and running.
+
+Table of Contents
+
+    System Requirements
+    Downloading XYZ
+    Installation Steps
+    Post-Installation Configuration
+    Troubleshooting
+
+Main Content
+1. System Requirements
+
+Before you begin, ensure your system meets the following requirements:
+
+    Operating System: Windows 10, macOS 10.15, or Linux
+    Memory: 4 GB RAM minimum
+    Storage: 500 MB available space
+
+2. Downloading XYZ
+
+To download XYZ, visit the official download page.
+3. Installation Steps
+Windows
+
+    Download the installer from the official website.
+    Run the installer and follow the on-screen instructions.
+
+macOS
+
+    Download the .dmg file from the official website.
+    Open the file and drag XYZ to the Applications folder.
+
+Linux
+
+    Open the terminal.
+    Run the following command:
+
+    bash
+
+    sudo apt-get install xyz
+
+4. Post-Installation Configuration
+
+After installation, configure XYZ by setting up the initial preferences:
+
+    Open XYZ.
+    Go to Settings > Preferences.
+    Configure the necessary options.
+
+5. Troubleshooting
+
+If you encounter issues during installation, refer to the troubleshooting guide.
+
+Examples/Case Studies
+
+Example: John, a new XYZ user, followed this guide and successfully installed XYZ on his Windows PC. He found the step-by-step instructions easy to follow and the screenshots helpful.
+
+Visuals (Diagrams, Screenshots, Videos)
+
+    [Screenshot of Installation Step]
+    [Video Tutorial on Installing XYZ]
+
+Links to Related Articles
+
+    Basic Features of XYZ
+    Advanced Features of XYZ
+
+References and Further Reading
+
+    XYZ Official Documentation
+    XYZ Community Forum
+
+Feedback Section (optional)
+If you have any feedback or suggestions regarding this article, please contact us.

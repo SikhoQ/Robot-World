@@ -191,9 +191,9 @@ public class TextWorld implements IWorld {
         // should try to fix this method to work similar to
         // Command class
         if (make.equalsIgnoreCase("SIMPLEBOT"))
-            robot = new SimpleBot(name, position, direction);
+            robot = new SimpleBot(name, position, direction, PORT);
         else
-            robot = new SniperBot(name, position, direction);
+            robot = new SniperBot(name, position, direction, PORT);
 
         robot.setGun(maximumShots);
 

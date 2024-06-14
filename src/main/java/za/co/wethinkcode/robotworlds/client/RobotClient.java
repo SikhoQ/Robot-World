@@ -76,8 +76,10 @@ public class RobotClient {
         ClientRequest request;
         while (true) {
             // prompt user for launch and get input
-            String prompt = "\nLaunch a robot:\nUse 'launch <make> <name>'" +
-                    "Available robot makes:\n* SNIPERBOT\n* SIMPLEBOT";
+            System.out.println("Available robot makes:\n* SNIPERBOT\n* SIMPLEBOT");
+//            String prompt = "\nLaunch a robot:\nUse 'launch <make> <name>'" +
+//                    "Available robot makes:\n* SNIPERBOT\n* SIMPLEBOT";
+            String prompt = "\nUse 'launch <make> <name>'\nLaunch a robot:";
             String userInput = getInput(prompt);
             if (userInput.equalsIgnoreCase("EXIT")) {
                 try {
@@ -85,6 +87,9 @@ public class RobotClient {
                 } catch (IOException ignored) {}
                 System.exit(0);
             }
+
+//            if (userInput)
+
             // process input and get relevant ClientRequest instance
             request = UserInput.handleUserInput(userInput);
             // use this instance to serialize user input as client request to send to server
@@ -201,7 +206,8 @@ public class RobotClient {
     private String getInput(String prompt) {
         String input;
         do {
-            System.out.println(prompt);
+//            System.out.println(prompt);
+            System.out.print(prompt);
             try {
                 input = inputReader.readLine();
             } catch (IOException e) {

@@ -1,9 +1,9 @@
 package za.co.wethinkcode.robotworlds.robot;
 
-
 import za.co.wethinkcode.robotworlds.Direction;
 import za.co.wethinkcode.robotworlds.Position;
 import za.co.wethinkcode.robotworlds.world.IWorld;
+import za.co.wethinkcode.robotworlds.world.configuration.Config;
 
 public class SimpleBot {
 
@@ -14,17 +14,30 @@ public class SimpleBot {
     protected int shields;
     private final int MAX_SHIELDS = 10;
     private Gun gun;
+    private final int reloadTime;
+    private final int repairTime;
+    private final int PORT;
+    protected Config config;
 
-    public SimpleBot(String name, Position position, Direction direction) {
+    public SimpleBot(String name, Position position, Direction direction, int PORT) {
         this.name = name;
         this.status = "NORMAL";
         this.shields = MAX_SHIELDS;
         this.position = position;
         this.direction = direction;
+        this.PORT = PORT;
+
+        this.config = Config.readConfiguration();
+        this.reloadTime = config.getReload();
+        this.repairTime = config.getRepair();
     }
 
     public String getStatus() {
         return status;
+    }
+
+    public long getReloadTime() {
+        return this.reloadTime;
     }
 
     public void setStatus(String newStatus) {
@@ -57,6 +70,14 @@ public class SimpleBot {
 
     public Position getPosition() {
         return position;
+    }
+
+    public long getRepairTime() {
+        return config.getRepair();
+    }
+
+    public int getPORT() {
+        return PORT;
     }
 
     public String updatePosition(int numSteps, IWorld world) {
@@ -93,9 +114,9 @@ public class SimpleBot {
         return this.getPosition().equals(position);
     }
 
-    public void updateShields(int hit) {
+    public void updateShields() {
         if (shields > 0) {
-            shields -= hit;
+            shields--;
         }
     }
 
@@ -104,6 +125,10 @@ public class SimpleBot {
         direction = Direction.NORTH;
         status = "NORMAL";
         shields = MAX_SHIELDS;
+    }
+
+    public void repair() {
+        this.shields = MAX_SHIELDS;
     }
 
     @Override

@@ -1,21 +1,24 @@
 package za.co.wethinkcode.robotworlds.client;
 
+import java.sql.SQLOutput;
 import java.util.Scanner;
 
 public class UserInput {
     public UserInput() {}
 
-    /**
-     * This method should process user input and return the corresponding
-     * ClientRequest instance
-     * ClientRequest is a class used for formatting the request protocol
-     */
     public static ClientRequest handleUserInput(String robotName, String userInput) {
         String[] userInputArray = userInput.trim().split(" ", 2);
         String commandInput = userInputArray[0].trim().toUpperCase();
 
         String command = commandInput.toLowerCase();
         Object[] arguments = getArguments(commandInput, userInputArray);
+
+        if (command.equalsIgnoreCase("RELOAD")) {
+            System.out.println(robotName + "> Reloading gun...");
+        }
+        else if (command.equalsIgnoreCase("REPAIR")) {
+            System.out.println(robotName + "> Repairing shield...");
+        }
 
         return new ClientRequest(robotName, command, arguments);
     }

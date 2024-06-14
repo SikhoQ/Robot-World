@@ -4,7 +4,7 @@
     "height": 80
   },
   "visibility": 50,
-  "reload": 5,
-  "repair": 5,
+  "reload": 3000,
+  "repair": 3000,
   "shields": 10
 }

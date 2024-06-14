@@ -1,6 +1,5 @@
 package za.co.wethinkcode.robotworlds.command;
 
-
 import za.co.wethinkcode.robotworlds.robot.SimpleBot;
 import za.co.wethinkcode.robotworlds.server.ServerResponse;
 import za.co.wethinkcode.robotworlds.world.IWorld;
@@ -8,21 +7,33 @@ import za.co.wethinkcode.robotworlds.world.IWorld;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ForwardCommand extends Command {
-    public ForwardCommand(String argument) {
-        super("forward", new Object[] {argument});
-    }
+public class RepairCommand extends Command {
+    public RepairCommand() {super("repair", null);}
 
     @Override
     public ServerResponse execute(SimpleBot target, IWorld world) {
+        String name = target.getName();
+        String make = target.getClass().getSimpleName();
+
+        target.setStatus("REPAIR");
+        target.repair();
+        System.out.println("\n"+name+" ("+make+") repairing shield...");
+
+        try {
+            Thread.sleep(target.getRepairTime());
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+
+        System.out.println(name+" ("+make+") done repairing");
+
+        target.setStatus("NORMAL");
         String result = "OK";
         Map<String, Object> data = new HashMap<>();
-        int nrSteps = Integer.parseInt(String.valueOf(getArguments()[0]));
-        String message = target.updatePosition(nrSteps, world);
-
-        data.put("message", message);
-
         Map<String, Object> state = new HashMap<>();
+
+        data.put("message", "Done");
+
         state.put("position", target.getPosition());
         state.put("direction", target.getDirection());
         state.put("shields", target.getShields());

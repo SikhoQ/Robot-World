@@ -3,6 +3,7 @@
 /home/wtc/my_work/dbn_14_robot_worlds/src/main/java/za/co/wethinkcode/robotworlds/command/BackCommand.java
 /home/wtc/my_work/dbn_14_robot_worlds/src/main/java/za/co/wethinkcode/robotworlds/command/LaunchCommand.java
 /home/wtc/my_work/dbn_14_robot_worlds/src/main/java/za/co/wethinkcode/robotworlds/world/Edge.java
+/home/wtc/my_work/dbn_14_robot_worlds/src/main/java/za/co/wethinkcode/robotworlds/command/RepairCommand.java
 /home/wtc/my_work/dbn_14_robot_worlds/src/main/java/za/co/wethinkcode/robotworlds/client/RobotClient.java
 /home/wtc/my_work/dbn_14_robot_worlds/src/main/java/za/co/wethinkcode/robotworlds/maze/SimpleMaze.java
 /home/wtc/my_work/dbn_14_robot_worlds/src/main/java/za/co/wethinkcode/robotworlds/world/SquareObstacle.java
@@ -14,6 +15,7 @@
 /home/wtc/my_work/dbn_14_robot_worlds/src/main/java/za/co/wethinkcode/robotworlds/Position.java
 /home/wtc/my_work/dbn_14_robot_worlds/src/main/java/za/co/wethinkcode/robotworlds/command/LeftCommand.java
 /home/wtc/my_work/dbn_14_robot_worlds/src/main/java/za/co/wethinkcode/robotworlds/world/TextWorld.java
+/home/wtc/my_work/dbn_14_robot_worlds/src/main/java/za/co/wethinkcode/robotworlds/command/ReloadCommand.java
 /home/wtc/my_work/dbn_14_robot_worlds/src/main/java/za/co/wethinkcode/robotworlds/world/IWorld.java
 /home/wtc/my_work/dbn_14_robot_worlds/src/main/java/za/co/wethinkcode/robotworlds/client/UserInput.java
 /home/wtc/my_work/dbn_14_robot_worlds/src/main/java/za/co/wethinkcode/robotworlds/world/configuration/WorldSize.java
@@ -24,7 +26,9 @@
 /home/wtc/my_work/dbn_14_robot_worlds/src/main/java/za/co/wethinkcode/robotworlds/server/RemoveClient.java
 /home/wtc/my_work/dbn_14_robot_worlds/src/main/java/za/co/wethinkcode/robotworlds/command/OrientationCommand.java
 /home/wtc/my_work/dbn_14_robot_worlds/src/main/java/za/co/wethinkcode/robotworlds/command/LookCommand.java
+/home/wtc/my_work/dbn_14_robot_worlds/src/main/java/za/co/wethinkcode/robotworlds/Context.java
 /home/wtc/my_work/dbn_14_robot_worlds/src/main/java/za/co/wethinkcode/robotworlds/command/InvalidCommand.java
+/home/wtc/my_work/dbn_14_robot_worlds/src/main/java/za/co/wethinkcode/robotworlds/server/ServerStarter.java
 /home/wtc/my_work/dbn_14_robot_worlds/src/main/java/za/co/wethinkcode/robotworlds/command/Command.java
 /home/wtc/my_work/dbn_14_robot_worlds/src/main/java/za/co/wethinkcode/robotworlds/command/StateCommand.java
 /home/wtc/my_work/dbn_14_robot_worlds/src/main/java/za/co/wethinkcode/robotworlds/robot/Gun.java

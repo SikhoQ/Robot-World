@@ -81,6 +81,8 @@ public class RobotClientHandler implements Runnable {
     public String processRequest(String clientRequest) {
         JsonNode rootNode = Json.jsonFieldAccess(clientRequest);
         Command command = getCommand(rootNode, world);
+
+        System.out.println("Command ["+command.getCommand()+"] received from client on local port: "+clientSocket.getPort());
         if (command.getCommand().equalsIgnoreCase("LAUNCH")) {
             LaunchCommand launchCommand = (LaunchCommand) command;
             robot = launchCommand.createRobot(rootNode, world, clientSocket.getPort());

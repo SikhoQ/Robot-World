@@ -85,9 +85,7 @@ public class TextWorld implements IWorld {
     @Override
     public void showObstacles() {
         if (!obstacles.isEmpty()) {
-            // need to build string to store in status, print for now
             System.out.println("There are some obstacles:");
-            // convert list to array to iterate without errors
             Obstacle[] obstacleArray = obstacles.toArray(new Obstacle[obstacles.size() - 1]);
             for (Obstacle obstacle: obstacleArray) {
                 int x = obstacle.getBottomLeftX();
@@ -181,15 +179,12 @@ public class TextWorld implements IWorld {
 
     @Override
     public SimpleBot launchRobot(String make, String name, int maximumShots, int PORT) {
-        // change this to use make to create relevant robot
         Sleep.sleep(800);
         Position position = Position.getRandomPosition(this);
         position = validateLaunchPosition(position);
         Direction direction = Direction.getRandomDirection();
         SimpleBot robot;
 
-        // should try to fix this method to work similar to
-        // Command class
         if (make.equalsIgnoreCase("SIMPLEBOT"))
             robot = new SimpleBot(name, position, direction, PORT);
         else
@@ -197,7 +192,7 @@ public class TextWorld implements IWorld {
 
         robot.setGun(maximumShots);
 
-        System.out.println(name+" ("+make+")"+" launched at ["+position.getX()+","+position.getY()+"]");
+        System.out.println("\n"+name+" ("+make+")"+" launched at ["+position.getX()+","+position.getY()+"]");
         robots.put(PORT, robot);
         return robot;
     }

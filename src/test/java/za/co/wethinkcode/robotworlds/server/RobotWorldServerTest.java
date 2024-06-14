@@ -1,4 +1,4 @@
-/*
+
 package za.co.wethinkcode.robotworlds.server;
 
 
@@ -45,7 +45,8 @@ public class RobotWorldServerTest {
             e.printStackTrace();
         }
     }
-
+}
+/*
     @Test
     public void testClientConnection() {
         try {

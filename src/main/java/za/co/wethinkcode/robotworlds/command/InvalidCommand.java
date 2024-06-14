@@ -22,7 +22,7 @@ public class InvalidCommand extends Command {
         if (error.equals("UNKNOWN COMMAND"))
             data.put("message", "Unsupported command. Please type 'help' for available commands");
         else
-            data.put("message", " Could you specify which direction you'd like me to turn? Please type 'turn <direction>'");
+            data.put("message", "Unsupported command");
         return new ServerResponse(result, data, state);
     }
 }

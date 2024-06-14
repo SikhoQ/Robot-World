@@ -21,6 +21,18 @@ public class RobotClient {
     private Socket clientSocket;
     private PrintWriter out;
     private BufferedReader in;
+    private static int colorIndex = 0;
+
+    private static final String[] COLORS = {
+            "\u001B[31m", // Red
+            "\u001B[32m", // Green
+            "\u001B[33m", // Yellow
+            "\u001B[34m", // Blue
+            "\u001B[35m", // Purple
+            "\u001B[36m", // Cyan
+            "\u001B[37m", // White
+            "\u001B[0m"   // Reset
+    };
 
     /**
      * Main entry point for the RobotClient application.
@@ -43,9 +55,9 @@ public class RobotClient {
             throw new RuntimeException("\nInvalid argument for \"ADDRESS\" and/or \"PORT\"\n\nQuitting...");
         }
 
-        System.out.println("|====================================|");
-        System.out.println("|=========   ROBOT WORLDS   =========|");
-        System.out.println("|====================================|\n");
+        printWithColor("|====================================|");
+        printWithColor("|=========   ROBOT WORLDS   =========|");
+        printWithColor("|====================================|\n");
 
         RobotClient client = new RobotClient();
 
@@ -55,7 +67,7 @@ public class RobotClient {
     }
 
     public void startConnection(String ipAddress, int port) {
-        System.out.println("Connecting...");
+        printWithColor("Connecting...");
         Sleep.sleep(1000);
         try {
             clientSocket = new Socket(ipAddress, port);
@@ -73,7 +85,7 @@ public class RobotClient {
         } catch (IOException e) {
             throw new RuntimeException("in exception: "+e);
         }
-        System.out.println("Connected to server on port: " + port);
+        printWithColor("Connected to server on port: " + port);
         Sleep.sleep(1500);
     }
 
@@ -109,7 +121,7 @@ public class RobotClient {
             if (serverResponseObject.getResult().equals("OK")) {
                 break;
             }
-            System.out.println(serverResponseObject.getData().get("message"));
+            printWithColor(serverResponseObject.getData().get("message").toString());
         }
 
         Map<String, Object> state = serverResponseObject.getState();
@@ -121,7 +133,7 @@ public class RobotClient {
         int yCoord = position.get("y");
         String direction = (String) state.get("direction");
 
-        System.out.println(robotName+" launched at ["+xCoord+","+yCoord+"], facing "+direction);
+        printWithColor(robotName+" launched at ["+xCoord+","+yCoord+"], facing "+direction);
         return robotName;
     }
 
@@ -136,7 +148,6 @@ public class RobotClient {
             printRequestResult(robotName, request.command(), serverResponseObject, request);
             userInput = UserInput.getInput("\n"+robotName+"> What must I do next?");
         }
-
     }
 
     private void sendClientRequest(String clientRequest) {
@@ -164,38 +175,38 @@ public class RobotClient {
                 @SuppressWarnings("unchecked")
                 List<Map<String, Object>> objects = (List<Map<String, Object>>) data.get("objects");
                 if (!objects.isEmpty()) {
-                    System.out.println(robotName + "> Objects detected:");
+                    printWithColor(robotName + "> Objects detected:");
                     for (Map<String, Object> object : objects) {
                         String objectDirection = (String) object.get("direction");
                         String type = (String) object.get("type");
                         int distance = (int) object.get("distance");
 
-                        System.out.println(" - Direction: [" + objectDirection + "], Type: [" + type + "], Distance: [" + distance + "]");
+                        printWithColor(" - Direction: [" + objectDirection + "], Type: [" + type + "], Distance: [" + distance + "]");
                     }
                 } else {
-                    System.out.println(robotName + "> No objects detected:");
+                    printWithColor(robotName + "> No objects detected:");
                 }
 
             } else if (command.equalsIgnoreCase("FORWARD") ||
                     command.equalsIgnoreCase("BACK")) {
-                System.out.println(robotName+"> "+data.get("message"));
-                System.out.println("Now at ["+xCoord+","+yCoord+"], facing "+robotDirection);
+                printWithColor(robotName+"> "+data.get("message"));
+                printWithColor("Now at ["+xCoord+","+yCoord+"], facing "+robotDirection);
             } else if (command.equalsIgnoreCase("TURN")) {
-                System.out.println(robotName+"> "+data.get("message"));
-                System.out.println("Now at ["+xCoord+","+yCoord+"], facing "+robotDirection);
+                printWithColor(robotName+"> "+data.get("message"));
+                printWithColor("Now at ["+xCoord+","+yCoord+"], facing "+robotDirection);
             } else if (command.equalsIgnoreCase("STATE")) {
                 int shields = (int) state.get("shields");
                 int shots = (int) state.get("shots");
                 String status = (String) state.get("status");
 
                 assert position != null;
-                System.out.println("Position : ["+position.get("x")+","+position.get("y")+"]");
-                System.out.println("Direction: ["+robotDirection+"]");
-                System.out.println("Shields  :  "+shields);
-                System.out.println("Shots    :  "+shots);
-                System.out.println("Status   : ["+status+"]");
+                printWithColor("Position : ["+position.get("x")+","+position.get("y")+"]");
+                printWithColor("Direction: ["+robotDirection+"]");
+                printWithColor("Shields  :  "+shields);
+                printWithColor("Shots    :  "+shots);
+                printWithColor("Status   : ["+status+"]");
             } else if (command.equalsIgnoreCase("ORIENTATION")) {
-                System.out.println("Direction: ["+robotDirection+"]");
+                printWithColor("Direction: ["+robotDirection+"]");
             } else if (command.equalsIgnoreCase("FIRE")) {
                 String message = (String) data.get("message");
                 if (message.equalsIgnoreCase("HIT")) {
@@ -212,26 +223,26 @@ public class RobotClient {
                     int enemyShots = (int) enemyState.get("shots");
                     String enemyStatus = (String) enemyState.get("status");
 
-                    System.out.println(robotName+"> HIt!");
-                    System.out.println(" ".repeat(robotName.length())+"Enemy state:\n"+"_".repeat(11));
-                    System.out.println(" ".repeat(robotName.length())+"position: ["+enemyPositionX+","+enemyPositionY+"]");
-                    System.out.println(" ".repeat(robotName.length())+"direction: ["+enemyDirection+"]");
-                    System.out.println(" ".repeat(robotName.length())+"shields: "+enemyShields);
-                    System.out.println(" ".repeat(robotName.length())+"shots: "+enemyShots);
-                    System.out.println(" ".repeat(robotName.length())+"status: "+enemyStatus);
+                    printWithColor(robotName+"> Hit!");
+                    printWithColor(" ".repeat(robotName.length())+"Enemy state:\n"+"_".repeat(11));
+                    printWithColor(" ".repeat(robotName.length())+"position: ["+enemyPositionX+","+enemyPositionY+"]");
+                    printWithColor(" ".repeat(robotName.length())+"direction: ["+enemyDirection+"]");
+                    printWithColor(" ".repeat(robotName.length())+"shields: "+enemyShields);
+                    printWithColor(" ".repeat(robotName.length())+"shots: "+enemyShots);
+                    printWithColor(" ".repeat(robotName.length())+"status: "+enemyStatus);
                 } else {
-                    System.out.println(robotName+"> Miss!");
+                    printWithColor(robotName+"> Miss!");
                 }
                 int robotShots = (int) state.get("shots");
                 if (robotShots != 0)
-                    System.out.println("\n"+robotName+"> "+robotShots+" shot(s) left");
+                    printWithColor("\n"+robotName+"> "+robotShots+" shot(s) left");
                 else
-                    System.out.println("\n"+robotName+"> No shots left. Reload!");
+                    printWithColor("\n"+robotName+"> No shots left. Reload!");
             } else if (command.equalsIgnoreCase("RELOAD")) {
-                System.out.println(robotName+"> Fully reloaded! "+state.get("shots")+" shot(s) left");
+                printWithColor(robotName+"> Fully reloaded! "+state.get("shots")+" shot(s) left");
             }
         } else {
-            System.out.println(data.get("message"));
+            printWithColor(data.get("message").toString());
         }
     }
 
@@ -246,5 +257,11 @@ public class RobotClient {
 
     private ServerResponse getServerResponseObject(String serverResponse) {
         return Json.fromJson(serverResponse);
+    }
+
+    private static void printWithColor(String text) {
+        String color = COLORS[colorIndex % COLORS.length];
+        System.out.println(color + text + COLORS[7]); // Reset color
+        colorIndex++;
     }
 }

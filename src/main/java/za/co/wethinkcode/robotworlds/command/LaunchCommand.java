@@ -1,6 +1,8 @@
 package za.co.wethinkcode.robotworlds.command;
 
-import za.co.wethinkcode.robotworlds.robot.Robot;
+import com.fasterxml.jackson.databind.JsonNode;
+import za.co.wethinkcode.robotworlds.Json;
+import za.co.wethinkcode.robotworlds.robot.SimpleBot;
 import za.co.wethinkcode.robotworlds.server.ServerResponse;
 import za.co.wethinkcode.robotworlds.world.IWorld;
 
@@ -8,18 +10,19 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class LaunchCommand extends Command {
-    public LaunchCommand(String make, String name) {
-        super("launch", make, name);
+    public LaunchCommand(Object[] arguments) {
+        super("launch", arguments);
     }
 
-    public Robot createRobot(IWorld world, int PORT) {
-        String make = super.getArgument1();
-        String name = super.getArgument2();
-        return world.launchRobot(make, name, PORT);
+    public SimpleBot createRobot(JsonNode rootNode, IWorld world, int PORT) {
+        String name = (String) Json.getJsonFields(rootNode).get("robot");
+        String make = (String) super.getArguments()[0];
+        int maximumShots = (int) super.getArguments()[2];
+        return world.launchRobot(make, name, maximumShots, PORT);
     }
 
     @Override
-    public ServerResponse execute (Robot target, IWorld world) {
+    public ServerResponse execute (SimpleBot target, IWorld world) {
         // result field of response
         String result = "OK";
         // data field of response
@@ -34,7 +37,7 @@ public class LaunchCommand extends Command {
         state.put("position", target.getPosition());
         state.put("direction", target.getDirection());
         state.put("shields", target.getShields());
-        state.put("shots", target.getShots());
+        state.put("shots", target.getGun().getNumberOfShots());
         state.put("status", target.getStatus());
 
         return new ServerResponse(result, data, state);

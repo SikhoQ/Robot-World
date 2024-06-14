@@ -6,7 +6,7 @@ import za.co.wethinkcode.robotworlds.world.Obstacle;
 import java.util.List;
 
 /**
- * Interface to represent a maze. A World will be loaded with a Maze, and will delegate the work to check if a path is blocked by certain obstacles etc to this maze instance.
+ * Interface to represent a maze. A World will be loaded with a Maze, and will delegate the work to check if a path is blocked by certain obstacles etc. to this maze instance.
  */
 public interface Maze {
     /**

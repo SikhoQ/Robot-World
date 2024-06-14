@@ -4,7 +4,6 @@ import za.co.wethinkcode.robotworlds.Direction;
 import za.co.wethinkcode.robotworlds.Position;
 import za.co.wethinkcode.robotworlds.Sleep;
 import za.co.wethinkcode.robotworlds.maze.RandomMaze;
-import za.co.wethinkcode.robotworlds.robot.Robot;
 import za.co.wethinkcode.robotworlds.robot.SimpleBot;
 import za.co.wethinkcode.robotworlds.robot.SniperBot;
 import za.co.wethinkcode.robotworlds.world.configuration.Config;
@@ -19,7 +18,7 @@ public class TextWorld implements IWorld {
     private final Position TOP_LEFT;
     private final Position BOTTOM_RIGHT;
     private final Edge worldEdges;
-    private final Map<Integer, Robot> robots;
+    private final Map<Integer, SimpleBot> robots;
     private int worldHeight;
     private int worldWidth;
     private int visibility;
@@ -122,7 +121,7 @@ public class TextWorld implements IWorld {
                 return false;
             }
         }
-        for (Map.Entry<Integer, Robot> entry: robots.entrySet()) {
+        for (Map.Entry<Integer, SimpleBot> entry: robots.entrySet()) {
             if (entry.getValue().blocksPosition(position)) {
                 return false;
             }
@@ -181,22 +180,24 @@ public class TextWorld implements IWorld {
     }
 
     @Override
-    public Robot launchRobot(String make, String name, int PORT) {
+    public SimpleBot launchRobot(String make, String name, int maximumShots, int PORT) {
         // change this to use make to create relevant robot
-        Sleep.sleep(1300);
-        Position position = Position.getRandomPosition();
+        Sleep.sleep(800);
+        Position position = Position.getRandomPosition(this);
         position = validateLaunchPosition(position);
         Direction direction = Direction.getRandomDirection();
-        Robot robot;
+        SimpleBot robot;
 
         // should try to fix this method to work similar to
         // Command class
         if (make.equalsIgnoreCase("SIMPLEBOT"))
-            robot = new SimpleBot(name, position, direction);
+            robot = new SimpleBot(name, position, direction, PORT);
         else
-            robot = new SniperBot(name, position, direction);
+            robot = new SniperBot(name, position, direction, PORT);
 
-        System.out.println(name+" ("+make+")"+" joined.");
+        robot.setGun(maximumShots);
+
+        System.out.println(name+" ("+make+")"+" launched at ["+position.getX()+","+position.getY()+"]");
         robots.put(PORT, robot);
         return robot;
     }
@@ -207,22 +208,22 @@ public class TextWorld implements IWorld {
     }
 
     @Override
-    public Map<Integer, Robot> getRobots() {
+    public Map<Integer, SimpleBot> getRobots() {
         return robots;
     }
 
     @Override
     public Position validateLaunchPosition(Position position) {
-        Map<Integer, Robot> robots = getRobots();
+        Map<Integer, SimpleBot> robots = getRobots();
         List<Obstacle> obstacles = getObstacles();
-        for (Map.Entry<Integer, Robot> entry: robots.entrySet()) {
+        for (Map.Entry<Integer, SimpleBot> entry: robots.entrySet()) {
             while (entry.getValue().getPosition().equals(position)) {
-                position = Position.getRandomPosition();
+                position = Position.getRandomPosition(this);
             }
         }
         for (Obstacle obstacle: obstacles) {
             while (obstacle.blocksPosition(position)) {
-                position = Position.getRandomPosition();
+                position = Position.getRandomPosition(this);
             }
         }
         return position;
@@ -249,13 +250,13 @@ public class TextWorld implements IWorld {
                     +(obstacle.getBottomLeftY()+4)+")";
             dump.append(obstacleString).append("\n");
         }
-        Map<Integer, Robot> robots = getRobots();
+        Map<Integer, SimpleBot> robots = getRobots();
         dump.append("\nRobots\n------\n");
         if (robots.isEmpty()) {
             dump.append("* No Robots Launched\n");
         }
-        for (Map.Entry<Integer, Robot> entry: robots.entrySet()) {
-            Robot robot = entry.getValue();
+        for (Map.Entry<Integer, SimpleBot> entry: robots.entrySet()) {
+            SimpleBot robot = entry.getValue();
             String name = robot.getName();
 
             Position position = robot.getPosition();
@@ -280,16 +281,23 @@ public class TextWorld implements IWorld {
 
     @Override
     public void showRobots() {
-        Map<Integer, Robot> robots = getRobots();
+        Map<Integer, SimpleBot> robots = getRobots();
         if (robots.isEmpty()) {
             System.out.println("There are no robots in this world.");
         } else {
             int robotCount = 1;
             System.out.println("There are robots:");
-            for (Map.Entry<Integer, Robot> entry: robots.entrySet()) {
-                System.out.println(" Robot "+(robotCount++)+":");
-                System.out.println(" ========");
-                System.out.println(" "+entry.getValue().getName()+"\n");
+            for (Map.Entry<Integer, SimpleBot> entry: robots.entrySet()) {
+                Position position = entry.getValue().getPosition();
+                System.out.println("\n Robot "+(robotCount++)+":");
+                System.out.println(" "+"=".repeat((" name: ["+entry.getValue().getName()+"]").length()));
+                System.out.println(" name: ["+entry.getValue().getName()+"]");
+                System.out.println(" "+"_".repeat((" name: ["+entry.getValue().getName()+"]").length()));
+                System.out.println(" position : "+"["+position.getX()+","+position.getY()+"]");
+                System.out.println(" direction: ["+entry.getValue().getDirection()+"]");
+                System.out.println(" shields  :  "+entry.getValue().getShields());
+                System.out.println(" shots    :  "+entry.getValue().getGun().getNumberOfShots());
+                System.out.println(" status   : ["+entry.getValue().getStatus()+"]");
             }
         }
     }

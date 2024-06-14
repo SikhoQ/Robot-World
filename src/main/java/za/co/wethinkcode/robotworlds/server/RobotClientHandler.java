@@ -6,9 +6,11 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import za.co.wethinkcode.robotworlds.Json;
-import za.co.wethinkcode.robotworlds.robot.Robot;
+import za.co.wethinkcode.robotworlds.client.UserInput;
+import za.co.wethinkcode.robotworlds.robot.SimpleBot;
 import za.co.wethinkcode.robotworlds.command.Command;
 import za.co.wethinkcode.robotworlds.command.LaunchCommand;
 import za.co.wethinkcode.robotworlds.world.IWorld;
@@ -21,10 +23,12 @@ import za.co.wethinkcode.robotworlds.world.IWorld;
 public class RobotClientHandler implements Runnable {
     private final Socket clientSocket;
     private final IWorld world;
+    private SimpleBot robot;
 
     public RobotClientHandler(Socket clientSocket, IWorld world) {
         this.clientSocket = clientSocket;
         this.world = world;
+        this.robot = null;
     }
 
     public Socket getClientSocket() {
@@ -41,16 +45,9 @@ public class RobotClientHandler implements Runnable {
             PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
 
             String clientRequest;
-            Robot robot = null;
-            Json json = new Json();
+
             while ((clientRequest = in.readLine()) != null) {
-                Command command = getCommand(clientRequest, world);
-                if (command.getCommand().equalsIgnoreCase("LAUNCH")) {
-                    LaunchCommand launchCommand = (LaunchCommand) command;
-                    robot = launchCommand.createRobot(world, clientSocket.getPort());
-                }
-                ServerResponse serverResponseObject = command.execute(robot, world);
-                String serverResponse = json.toJson(serverResponseObject);
+                String serverResponse = processRequest(clientRequest);
                 out.println(serverResponse);
             }
         } catch (IOException ignored) {
@@ -73,9 +70,7 @@ public class RobotClientHandler implements Runnable {
     }
 
 
-    public Command getCommand(String clientRequest, IWorld world) {
-        Json json = new Json();
-        JsonNode rootNode = json.jsonFieldAccess(clientRequest);
+    public Command getCommand(JsonNode rootNode, IWorld world) {
         return Command.create(rootNode, world);
     }
 
@@ -83,13 +78,16 @@ public class RobotClientHandler implements Runnable {
     * use this function to handle error responses since each command's execute
     * returns a ServerResponse object
     * */
-    private String processRequest(String clientRequest) {
-        // return 'unsupported command' error upon exception
-        // a.k.a response for badly formed request
-//        Map<String, String> data = new HashMap<>();
-//        data.put("message", "Unsupported command");
-//        Map<String, Object> dataCopy = new HashMap<>(data);
-//        return json.toJson(new ServerResponse("ERROR", dataCopy));
-        return  "";
+    public String processRequest(String clientRequest) {
+        JsonNode rootNode = Json.jsonFieldAccess(clientRequest);
+        Command command = getCommand(rootNode, world);
+
+        System.out.println("Command ["+command.getCommand()+"] received from client on local port: "+clientSocket.getPort());
+        if (command.getCommand().equalsIgnoreCase("LAUNCH")) {
+            LaunchCommand launchCommand = (LaunchCommand) command;
+            robot = launchCommand.createRobot(rootNode, world, clientSocket.getPort());
+        }
+        ServerResponse serverResponseObject = command.execute(robot, world);
+        return Json.toJson(serverResponseObject);
     }
 }

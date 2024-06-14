@@ -20,7 +20,7 @@ public class RemoveClient extends Thread {
                 Socket clientSocket = client.getClientSocket();
                 if ((!clientSocket.isConnected() || clientSocket.isClosed()) && server.getClients().contains(client)) {
                     server.removeClient(client);
-                    System.out.println("Client disconnected on local port: "+clientSocket.getPort());
+                    System.out.println("\nClient disconnected on local port: "+clientSocket.getPort());
                 }
             }
         }

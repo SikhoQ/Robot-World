@@ -1,66 +1,103 @@
-# Robot World Flowchart
 
-```mermaid
-graph TD
-    A1[Start Server] --> A2[Initialize Server Socket]
-    A2 --> A3[Start Listening for Client Connections]
-    A3 -->|Client Connects| B1[Create RobotClientHandler]
-    B1 --> B2[Add ClientHandler to Active Clients]
-    B2 --> B3[Start New Thread for Client Communication]
+# Robot World DBN_14
 
-    B3 --> C1[Receive Client Request]
-    C1 --> C2[Parse JSON Request]
-    C2 --> C3{Determine Command Type}
-    C3 -->|Launch| D1[Execute Launch Command]
-    C3 -->|Look| D2[Execute Look Command]
-    C3 -->|State| D3[Execute State Command]
+Welcome to the Robot World (DBN_14) project! This project is a team effort to build a client/server robot world, where the server manages a world with obstacles, robots, and other artifacts, and the client controls a robot in this world by sending and receiving messages to and from the server.
 
-    D1 --> D4[Update World State]
-    D2 --> D5[Provide World State Information]
-    D3 --> D6[Update Robot Position/Status]
+## Table of Contents
 
-    D4 --> E1[Create Response Object]
-    D5 --> E1
-    D6 --> E1
-    E1 --> E2[Convert Response to JSON]
-    E2 --> E3[Send JSON Response to Client]
+1. Introduction
+2. Client/Server Architecture
+    The Server
+    The Robot Client
+    Robot World Protocol
+3. Getting Started
+    Prerequisites
+    Starting the Server
+    Connecting a Client
+4. Usage
+    Commands
+    Protocol
 
-    E3 --> F1{Client Disconnects?}
-    F1 -->|Yes| G1[Remove ClientHandler from Active Clients]
-    G1 --> G2[Close Client Connection]
-    F1 -->|No| C1
+5. Testing
+6. Team Members
+7. More Information
 
-    A3 -->|Client Connection Loop| A3
+## Introduction
 
-    %% Client Side
-    H1[Start Client] --> H2[Display Program Title and Welcome Message]
-    H2 --> H3[Initialize RobotClient]
-    H3 --> H4[Start Connection to Server]
+In this team project, we built a client/server Robot World consisting of two programs: the server and the client. The server manages a world with obstacles, robots, and other artifacts. The client controls a robot in this world by sending and receiving messages to and from the server.
 
-    H4 --> I1[Get User Input for Launch]
-    I1 --> I2[Handle User Input]
-    I2 --> I3[Create ClientRequest]
-    I3 --> I4[Convert Request to JSON]
-    I4 --> I5[Send JSON Request to Server]
-    I5 --> I6[Receive Server Response]
-    I6 --> I7[Parse Server Response]
-    I7 --> I8[Display Robot Details]
+## Client/Server Architecture
 
-    I8 --> J1{User Command Loop}
-    J1 -->|exit| K1[Close Connection to Server]
-    K1 --> K2[Exit Program]
-    J1 -->|not exit| L1[Get User Command]
-    L1 --> L2[Handle User Input]
-    L2 --> L3[Create ClientRequest]
-    L3 --> L4[Convert Request to JSON]
-    L4 --> L5[Send JSON Request to Server]
-    L5 --> L6[Receive Server Response]
-    L6 --> L7[Parse Server Response]
-    L7 --> L8[Display Updated Robot Details]
-    L8 --> J1
+### The Server
 
-    classDef server fill:#f96,stroke:#333,stroke-width:4px,color:#000;
-    classDef client fill:#69f,stroke:#333,stroke-width:4px,color:#000;
+The server is a standalone console Java program that:
+- Builds the robot world with obstacles and artifacts.
+- Listens on a network port for incoming robot connections.
+- Manages multiple robots concurrently.
+- Updates the world based on robot instructions and sends responses back to clients.
 
-    class A1,A2,A3,B1,B2,B3,C1,C2,C3,D1,D2,D3,D4,D5,D6,E1,E2,E3,F1,G1,G2 server
-    class H1,H2,H3,H4,I1,I2,I3,I4,I5,I6,I7,I8,J1,K1,K2,L1,L2,L3,L4,L5,L6,L7,L8 client
+### The Robot Client
+
+The client is a standalone Java program that:
+- Connects to the robot world server over a network.
+- Launches a robot into the world.
+- Sends commands to the robot, receives updates, and adjusts the robot's state accordingly.
+- Has no prior knowledge of the world and learns about it as the robot moves.
+
+### Robot World Protocol
+
+A common messaging protocol allowing client programs to connect to any server on the network was implemented. This ensures interoperability between different implementations.
+
+## Getting Started
+
+### Prerequisites
+
+- Java 11 or later
+- A network connection
+
+### Setup Instructions
+
+1. To start the server, run the `RobotWorldServer` Class
+   
+2. To connect a client, run the `ClientMain` class
+    
+3. Once connected, you can send commands such as forward, back, left, right, look, fire, state, repair, and reload through the client's interface.
+
+## Usage
+
+The user can use the following commands when playing the game. These commands allow the player to interact with their robot in various ways, providing control over its movement, state, and interactions within the robot world.
+
+- `launch`: Launches a robot into the world.
+- `look`: Provides a view of the surrounding area in the robot's field of view.
+- `state`: Retrieves the current state of the robot, including its position, direction, shields, shots, and status.
+- `forward`: Moves the robot forward by the specified number of steps.
+- `back`: Moves the robot backward by the specified number of steps.
+- `turn`: Turns the robot in a specified direction (left or right).
+- `orientation`: Retrieves the robot's current orientation.
+- `quit`: Quits the server and disconnects the robot.
+- `fire`: Fires a shot from the robot's weapon.
+- `repair`: Repairs the robot, restoring its shields.
+- `reload`: Reloads the robot's weapon.
+
+### Protocol
+
+The commands follow a simple request/response protocol. When a command is issued by the client, the server processes it and sends back an appropriate response. This interaction allows the client to control the robot and get feedback on its actions.
+
+## Testing
+
+The project includes unit tests for all major functionalities. Integration tests ensure that the client and server interact correctly.
+
+To run the tests:
+mvn test
+
+## Team Members
+* Bongiwe Ntshantsha
+* Lindani Jonase 
+* Nomonde Bhengu
+* Nonhle Sibiya
+* Sikho Qangule
+
+## More Information
+
+For more detailed documentation, architecture diagrams, and additional resources, please refer to our [Wiki](https://gitlab.wethinkco.de/sqangule023/dbn_14_robot_worlds/-/wikis/Robot-World-DBN_14).
+   

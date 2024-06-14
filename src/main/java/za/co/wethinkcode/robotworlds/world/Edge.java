@@ -23,7 +23,7 @@ public class Edge {
         return bottomRight.getY();
     }
 
-    public int getMaxmimumY() {
+    public int getMaximumY() {
         return topLeft.getY();
     }
 }

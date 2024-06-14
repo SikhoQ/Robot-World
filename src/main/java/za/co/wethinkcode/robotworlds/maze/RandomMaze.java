@@ -19,6 +19,9 @@ public class RandomMaze implements Maze {
         this.obstacles = new ArrayList<>();
     }
 
+    public RandomMaze(Random random, Config config) {
+    }
+
     /**
      * Returns the list of obstacles in the maze.
      *

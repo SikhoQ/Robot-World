@@ -22,6 +22,8 @@ public class FireCommand extends Command {
 
     @Override
     public ServerResponse execute(SimpleBot target, IWorld world) {
+        target.getGun().fireShot();
+
         String result = "Ok";
         // get the robot's position and direction
         Position position = target.getPosition();
@@ -69,7 +71,11 @@ public class FireCommand extends Command {
         if (message.equals("MISS")) {
             data.put("message", "Miss");
         } else {
-            target.getGun().fireShot();
+            enemyRobot.updateShields();
+            if (enemyRobot.getShields() == 0) {
+                world.removeRobot(enemyRobot.getPORT());
+            }
+
             data.put("message", "Hit");
             data.put("distance", enemyRobotDistance);
             data.put("name", enemyRobot.getName());

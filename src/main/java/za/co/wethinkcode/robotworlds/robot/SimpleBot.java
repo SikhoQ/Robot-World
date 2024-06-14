@@ -1,9 +1,9 @@
 package za.co.wethinkcode.robotworlds.robot;
 
-
 import za.co.wethinkcode.robotworlds.Direction;
 import za.co.wethinkcode.robotworlds.Position;
 import za.co.wethinkcode.robotworlds.world.IWorld;
+import za.co.wethinkcode.robotworlds.world.configuration.Config;
 
 public class SimpleBot {
 
@@ -14,17 +14,29 @@ public class SimpleBot {
     protected int shields;
     private final int MAX_SHIELDS = 10;
     private Gun gun;
+    private final int reloadTime; // in milliseconds
+    private final int repairTime; // in milliseconds
+    private int PORT;
 
-    public SimpleBot(String name, Position position, Direction direction) {
+    public SimpleBot(String name, Position position, Direction direction, int PORT) {
         this.name = name;
         this.status = "NORMAL";
         this.shields = MAX_SHIELDS;
         this.position = position;
         this.direction = direction;
+        this.PORT = PORT;
+
+        Config config = Config.readConfiguration();
+        this.reloadTime = config.getReload() * 1000; // Convert seconds to milliseconds
+        this.repairTime = config.getRepair() * 1000; // Convert seconds to milliseconds
     }
 
     public String getStatus() {
         return status;
+    }
+
+    public long getReloadTime() {
+        return this.reloadTime;
     }
 
     public void setStatus(String newStatus) {
@@ -57,6 +69,10 @@ public class SimpleBot {
 
     public Position getPosition() {
         return position;
+    }
+
+    public int getPORT() {
+        return PORT;
     }
 
     public String updatePosition(int numSteps, IWorld world) {
@@ -93,9 +109,9 @@ public class SimpleBot {
         return this.getPosition().equals(position);
     }
 
-    public void updateShields(int hit) {
+    public void updateShields() {
         if (shields > 0) {
-            shields -= hit;
+            shields--;
         }
     }
 
@@ -104,6 +120,15 @@ public class SimpleBot {
         direction = Direction.NORTH;
         status = "NORMAL";
         shields = MAX_SHIELDS;
+    }
+
+    public void repair() {
+        try {
+            Thread.sleep(repairTime);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+        this.shields = MAX_SHIELDS;
     }
 
     @Override

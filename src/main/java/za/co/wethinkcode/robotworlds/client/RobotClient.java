@@ -109,6 +109,9 @@ public class RobotClient {
             out.println(clientRequest);
             // get server response
             String serverResponse = getServerResponse();
+            /////////////////////////////////////////////
+            System.out.println(serverResponse);
+            /////////////////////////////////////////////
             // get server response object
             serverResponseObject = getServerResponseObject(serverResponse);
             if (serverResponseObject.getResult().equals("OK")) {
@@ -137,6 +140,9 @@ public class RobotClient {
             String clientRequest = Json.toJson(request);
             sendClientRequest(clientRequest);
             String serverResponse = getServerResponse();
+            /////////////////////////////////////////////
+            System.out.println(serverResponse);
+            /////////////////////////////////////////////
             ServerResponse serverResponseObject = getServerResponseObject(serverResponse);
             printRequestResult(robotName, request.command(), serverResponseObject, request);
             userInput = UserInput.getInput("\n"+robotName+"> What must I do next?");

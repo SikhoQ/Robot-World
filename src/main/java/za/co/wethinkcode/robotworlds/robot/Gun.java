@@ -19,6 +19,10 @@ public class Gun {
         return numberOfShots;
     }
 
+    public int getMAX_SHOTS() {
+        return MAX_SHOTS;
+    }
+
     public void fireShot() {
         if (numberOfShots > 0) {
             numberOfShots--;

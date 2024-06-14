@@ -7,6 +7,7 @@
 /home/wtc/student work/Java/Robot World/new/dbn_14_robot_worlds/src/test/java/za/co/wethinkcode/robotworlds/command/LeftCommandTest.java
 /home/wtc/student work/Java/Robot World/new/dbn_14_robot_worlds/src/test/java/za/co/wethinkcode/robotworlds/command/InvalidCommandTest.java
 /home/wtc/student work/Java/Robot World/new/dbn_14_robot_worlds/src/test/java/za/co/wethinkcode/robotworlds/command/CommandTest.java
+/home/wtc/student work/Java/Robot World/new/dbn_14_robot_worlds/src/test/java/za/co/wethinkcode/robotworlds/command/ReloadCommandTest.java
 /home/wtc/student work/Java/Robot World/new/dbn_14_robot_worlds/src/test/java/za/co/wethinkcode/robotworlds/command/RightCommandTest.java
 /home/wtc/student work/Java/Robot World/new/dbn_14_robot_worlds/src/test/java/za/co/wethinkcode/robotworlds/command/QuitCommandTest.java
 /home/wtc/student work/Java/Robot World/new/dbn_14_robot_worlds/src/test/java/za/co/wethinkcode/robotworlds/server/RobotWorldServerTest.java

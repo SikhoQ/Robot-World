@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="za.co.wethinkcode.robotworlds.world.JsonTest" time="0.659" tests="3" errors="0" skipped="0" failures="0">
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="za.co.wethinkcode.robotworlds.world.JsonTest" time="0.756" tests="3" errors="0" skipped="0" failures="0">
   <properties>
     <property name="java.specification.version" value="21"/>
     <property name="sun.jnu.encoding" value="UTF-8"/>
@@ -13,7 +13,7 @@
     <property name="sun.java.launcher" value="SUN_STANDARD"/>
     <property name="user.country" value="US"/>
     <property name="sun.boot.library.path" value="/home/wtc/.jdks/openjdk-21.0.2/lib"/>
-    <property name="sun.java.command" value="/home/wtc/student work/Java/Robot World/new/dbn_14_robot_worlds/target/surefire/surefirebooter-20240613152224139_3.jar /home/wtc/student work/Java/Robot World/new/dbn_14_robot_worlds/target/surefire 2024-06-13T15-22-22_942-jvmRun1 surefire-20240613152224139_1tmp surefire_0-20240613152224139_2tmp"/>
+    <property name="sun.java.command" value="/home/wtc/student work/Java/Robot World/new/dbn_14_robot_worlds/target/surefire/surefirebooter-20240614154924086_3.jar /home/wtc/student work/Java/Robot World/new/dbn_14_robot_worlds/target/surefire 2024-06-14T15-49-23_852-jvmRun1 surefire-20240614154924086_1tmp surefire_0-20240614154924086_2tmp"/>
     <property name="jdk.debug" value="release"/>
     <property name="surefire.test.class.path" value="/home/wtc/student work/Java/Robot World/new/dbn_14_robot_worlds/target/test-classes:/home/wtc/student work/Java/Robot World/new/dbn_14_robot_worlds/target/classes:/home/wtc/.m2/repository/com/fasterxml/jackson/core/jackson-annotations/2.14.1/jackson-annotations-2.14.1.jar:/home/wtc/.m2/repository/com/fasterxml/jackson/core/jackson-core/2.14.1/jackson-core-2.14.1.jar:/home/wtc/.m2/repository/com/fasterxml/jackson/core/jackson-databind/2.14.1/jackson-databind-2.14.1.jar:/home/wtc/.m2/repository/junit/junit/4.13.2/junit-4.13.2.jar:/home/wtc/.m2/repository/net/bytebuddy/byte-buddy/1.10.18/byte-buddy-1.10.18.jar:/home/wtc/.m2/repository/net/bytebuddy/byte-buddy-agent/1.10.18/byte-buddy-agent-1.10.18.jar:/home/wtc/.m2/repository/org/apiguardian/apiguardian-api/1.1.0/apiguardian-api-1.1.0.jar:/home/wtc/.m2/repository/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar:/home/wtc/.m2/repository/org/junit/jupiter/junit-jupiter-api/5.9.2/junit-jupiter-api-5.9.2.jar:/home/wtc/.m2/repository/org/junit/jupiter/junit-jupiter-engine/5.6.3/junit-jupiter-engine-5.6.3.jar:/home/wtc/.m2/repository/org/junit/jupiter/junit-jupiter-params/5.9.2/junit-jupiter-params-5.9.2.jar:/home/wtc/.m2/repository/org/junit/platform/junit-platform-commons/1.9.2/junit-platform-commons-1.9.2.jar:/home/wtc/.m2/repository/org/junit/platform/junit-platform-engine/1.6.3/junit-platform-engine-1.6.3.jar:/home/wtc/.m2/repository/org/junit/platform/junit-platform-launcher/1.6.3/junit-platform-launcher-1.6.3.jar:/home/wtc/.m2/repository/org/mockito/mockito-core/3.6.28/mockito-core-3.6.28.jar:/home/wtc/.m2/repository/org/mockito/mockito-junit-jupiter/3.6.28/mockito-junit-jupiter-3.6.28.jar:/home/wtc/.m2/repository/org/objenesis/objenesis/3.1/objenesis-3.1.jar:/home/wtc/.m2/repository/org/opentest4j/opentest4j/1.2.0/opentest4j-1.2.0.jar:"/>
     <property name="sun.cpu.endian" value="little"/>
@@ -28,7 +28,7 @@
     <property name="line.separator" value="&#10;"/>
     <property name="java.specification.name" value="Java Platform API Specification"/>
     <property name="java.vm.specification.vendor" value="Oracle Corporation"/>
-    <property name="surefire.real.class.path" value="/home/wtc/student work/Java/Robot World/new/dbn_14_robot_worlds/target/surefire/surefirebooter-20240613152224139_3.jar"/>
+    <property name="surefire.real.class.path" value="/home/wtc/student work/Java/Robot World/new/dbn_14_robot_worlds/target/surefire/surefirebooter-20240614154924086_3.jar"/>
     <property name="sun.management.compiler" value="HotSpot 64-Bit Tiered Compilers"/>
     <property name="java.runtime.version" value="21.0.2+13-58"/>
     <property name="user.name" value="wtc"/>
@@ -55,7 +55,7 @@
     <property name="sun.io.unicode.encoding" value="UnicodeLittle"/>
     <property name="java.class.version" value="65.0"/>
   </properties>
-  <testcase name="toJsonTest" classname="za.co.wethinkcode.robotworlds.world.JsonTest" time="0.539"/>
-  <testcase name="fromJsonThrowsException" classname="za.co.wethinkcode.robotworlds.world.JsonTest" time="0.105"/>
-  <testcase name="toJsonDoesNotThrowExceptionTest" classname="za.co.wethinkcode.robotworlds.world.JsonTest" time="0.008"/>
+  <testcase name="toJsonTest" classname="za.co.wethinkcode.robotworlds.world.JsonTest" time="0.622"/>
+  <testcase name="fromJsonThrowsException" classname="za.co.wethinkcode.robotworlds.world.JsonTest" time="0.116"/>
+  <testcase name="toJsonDoesNotThrowExceptionTest" classname="za.co.wethinkcode.robotworlds.world.JsonTest" time="0.01"/>
 </testsuite>

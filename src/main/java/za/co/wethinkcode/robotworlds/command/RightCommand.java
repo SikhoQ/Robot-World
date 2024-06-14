@@ -1,7 +1,7 @@
 package za.co.wethinkcode.robotworlds.command;
 
 import za.co.wethinkcode.robotworlds.Direction;
-import za.co.wethinkcode.robotworlds.robot.Robot;
+import za.co.wethinkcode.robotworlds.robot.SimpleBot;
 import za.co.wethinkcode.robotworlds.server.ServerResponse;
 import za.co.wethinkcode.robotworlds.world.IWorld;
 
@@ -11,11 +11,11 @@ import java.util.Map;
 public class RightCommand extends Command {
 
     public RightCommand() {
-        super("right");
+        super("right", null);
     }
 
     @Override
-    public ServerResponse execute(Robot target, IWorld world) {
+    public ServerResponse execute(SimpleBot target, IWorld world) {
         switch (target.getDirection()){
             case NORTH:
                 target.setDirection(Direction.EAST);
@@ -38,9 +38,10 @@ public class RightCommand extends Command {
         state.put("position", target.getPosition());
         state.put("direction", target.getDirection());
         state.put("shields", target.getShields());
-        state.put("shots", target.getShots());
+        state.put("shots", target.getGun().getNumberOfShots());
         state.put("status", target.getStatus());
 
         return new ServerResponse(result, data, state);
     }
 }
+

@@ -32,26 +32,26 @@ public class SimpleMaze implements Maze {
      * Checks if the path from the start position to the destination position is blocked by any obstacle.
      *
      * @param start the starting position of the path
-     * @param dest the destination position of the path
+     * @param destination the destination position of the path
      * @return true if the path is blocked by an obstacle, false otherwise
      */
     @Override
-    public boolean blocksPath(Position start, Position dest) {
+    public boolean blocksPath(Position start, Position destination) {
 
         Obstacle[] obstaclesArray = obstacles.toArray(new Obstacle[obstacles.size() - 1]);
         for (Obstacle obs: obstaclesArray) {
             // vertical path
-            if (start.getX() == dest.getX()) {
-                if ((obs.getBottomLeftY() >= Math.min(start.getY(), dest.getY())
-                        && obs.getBottomLeftY() <= Math.max(start.getY(), dest.getY()))
+            if (start.getX() == destination.getX()) {
+                if ((obs.getBottomLeftY() >= Math.min(start.getY(), destination.getY())
+                        && obs.getBottomLeftY() <= Math.max(start.getY(), destination.getY()))
                         && (start.getX() >= obs.getBottomLeftX() && start.getX() <= obs.getBottomLeftX() + 4)) {
                     return true;
                 }
             }
             // horizontal
             else {
-                if ((obs.getBottomLeftX() >= Math.min(start.getX(), dest.getX())
-                        && obs.getBottomLeftX() <= Math.max(start.getX(), dest.getX()))
+                if ((obs.getBottomLeftX() >= Math.min(start.getX(), destination.getX())
+                        && obs.getBottomLeftX() <= Math.max(start.getX(), destination.getX()))
                         && (start.getY() >= obs.getBottomLeftY() && start.getY() <= obs.getBottomLeftY() + 4)) {
                     return true;
                 }

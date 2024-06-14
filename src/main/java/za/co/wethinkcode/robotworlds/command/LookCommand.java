@@ -1,7 +1,6 @@
 package za.co.wethinkcode.robotworlds.command;
 
 import za.co.wethinkcode.robotworlds.Position;
-import za.co.wethinkcode.robotworlds.robot.Robot;
 import za.co.wethinkcode.robotworlds.robot.SimpleBot;
 import za.co.wethinkcode.robotworlds.robot.SniperBot;
 import za.co.wethinkcode.robotworlds.world.*;
@@ -13,35 +12,20 @@ import java.util.Map;
 
 public class LookCommand extends Command {
     public LookCommand() {
-        super("look");
+        super("look", null);
     }
 
     @Override
-    public ServerResponse execute(Robot target, IWorld world) {
-        // for the look command, robot needs to look in all four directions
-        // create a method that takes the robot instance and direction
-        // return Object List of all objects in that direction (4 lists)
+    public ServerResponse execute(SimpleBot target, IWorld world) {
         Map<Object, Position> north = lookInDirection("NORTH", target, world);
         Map<Object, Position> south = lookInDirection("SOUTH", target, world);
         Map<Object, Position> east = lookInDirection("EAST", target, world);
         Map<Object, Position> west = lookInDirection("WEST", target, world);
-        // ServerResponse constructor requires result, data, state
-        // Create 'result' variable, assign "OK"
+
         String result = "OK";
-        // create <String, Object> Map for ServerResponse 'data'
         Map<String, Object> data = new HashMap<>();
         List<Map<String, Object>> objects = new ArrayList<>();
-        // add fields:
 
-        // to add objects to data field, loop through each direction list
-        // add each object in the list separately, as a Map, with fields:
-        //   Map key-value pairs:
-        //     "direction": String (NORTH, SOUTH, EAST, WEST)
-        //     "type": String (OBSTACLE, ROBOT, EDGE)
-        //     "distance": int
-        //   objects: List of <String, Object> Maps (map represents object)
-
-        // north direction
         if (!north.isEmpty()) {
             for (Map.Entry<Object, Position> entry: north.entrySet()) {
                 Map<String, Object> object = getObjectMap(target, entry, "NORTH");
@@ -67,27 +51,19 @@ public class LookCommand extends Command {
             }
         }
 
-        // create <String, Object> Map for 'state'
-        // add fields:
-        //   position
-          //   direction
-        //   shields
-        //   shots
-        //   status
         Map<String, Object> state = new HashMap<>();
         state.put("position", target.getPosition());
         state.put("direction", target.getDirection());
         state.put("shields", target.getShields());
-        state.put("shots", target.getShots());
+        state.put("shots", target.getGun().getNumberOfShots());
         state.put("status", target.getStatus());
 
         data.put("objects", objects);
 
-        // return new ServerResponse instance
         return new ServerResponse(result, data, state);
     }
 
-    private Map<Object, Position> lookInDirection(String direction, Robot target, IWorld world) {
+    private Map<Object, Position> lookInDirection(String direction, SimpleBot target, IWorld world) {
         Position robotPosition = target.getPosition();
         int robotX = robotPosition.getX();
         int robotY = robotPosition.getY();
@@ -133,7 +109,7 @@ public class LookCommand extends Command {
         // it takes obstacle list, robots list, world instance, and x,y values of current position, it returns Object List
         // in the method, iterate through each list and check if objects are in line of sight
         List<Obstacle> obstacles = world.getObstacles();
-        Map<Integer, Robot> robots = world.getRobots();
+        Map<Integer, SimpleBot> robots = world.getRobots();
         Edge worldEdges = world.getWorldEdges();
 
         // SHOULD PROBABLY BREAK AFTER DETECTING OBJECT,
@@ -150,8 +126,8 @@ public class LookCommand extends Command {
         }
 
         // robots
-        for (Map.Entry<Integer, Robot> entry: robots.entrySet()) {
-            Robot robot = entry.getValue();
+        for (Map.Entry<Integer, SimpleBot> entry: robots.entrySet()) {
+            SimpleBot robot = entry.getValue();
             if (robot.getPosition().equals(new Position(x, y))) {
                 return robot;
             }
@@ -160,7 +136,7 @@ public class LookCommand extends Command {
         // edges
         if (direction.equalsIgnoreCase("EAST") && x == worldEdges.getMaximumX() ||
                 direction.equalsIgnoreCase("WEST") && x == worldEdges.getMinimumX() ||
-                direction.equalsIgnoreCase("NORTH") && x == worldEdges.getMaxmimumY() ||
+                direction.equalsIgnoreCase("NORTH") && x == worldEdges.getMaximumY() ||
                 direction.equalsIgnoreCase("SOUTH") && x == worldEdges.getMinimumY()) {
             return worldEdges;
         }
@@ -168,7 +144,7 @@ public class LookCommand extends Command {
         return null;
     }
 
-    private static Map<String, Object> getObjectMap(Robot target, Map.Entry<Object, Position> entry, String direction) {
+    private static Map<String, Object> getObjectMap(SimpleBot target, Map.Entry<Object, Position> entry, String direction) {
         Map<String, Object> object = new HashMap<>();
         String type = "";
         Object detectedObject = entry.getKey();
@@ -184,8 +160,18 @@ public class LookCommand extends Command {
         }
         int distance = switch (direction) {
             case "NORTH" -> entry.getValue().getY() - target.getPosition().getY();
-            case "SOUTH" -> target.getPosition().getY() - (entry.getValue().getY() + 4);
-            case "WEST" -> target.getPosition().getX() - (entry.getValue().getX() + 4);
+            case "SOUTH" -> {
+                if (type.equals("OBSTACLE"))
+                    yield target.getPosition().getY() - (entry.getValue().getY() + 4);
+                else
+                    yield target.getPosition().getY() - entry.getValue().getY();
+            }
+            case "WEST" -> {
+                if (type.equals("OBSTACLE"))
+                    yield target.getPosition().getX() - (entry.getValue().getX() + 4);
+                else
+                    yield target.getPosition().getX() - entry.getValue().getX();
+            }
             case "EAST" -> entry.getValue().getX() - target.getPosition().getX();
             default -> 0;
         };

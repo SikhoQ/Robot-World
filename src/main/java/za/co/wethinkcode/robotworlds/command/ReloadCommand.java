@@ -24,14 +24,14 @@ public class ReloadCommand extends Command {
         Map<String, Object> data = new HashMap<>();
         Map<String, Object> state = new HashMap<>();
 
+        data.put("message", "Done");
+
         state.put("position", target.getPosition());
         state.put("direction", target.getDirection());
         state.put("shields", target.getShields());
         state.put("shots", target.getGun().getNumberOfShots());
         state.put("status", target.getStatus());
 
-        data.put("message", "Done");
-
-        return null;
+        return new ServerResponse(result, data, state);
     }
 }

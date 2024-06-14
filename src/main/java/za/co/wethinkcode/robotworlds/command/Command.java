@@ -1,4 +1,5 @@
 package za.co.wethinkcode.robotworlds.command;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -84,7 +85,7 @@ public abstract class Command {
 
     private static String validateCommand(String command, String[] arguments, IWorld world) {
         List<String> validCommands = new ArrayList<>(Arrays.asList("LAUNCH", "LOOK", "STATE", "HELP",
-                                                                    "FORWARD", "BACK", "TURN", "ORIENTATION"));
+                "FORWARD", "BACK", "TURN", "ORIENTATION"));
         List<String> validRobotMakes = new ArrayList<>(Arrays.asList("SIMPLEBOT", "SNIPERBOT"));
 
         if (!validCommands.contains(command))
@@ -120,7 +121,7 @@ public abstract class Command {
                     direction = arguments[0];
                 }
                 if (!(direction.equalsIgnoreCase("LEFT") ||
-                    direction.equalsIgnoreCase("RIGHT")))
+                        direction.equalsIgnoreCase("RIGHT")))
                     return "BAD ARGUMENTS";
 
         }
@@ -134,5 +135,35 @@ public abstract class Command {
             }
         }
         return robotName.isEmpty() || robotName.isBlank();
+    }
+
+    public static String textcolor(String text, String color) {
+        String ansiColor = "";
+        switch (color.toLowerCase()) {
+            case "red":
+                ansiColor = "\u001B[31m";
+                break;
+            case "green":
+                ansiColor = "\u001B[32m";
+                break;
+            case "yellow":
+                ansiColor = "\u001B[33m";
+                break;
+            case "blue":
+                ansiColor = "\u001B[34m";
+                break;
+            case "purple":
+                ansiColor = "\u001B[35m";
+                break;
+            case "cyan":
+                ansiColor = "\u001B[36m";
+                break;
+            case "white":
+                ansiColor = "\u001B[37m";
+                break;
+            default:
+                ansiColor = "\u001B[0m"; // Reset color
+        }
+        return ansiColor + text + "\u001B[0m";
     }
 }

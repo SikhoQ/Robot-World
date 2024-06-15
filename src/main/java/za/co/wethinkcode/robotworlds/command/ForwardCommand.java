@@ -15,16 +15,13 @@ public class ForwardCommand extends Command {
 
     @Override
     public ServerResponse execute(SimpleBot target, IWorld world) {
-        // result field of response
         String result = "OK";
-        // data field of response
         Map<String, Object> data = new HashMap<>();
         int nrSteps = Integer.parseInt(String.valueOf(getArguments()[0]));
         String message = target.updatePosition(nrSteps, world);
 
         data.put("message", message);
 
-        // state field of response
         Map<String, Object> state = new HashMap<>();
         state.put("position", target.getPosition());
         state.put("direction", target.getDirection());

@@ -14,9 +14,10 @@ public class SimpleBot {
     protected int shields;
     private final int MAX_SHIELDS = 10;
     private Gun gun;
-    private final int reloadTime; // in milliseconds
-    private final int repairTime; // in milliseconds
-    private int PORT;
+    private final int reloadTime;
+    private final int repairTime;
+    private final int PORT;
+    protected Config config;
 
     public SimpleBot(String name, Position position, Direction direction, int PORT) {
         this.name = name;
@@ -26,9 +27,9 @@ public class SimpleBot {
         this.direction = direction;
         this.PORT = PORT;
 
-        Config config = Config.readConfiguration();
-        this.reloadTime = config.getReload() * 1000; // Convert seconds to milliseconds
-        this.repairTime = config.getRepair() * 1000; // Convert seconds to milliseconds
+        this.config = Config.readConfiguration();
+        this.reloadTime = config.getReload();
+        this.repairTime = config.getRepair();
     }
 
     public String getStatus() {
@@ -69,6 +70,10 @@ public class SimpleBot {
 
     public Position getPosition() {
         return position;
+    }
+
+    public long getRepairTime() {
+        return config.getRepair();
     }
 
     public int getPORT() {
@@ -123,11 +128,6 @@ public class SimpleBot {
     }
 
     public void repair() {
-        try {
-            Thread.sleep(repairTime);
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-        }
         this.shields = MAX_SHIELDS;
     }
 

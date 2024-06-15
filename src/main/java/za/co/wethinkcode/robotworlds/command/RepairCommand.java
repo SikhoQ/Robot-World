@@ -7,25 +7,25 @@ import za.co.wethinkcode.robotworlds.world.IWorld;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ReloadCommand extends Command {
-    public ReloadCommand() {super("reload", null);}
+public class RepairCommand extends Command {
+    public RepairCommand() {super("repair", null);}
 
     @Override
     public ServerResponse execute(SimpleBot target, IWorld world) {
         String name = target.getName();
         String make = target.getClass().getSimpleName();
 
-        target.setStatus("RELOAD");
-        target.getGun().reload();
-        System.out.println("\n"+name+" ("+make+") reloading gun...");
+        target.setStatus("REPAIR");
+        target.repair();
+        System.out.println("\n"+name+" ("+make+") repairing shield...");
 
         try {
-            Thread.sleep(target.getReloadTime());
+            Thread.sleep(target.getRepairTime());
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         }
 
-        System.out.println(name+" ("+make+") gun reloaded");
+        System.out.println(name+" ("+make+") done repairing");
 
         target.setStatus("NORMAL");
         String result = "OK";

@@ -23,16 +23,7 @@ public class RobotWorldServer extends Thread{
             throw new RuntimeException("Failed to connect server on port: "+PORT);
         }
     }
-    /**
-     * The run method is the entry point for the server thread.
-     * It initializes a ServerConsole instance, starts it in a separate thread,
-     * and then enters an infinite loop to accept new client connections.
-     * For each new client, it creates a new RobotClientHandler instance,
-     * adds it to the list of clients, and starts a new thread to handle the client.
-     * If an IOException occurs during the server's operation, it prints a message and exits.
-     *
-     * @throws IOException If an error occurs while accepting client connections.
-    */
+
     public void run() {
         ServerConsole console = new ServerConsole(this, world);
         new Thread(console).start();
@@ -52,11 +43,7 @@ public class RobotWorldServer extends Thread{
             System.out.println("Quitting server...");
         }
     }
-    /**
-     * Shuts down the server and all its clients.
-     * This method disconnects all clients and then closes the server socket.
-     * Finally, it terminates the server process.
-     */
+
     public void shutdown() {
         for (RobotClientHandler client: clients) {
             try {
@@ -72,11 +59,7 @@ public class RobotWorldServer extends Thread{
         }
         System.exit(0);
     }
-    /**
-     * Retrieves the list of active {@link RobotClientHandler} instances.
-     *
-     * @return a list of active {@link RobotClientHandler} instances
-     */
+
     public List<RobotClientHandler> getClients() {
         return clients;
     }
@@ -84,28 +67,15 @@ public class RobotWorldServer extends Thread{
         clients.remove(disconnectedClient);
         world.removeRobot(disconnectedClient.getClientSocket().getPort());
     }
-    /**
-     * Closes the server socket and stops accepting new client connections.
-     * This method is called when the server needs to shut down gracefully.
-     * It ensures that all active client connections are closed before terminating the server process.
-     *
-     * @throws IOException If an error occurs while closing the server socket.
-     */
+
     public void closeServer() throws IOException {
         try {
             serverSocket.close();
         } catch (IOException e) {
-            // handle in calling code
             throw new RuntimeException(e);
         }
     }
-    /**
-     * The main entry point of the server.
-     * It initializes the server, sets up the world, and starts accepting client connections.
-     *
-     * @param args Command line arguments, not used in this context.
-     * @throws IOException If an error occurs while accepting client connections.
-     */
+
     public static void main(String[] args) throws IOException {
         int PORT = 0;
         if (args.length == 1) {

@@ -3,7 +3,7 @@ package za.co.wethinkcode.robotworlds.robot;
 import za.co.wethinkcode.robotworlds.Direction;
 import za.co.wethinkcode.robotworlds.Position;
 import za.co.wethinkcode.robotworlds.world.IWorld;
-import za.co.wethinkcode.robotworlds.world.configuration.Config;
+import za.co.wethinkcode.robotworlds.world.configuration.ConfigUtility;
 
 public class SimpleBot {
 
@@ -17,7 +17,7 @@ public class SimpleBot {
     private final int reloadTime;
     private final int repairTime;
     private final int PORT;
-    protected Config config;
+    protected ConfigUtility configUtility;
 
     public SimpleBot(String name, Position position, Direction direction, int PORT) {
         this.name = name;
@@ -27,9 +27,9 @@ public class SimpleBot {
         this.direction = direction;
         this.PORT = PORT;
 
-        this.config = Config.readConfiguration();
-        this.reloadTime = config.getReload();
-        this.repairTime = config.getRepair();
+        this.configUtility = ConfigUtility.readConfiguration();
+        this.reloadTime = configUtility.getReload();
+        this.repairTime = configUtility.getRepair();
     }
 
     public String getStatus() {
@@ -73,7 +73,7 @@ public class SimpleBot {
     }
 
     public long getRepairTime() {
-        return config.getRepair();
+        return configUtility.getRepair();
     }
 
     public int getPORT() {

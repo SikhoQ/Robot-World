@@ -1,23 +1,27 @@
 package za.co.wethinkcode.robotworlds.client;
 
-import za.co.wethinkcode.robotworlds.Json;
-import za.co.wethinkcode.robotworlds.Position;
+import za.co.wethinkcode.robotworlds.JsonUtility;
 import za.co.wethinkcode.robotworlds.Sleep;
 import za.co.wethinkcode.robotworlds.server.ServerResponse;
-import za.co.wethinkcode.robotworlds.world.configuration.Config;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.io.BufferedReader;
 import java.net.Socket;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
 
 public class RobotClient {
     private Socket clientSocket;
-    private PrintWriter out;
+    PrintWriter out;
     private BufferedReader in;
+    boolean isRobotLaunched = false;
+    private String robotName;
 
     public static void main(String[] args) {
-        String serverAddress = "";
-        int serverPort = 0;
+        String serverAddress;
+        int serverPort;
 
         if (args.length == 2) {
             try {
@@ -37,13 +41,14 @@ public class RobotClient {
         RobotClient client = new RobotClient();
 
         client.startConnection(serverAddress, serverPort);
-        String robotName = client.launchRobot();
-        client.run(robotName);
+//        String robotName = client.launchRobot();
+        client.run();
+        client.stopConnection();
     }
 
     public void startConnection(String serverAddress, int serverPort) {
         System.out.println("Connecting...");
-        Sleep.sleep(1000);
+//        Sleep.sleep(1000);
         try {
             clientSocket = new Socket(serverAddress, serverPort);
         } catch (IOException e) {
@@ -60,67 +65,39 @@ public class RobotClient {
             throw new RuntimeException("in exception: " + e);
         }
         System.out.println("Connected to server on port: " + serverPort);
-        Sleep.sleep(1500);
+//        Sleep.sleep(1500);
     }
 
-    public void stopConnection() throws IOException {
-        in.close();
-        out.close();
-        clientSocket.close();
-    }
-
-    public String launchRobot() {
-        ServerResponse serverResponseObject;
-        ClientRequest request;
-        while (true) {
-            String prompt = "\nLaunch a robot:\nUse 'launch <make> <name>'" +
-                    "\nAvailable robot makes:\n* SNIPERBOT\n* SIMPLEBOT";
-            String userInput = UserInput.getInput(prompt);
-            if (userInput.equalsIgnoreCase("EXIT")) {
-                try {
-                    stopConnection();
-                } catch (IOException ignored) {}
-                System.exit(0);
-            }
-            String robotName = "";
-            String[] userInputSplit = userInput.split(" ", 2);
-            if (userInputSplit.length == 2) {
-                robotName = (userInputSplit[1].split(" ").length == 2) ? (userInputSplit[1].split(" ")[1]) : "";
-            }
-            request = UserInput.handleUserInput(robotName, userInput);
-            String clientRequest = Json.toJson(request);
-            out.println(clientRequest);
-            String serverResponse = getServerResponse();
-            serverResponseObject = getServerResponseObject(serverResponse);
-            if (serverResponseObject.getResult().equals("OK")) {
-                break;
-            }
-            System.out.println(serverResponseObject.getData().get("message"));
+    public void stopConnection() {
+        try {
+            in.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
-
-        Map<String, Object> state = serverResponseObject.getState();
-        String robotName = request.robot();
-
-        @SuppressWarnings("unchecked")
-        Map<String, Integer> robotPosition = (Map<String, Integer>) state.get("position");
-        int robotPositionX = robotPosition.get("x");
-        int robotPositionY = robotPosition.get("y");
-        String robotFacing = (String) state.get("direction");
-
-        System.out.println(robotName + " launched at [" + robotPositionX + "," + robotPositionY + "], facing " + robotFacing);
-        return robotName;
+        out.close();
+        try {
+            clientSocket.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    private void run(String robotName) {
-        String userInput = UserInput.getInput("\n" + robotName + "> What must I do next?");
-        while (!userInput.equalsIgnoreCase("exit")) {
+    public void run() {
+        while (true) {
+            while (!isRobotLaunched) {
+                String userInput = UserInput.getInput("\nLaunch a robot:\nUse 'launch <make> <name>'");
+                robotName = RobotLaunch.launchRobot(this, userInput);
+            }
+            String userInput = UserInput.getInput("\n" + robotName + "> What must I do next?");
+
+            if (userInput.equalsIgnoreCase("EXIT")) {break;}
+
             ClientRequest request = UserInput.handleUserInput(robotName, userInput);
-            String clientRequest = Json.toJson(request);
+            String clientRequest = JsonUtility.toJson(request);
             sendClientRequest(clientRequest);
             String serverResponse = getServerResponse();
             ServerResponse serverResponseObject = getServerResponseObject(serverResponse);
-            printRequestResult(robotName, request.command(), serverResponseObject, request);
-            userInput = UserInput.getInput("\n" + robotName + "> What must I do next?");
+            printRequestResult(robotName, request.command(), serverResponseObject);
         }
     }
 
@@ -128,16 +105,13 @@ public class RobotClient {
         out.println(clientRequest);
     }
 
-    private void printRequestResult(String robotName, String command, ServerResponse serverResponse, ClientRequest request) {
+    private void printRequestResult(String robotName, String command, ServerResponse serverResponse) {
         String result = serverResponse.getResult();
         Map<String, Object> data = serverResponse.getData();
         Map<String, Object> state = serverResponse.getState();
 
         if (result.equalsIgnoreCase("OK")) {
             switch (command.toLowerCase()) {
-                case "launch":
-                    launchRobot();
-                    break;
                 case "look":
                     printLookResult(robotName, data);
                     break;
@@ -233,7 +207,7 @@ public class RobotClient {
         System.out.println(robotName + "> Gun reloaded. " + state.get("shots") + " shot(s) left");
     }
 
-    private String getServerResponse() {
+    public String getServerResponse() {
         try {
             return in.readLine();
         } catch (IOException e) {
@@ -242,7 +216,7 @@ public class RobotClient {
         }
     }
 
-    private ServerResponse getServerResponseObject(String serverResponse) {
-        return Json.fromJson(serverResponse);
+    public ServerResponse getServerResponseObject(String serverResponse) {
+        return JsonUtility.fromJson(serverResponse);
     }
 }

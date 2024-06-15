@@ -2,11 +2,13 @@ package za.co.wethinkcode.robotworlds.world;
 
 import za.co.wethinkcode.robotworlds.Direction;
 import za.co.wethinkcode.robotworlds.Position;
-import za.co.wethinkcode.robotworlds.Sleep;
+import za.co.wethinkcode.robotworlds.TitleCaseConverter;
 import za.co.wethinkcode.robotworlds.maze.RandomMaze;
+import za.co.wethinkcode.robotworlds.robot.KillerBot;
 import za.co.wethinkcode.robotworlds.robot.SimpleBot;
 import za.co.wethinkcode.robotworlds.robot.SniperBot;
-import za.co.wethinkcode.robotworlds.world.configuration.Config;
+import za.co.wethinkcode.robotworlds.robot.TankBot;
+import za.co.wethinkcode.robotworlds.world.configuration.ConfigUtility;
 
 import java.util.*;
 
@@ -39,14 +41,14 @@ public class TextWorld implements IWorld {
     }
 
     private void setupWorld() {
-        Config config = Config.readConfiguration();
-        if (config != null) {
-            worldWidth = config.getWorldSize().getWidth();
-            worldHeight = config.getWorldSize().getHeight();
-            visibility = config.getVisibility();
-            reload = config.getReload();
-            repair = config.getRepair();
-            shields = config.getShields();
+        ConfigUtility configUtility = ConfigUtility.readConfiguration();
+        if (configUtility != null) {
+            worldWidth = configUtility.getWorldSize().getWidth();
+            worldHeight = configUtility.getWorldSize().getHeight();
+            visibility = configUtility.getVisibility();
+            reload = configUtility.getReload();
+            repair = configUtility.getRepair();
+            shields = configUtility.getShields();
         } else {
             worldWidth = 200;
             worldHeight = 400;
@@ -179,20 +181,25 @@ public class TextWorld implements IWorld {
 
     @Override
     public SimpleBot launchRobot(String make, String name, int maximumShots, int PORT) {
-        Sleep.sleep(800);
+//        Sleep.sleep(800);
         Position position = Position.getRandomPosition(this);
         position = validateLaunchPosition(position);
         Direction direction = Direction.getRandomDirection();
         SimpleBot robot;
 
-        if (make.equalsIgnoreCase("SIMPLEBOT"))
-            robot = new SimpleBot(name, position, direction, PORT);
-        else
+        if (make.equalsIgnoreCase("SNIPERBOT"))
             robot = new SniperBot(name, position, direction, PORT);
+        else if (make.equalsIgnoreCase("TANKBOT"))
+            robot = new TankBot(name, position, direction, PORT);
+        else if (make.equalsIgnoreCase("KILLERBOT"))
+            robot = new KillerBot(name, position, direction, PORT);
+        else
+            robot = new SimpleBot(name, position, direction, PORT);
+
 
         robot.setGun(maximumShots);
 
-        System.out.println("\n"+name+" ("+make+")"+" launched at ["+position.getX()+","+position.getY()+"]");
+        System.out.println("\n\u001B[33m\u001B[1m"+name+" \u001B[0m("+make+")"+" \u001B[34mlaunched at \u001B[0m["+position.getX()+","+position.getY()+"]\n");
         robots.put(PORT, robot);
         return robot;
     }
@@ -284,9 +291,10 @@ public class TextWorld implements IWorld {
             System.out.println("There are robots:");
             for (Map.Entry<Integer, SimpleBot> entry: robots.entrySet()) {
                 Position position = entry.getValue().getPosition();
-                System.out.println("\n Robot "+(robotCount++)+":");
-                System.out.println(" "+"=".repeat((" name: ["+entry.getValue().getName()+"]").length()));
-                System.out.println(" name: ["+entry.getValue().getName()+"]");
+                System.out.println("\n Robot " + (robotCount++) + ":");
+                System.out.println(" " + "=".repeat((" name: [" + entry.getValue().getName() + "]").length()));
+                System.out.println(" name: [" + TitleCaseConverter.toTitleCase(entry.getValue().getName()) + "]");
+                System.out.println(" make: [" + TitleCaseConverter.toTitleCase(entry.getValue().getClass().getSimpleName()) + "]");
                 System.out.println(" "+"_".repeat((" name: ["+entry.getValue().getName()+"]").length()));
                 System.out.println(" position : "+"["+position.getX()+","+position.getY()+"]");
                 System.out.println(" direction: ["+entry.getValue().getDirection()+"]");

@@ -6,12 +6,22 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.io.InputStream;
 
-public class Config {
+public class ConfigUtility {
     private WorldSize worldSize;
     private int visibility;
     private int reload;
     private int repair;
     private int shields;
+    private int port;
+    private String serverName;
+
+    public String getServerName() {
+        return serverName;
+    }
+
+    public int getPort() {
+        return port;
+    }
 
     public int getVisibility() {
         return visibility;
@@ -53,13 +63,13 @@ public class Config {
         this.worldSize = worldSize;
     }
 
-    public static Config readConfiguration() {
+    public static ConfigUtility readConfiguration() {
         ObjectMapper mapper = new ObjectMapper();
-        try (InputStream inputStream = Config.class.getClassLoader().getResourceAsStream("config.json")) {
+        try (InputStream inputStream = ConfigUtility.class.getClassLoader().getResourceAsStream("serverConfig.json")) {
             if (inputStream == null) {
                 throw new RuntimeException("Configuration file not found in resources");
             }
-            return mapper.readValue(inputStream, Config.class);
+            return mapper.readValue(inputStream, ConfigUtility.class);
         } catch (IOException e) {
             throw new RuntimeException("Error reading configuration file: " + e.getMessage(), e);
         }

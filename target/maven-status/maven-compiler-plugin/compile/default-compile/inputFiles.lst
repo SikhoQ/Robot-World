@@ -1,3 +1,4 @@
+/home/wtc/my_work/dbn_14_robot_worlds/src/main/java/za/co/wethinkcode/robotworlds/JsonUtility.java
 /home/wtc/my_work/dbn_14_robot_worlds/src/main/java/za/co/wethinkcode/robotworlds/Direction.java
 /home/wtc/my_work/dbn_14_robot_worlds/src/main/java/za/co/wethinkcode/robotworlds/server/RobotClientHandler.java
 /home/wtc/my_work/dbn_14_robot_worlds/src/main/java/za/co/wethinkcode/robotworlds/command/BackCommand.java
@@ -28,11 +29,9 @@
 /home/wtc/my_work/dbn_14_robot_worlds/src/main/java/za/co/wethinkcode/robotworlds/command/LookCommand.java
 /home/wtc/my_work/dbn_14_robot_worlds/src/main/java/za/co/wethinkcode/robotworlds/Context.java
 /home/wtc/my_work/dbn_14_robot_worlds/src/main/java/za/co/wethinkcode/robotworlds/command/InvalidCommand.java
-/home/wtc/my_work/dbn_14_robot_worlds/src/main/java/za/co/wethinkcode/robotworlds/server/ServerStarter.java
 /home/wtc/my_work/dbn_14_robot_worlds/src/main/java/za/co/wethinkcode/robotworlds/command/Command.java
 /home/wtc/my_work/dbn_14_robot_worlds/src/main/java/za/co/wethinkcode/robotworlds/command/StateCommand.java
 /home/wtc/my_work/dbn_14_robot_worlds/src/main/java/za/co/wethinkcode/robotworlds/robot/Gun.java
-/home/wtc/my_work/dbn_14_robot_worlds/src/main/java/za/co/wethinkcode/robotworlds/Json.java
 /home/wtc/my_work/dbn_14_robot_worlds/src/main/java/za/co/wethinkcode/robotworlds/world/Obstacle.java
 /home/wtc/my_work/dbn_14_robot_worlds/src/main/java/za/co/wethinkcode/robotworlds/world/configuration/Config.java
 /home/wtc/my_work/dbn_14_robot_worlds/src/main/java/za/co/wethinkcode/robotworlds/command/FireCommand.java

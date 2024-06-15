@@ -1,7 +1,6 @@
 package za.co.wethinkcode.robotworlds;
 
 import za.co.wethinkcode.robotworlds.world.IWorld;
-import za.co.wethinkcode.robotworlds.world.configuration.Config;
 
 import java.util.Random;
 

@@ -33,6 +33,9 @@ public class InvalidCommand extends Command {
             case "NAME TAKEN":
                 data.put("message", "Too many of you in this world");
                 break;
+            case "INVALID JSON FIELDS":
+                data.put("message", "Invalid JSON fields");
+                break;
         }
 
         return new ServerResponse(result, data, state);

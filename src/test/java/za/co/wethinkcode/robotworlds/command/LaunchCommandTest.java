@@ -1,53 +1,52 @@
-//package za.co.wethinkcode.robotworlds.command;
-//
-//import com.fasterxml.jackson.databind.JsonNode;
-//import com.fasterxml.jackson.databind.ObjectMapper;
-//import org.junit.jupiter.api.BeforeEach;
-//import org.junit.jupiter.api.Test;
-//import za.co.wethinkcode.robotworlds.Direction;
-//import za.co.wethinkcode.robotworlds.robot.SimpleBot;
-//import za.co.wethinkcode.robotworlds.server.ServerResponse;
-//import za.co.wethinkcode.robotworlds.world.IWorld;
-//
-//import java.util.HashMap;
-//import java.util.Map;
-//
-//import static org.junit.jupiter.api.Assertions.*;
-//import static org.mockito.Mockito.*;
-//
-//class LaunchCommandTest {
-//
-//    private IWorld mockWorld;
-//    private SimpleBot mockBot;
-//
-//    @BeforeEach
-//    void setUp() {
-//        mockWorld = mock(IWorld.class);
-//        mockBot = mock(SimpleBot.class);
-//    }
-//
-//    /**
-//     * Test the creation of a robot using the LaunchCommand.
-//     * This test verifies that a robot is correctly created with the provided arguments.
-//     */
-//    @Test
-//    void testCreateRobot() throws Exception {
-//        String json = "{ \"robot\": \"TestBot\", \"command\": \"LAUNCH\", \"arguments\": [\"SIMPLEBOT\", 5, 3] }";
-//        JsonNode rootNode = new ObjectMapper().readTree(json);
-//
-//        when(mockWorld.launchRobot("SIMPLEBOT", "TestBot", 3, 8080)).thenReturn(mockBot);
-//
-//        LaunchCommand command = new LaunchCommand(new Object[]{"SIMPLEBOT", 5, 3});
-//        SimpleBot robot = command.createRobot(rootNode, mockWorld, 8080);
-//
-//        assertNotNull(robot);
-//        verify(mockWorld, times(1)).launchRobot("SIMPLEBOT", "TestBot", 3, 8080);
-//    }
-//
-//    /**
-//     * Test the execution of the LaunchCommand.
-//     * This test verifies that the command execution returns a proper ServerResponse with the expected data and state.
-//     */
+package za.co.wethinkcode.robotworlds.command;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
+import za.co.wethinkcode.robotworlds.Direction;
+import za.co.wethinkcode.robotworlds.Position;
+import za.co.wethinkcode.robotworlds.robot.SimpleBot;
+import za.co.wethinkcode.robotworlds.server.ServerResponse;
+import za.co.wethinkcode.robotworlds.world.IWorld;
+import za.co.wethinkcode.robotworlds.world.TextWorld;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
+class LaunchCommandTest {
+    @Mock
+    Map<String, Object> data;
+    Map<String, Object> state;
+    IWorld world;
+    SimpleBot simpleBot;
+    String result;
+    Position pos;
+
+    @BeforeEach
+    void setUp() {
+        world = mock(IWorld.class);
+        simpleBot = mock(SimpleBot.class);
+        pos = mock(Position.class);
+
+    }
+
+    @Test
+    public void testExecuteMethod(){
+//        IWorld world = new TextWorld();
+//        SimpleBot simpleBot = new SimpleBot("John", new Position(10, 20), Direction.NORTH,3389);
+        when(simpleBot.getPosition()).thenReturn(pos);
+
+    }
+
+    /**
+     * Test the execution of the LaunchCommand.
+     * This test verifies that the command execution returns a proper ServerResponse with the expected data and state.
+     */
 //    @Test
 //    void testExecute() {
 //        when(mockBot.getPosition()).thenReturn(new int[]{0, 0});
@@ -77,4 +76,23 @@
 //        assertEquals("ACTIVE", response.getState().get("status"));
 //        assertArrayEquals(new int[]{0, 0}, (int[]) response.getState().get("position"));
 //    }
-//}
+
+
+    /**
+     * Test the creation of a robot using the LaunchCommand.
+     * This test verifies that a robot is correctly created with the provided arguments.
+     */
+    @Test
+    void testCreateRobot() throws Exception {
+        String json = "{ \"robot\": \"TestBot\", \"command\": \"LAUNCH\", \"arguments\": [\"SIMPLEBOT\", 5, 3] }";
+        JsonNode rootNode = new ObjectMapper().readTree(json);
+
+        when(world.launchRobot("SIMPLEBOT", "TestBot", 3, 8080)).thenReturn(simpleBot);
+
+        LaunchCommand command = new LaunchCommand(new Object[]{"SIMPLEBOT", 5, 3});
+        SimpleBot robot = command.createRobot(rootNode, world, 8080);
+
+        assertNotNull(robot);
+        verify(world, times(1)).launchRobot("SIMPLEBOT", "TestBot", 3, 8080);
+    }
+}

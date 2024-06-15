@@ -23,14 +23,15 @@ class LaunchCommandTest {
     Map<String, Object> data;
     Map<String, Object> state;
     IWorld world;
-    SimpleBot simpleBot;
+    SimpleBot bot;
     String result;
     Position pos;
+    Direction direction;
 
     @BeforeEach
     void setUp() {
         world = mock(IWorld.class);
-        simpleBot = mock(SimpleBot.class);
+        bot = mock(SimpleBot.class);
         pos = mock(Position.class);
 
     }
@@ -39,7 +40,13 @@ class LaunchCommandTest {
     public void testExecuteMethod(){
 //        IWorld world = new TextWorld();
 //        SimpleBot simpleBot = new SimpleBot("John", new Position(10, 20), Direction.NORTH,3389);
-        when(simpleBot.getPosition()).thenReturn(pos);
+        when(bot.getPosition()).thenReturn(pos);
+        when(world.getVisibility()).thenReturn(50);
+        when(world.getReload()).thenReturn(5);
+        when(world.getRepair()).thenReturn(5);
+        when(world.getShields()).thenReturn(5);
+        when(bot.getDirection()).thenReturn(direction);
+
 
     }
 
@@ -87,7 +94,7 @@ class LaunchCommandTest {
         String json = "{ \"robot\": \"TestBot\", \"command\": \"LAUNCH\", \"arguments\": [\"SIMPLEBOT\", 5, 3] }";
         JsonNode rootNode = new ObjectMapper().readTree(json);
 
-        when(world.launchRobot("SIMPLEBOT", "TestBot", 3, 8080)).thenReturn(simpleBot);
+        when(world.launchRobot("SIMPLEBOT", "TestBot", 3, 8080)).thenReturn(bot);
 
         LaunchCommand command = new LaunchCommand(new Object[]{"SIMPLEBOT", 5, 3});
         SimpleBot robot = command.createRobot(rootNode, world, 8080);

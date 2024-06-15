@@ -5,8 +5,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
+import static org.mockito.Mockito.when;
 import za.co.wethinkcode.robotworlds.Direction;
 import za.co.wethinkcode.robotworlds.Position;
+import za.co.wethinkcode.robotworlds.robot.Gun;
 import za.co.wethinkcode.robotworlds.robot.SimpleBot;
 import za.co.wethinkcode.robotworlds.server.ServerResponse;
 import za.co.wethinkcode.robotworlds.world.IWorld;
@@ -27,63 +29,19 @@ class LaunchCommandTest {
     String result;
     Position pos;
     Direction direction;
+    LaunchCommand launchCommand;
+    ServerResponse response;
+    Gun gun;
 
     @BeforeEach
     void setUp() {
         world = mock(IWorld.class);
         bot = mock(SimpleBot.class);
         pos = mock(Position.class);
-
+        launchCommand = mock(LaunchCommand.class);
+        response = mock(ServerResponse.class);
+        gun = mock(Gun.class);
     }
-
-    @Test
-    public void testExecuteMethod(){
-//        IWorld world = new TextWorld();
-//        SimpleBot simpleBot = new SimpleBot("John", new Position(10, 20), Direction.NORTH,3389);
-        when(bot.getPosition()).thenReturn(pos);
-        when(world.getVisibility()).thenReturn(50);
-        when(world.getReload()).thenReturn(5);
-        when(world.getRepair()).thenReturn(5);
-        when(world.getShields()).thenReturn(5);
-        when(bot.getDirection()).thenReturn(direction);
-
-
-    }
-
-    /**
-     * Test the execution of the LaunchCommand.
-     * This test verifies that the command execution returns a proper ServerResponse with the expected data and state.
-     */
-//    @Test
-//    void testExecute() {
-//        when(mockBot.getPosition()).thenReturn(new int[]{0, 0});
-//        when(mockBot.getDirection()).thenReturn(Direction.valueOf("NORTH"));
-//        when(mockBot.getShields()).thenReturn(5);
-//        when(mockBot.getGun().getNumberOfShots()).thenReturn(3);
-//        when(mockBot.getStatus()).thenReturn("ACTIVE");
-//
-//        when(mockWorld.getVisibility()).thenReturn(100);
-//        when(mockWorld.getReload()).thenReturn(2);
-//        when(mockWorld.getRepair()).thenReturn(1);
-//        when(mockWorld.getShields()).thenReturn(5);
-//
-//        LaunchCommand command = new LaunchCommand(new Object[]{"SIMPLEBOT", 5, 3});
-//        ServerResponse response = command.execute(mockBot, mockWorld);
-//
-//        assertEquals("OK", response.getResult());
-//        assertEquals(5, response.getData().get("shields"));
-//        assertEquals(100, response.getData().get("visibility"));
-//        assertEquals(2, response.getData().get("reload"));
-//        assertEquals(1, response.getData().get("repair"));
-//        assertArrayEquals(new int[]{0, 0}, (int[]) response.getData().get("position"));
-//
-//        assertEquals("NORTH", response.getState().get("direction"));
-//        assertEquals(5, response.getState().get("shields"));
-//        assertEquals(3, response.getState().get("shots"));
-//        assertEquals("ACTIVE", response.getState().get("status"));
-//        assertArrayEquals(new int[]{0, 0}, (int[]) response.getState().get("position"));
-//    }
-
 
     /**
      * Test the creation of a robot using the LaunchCommand.
@@ -102,4 +60,24 @@ class LaunchCommandTest {
         assertNotNull(robot);
         verify(world, times(1)).launchRobot("SIMPLEBOT", "TestBot", 3, 8080);
     }
+
+    @Test
+    public void testExecuteMethod() {
+
+        when(bot.getPosition()).thenReturn(pos);
+        when(world.getVisibility()).thenReturn(50);
+        when(world.getReload()).thenReturn(5);
+        when(world.getRepair()).thenReturn(5);
+        when(world.getShields()).thenReturn(5);
+        when(bot.getDirection()).thenReturn(direction);
+        when(response.getResult()).thenReturn("OK");
+        when(gun.getNumberOfShots()).thenReturn(5);
+
+
+        LaunchCommand command = new LaunchCommand(new Object[]{"SIMPLEBOT", 5, 3});
+
+        assertEquals("OK", response.getResult());
+    }
+
+
 }

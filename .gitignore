@@ -4,3 +4,4 @@ javadocs.txt
 server_log.txt
 *.class
 target/
+.vscode

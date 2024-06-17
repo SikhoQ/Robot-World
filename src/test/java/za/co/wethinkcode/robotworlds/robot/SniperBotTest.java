@@ -14,7 +14,6 @@ class SniperBotTest {
 
     @BeforeEach
     void setUp() {
-        // Initialize SniperBot with mock values
         Position position = new Position(0, 0);
         Direction direction = Direction.NORTH;
         sniperBot = new SniperBot("TestBot", position, direction, 1);
@@ -40,5 +39,4 @@ class SniperBotTest {
         assertEquals(Direction.NORTH, direction, "Initial direction should be NORTH");
     }
 
-    // Add more tests specific to SniperBot's behavior if needed
 }

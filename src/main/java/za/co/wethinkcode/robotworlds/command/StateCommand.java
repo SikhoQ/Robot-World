@@ -7,11 +7,22 @@ import za.co.wethinkcode.robotworlds.server.ServerResponse;
 import java.util.HashMap;
 import java.util.Map;
 
+
+/**
+ * The StateCommand class represents a command to retrieve the current state of a SimpleBot.
+ * It extends the Command class and provides the implementation for the execute method.
+ */
 public class StateCommand extends Command {
     public StateCommand() {
         super("state", null);
     }
 
+
+    /**
+     * Executes the state command to retrieve the current state of the given target SimpleBot.
+     * It retrieves the position, direction, shields, number of shots, and status of the SimpleBot
+     * and returns them in the response.
+     */
     @Override
     public ServerResponse execute(SimpleBot target, IWorld world) {
         String result = "OK";

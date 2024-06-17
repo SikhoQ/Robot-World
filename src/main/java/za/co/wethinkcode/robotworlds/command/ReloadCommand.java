@@ -7,6 +7,10 @@ import za.co.wethinkcode.robotworlds.world.IWorld;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * The ReloadCommand class represents a command to reload a SimpleBot's gun.
+ * It extends the Command class and provides the implementation for the execute method.
+ */
 public class ReloadCommand extends Command {
     public ReloadCommand() {super("reload", null);}
 

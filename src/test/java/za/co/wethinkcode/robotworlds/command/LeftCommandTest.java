@@ -1,10 +1,11 @@
 //package za.co.wethinkcode.robotworlds.command;
 //
 //
+//
 //import org.junit.jupiter.api.BeforeEach;
 //import org.junit.jupiter.api.Test;
 //import za.co.wethinkcode.robotworlds.Direction;
-//import za.co.wethinkcode.robotworlds.robot.Robot;
+//import za.co.wethinkcode.robotworlds.robot.SimpleBot;
 //import za.co.wethinkcode.robotworlds.server.ServerResponse;
 //import za.co.wethinkcode.robotworlds.world.IWorld;
 //
@@ -16,7 +17,7 @@
 //class LeftCommandTest {
 //
 //    private LeftCommand leftCommand;
-//    private Robot mockRobot;
+//    private SimpleBot mockRobot;
 //    private IWorld mockWorld;
 //
 //    /*Initialize the LeftCommand instance and create mock objects for Robot and IWorld.
@@ -24,7 +25,7 @@
 //    @BeforeEach
 //    void setUp() {
 //        leftCommand = new LeftCommand();
-//        mockRobot = mock(Robot.class);
+//        mockRobot = mock(SimpleBot.class);
 //        mockWorld = mock(IWorld.class);
 //    }
 //
@@ -36,6 +37,7 @@
 //        when(mockRobot.getDirection()).thenReturn(currentDirection);
 //
 //        // Execute the left command
+//        mockRobot.setGun(3);
 //        ServerResponse response = leftCommand.execute(mockRobot, mockWorld);
 //
 //        // Verify that the robot's direction is updated correctly

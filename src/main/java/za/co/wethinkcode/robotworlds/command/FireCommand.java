@@ -11,17 +11,31 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
+/**
+ * The FireCommand class is responsible for executing the fire action for a robot.
+ * It extends the Command class and provides the implementation for the execute method.
+ */
 public class FireCommand extends Command {
     private SimpleBot enemyRobot;
     protected int enemyRobotDistance = 0;
-
+    /**
+     * Constructor for FireCommand.
+     */
     public FireCommand() {
         super("fire", null);
     }
 
+    /**
+     * Executes the fire command on the given target robot in the specified world.
+     *
+     * @param target the SimpleBot that will execute the command.
+     * @param world the IWorld in which the robot operates.
+     * @return a ServerResponse containing the result, data, and state after executing the command.
+     */
+
     @Override
     public ServerResponse execute(SimpleBot target, IWorld world) {
+        // Robot fires a shot
         target.getGun().fireShot();
 
         String result = "Ok";
@@ -33,6 +47,7 @@ public class FireCommand extends Command {
         int robotX = position.getX();
         String message = "";
 
+        // Determine the bullet trajectory based on the direction
         switch (direction) {
             case NORTH:
                 for (int y = robotY + 1; y <= (robotY + shotDistance); y++) {
@@ -93,6 +108,16 @@ public class FireCommand extends Command {
         return new ServerResponse(result, data, state);
     }
 
+    /**
+     * Checks if the bullet hits any obstacles, world edges, or other robots.
+     *
+     * @param world the IWorld in which the robot operates.
+     * @param robotPosition the position of the robot firing the shot.
+     * @param bulletPosition the current position of the bullet.
+     * @param direction the direction in which the bullet is traveling.
+     * @return "HIT" if the bullet hits a robot, "MISS" otherwise.
+     */
+
     public String reportHit(IWorld world, Position robotPosition, int bulletPosition, Direction direction) {
         Map<Integer, SimpleBot> worldRobots = world.getRobots();
         List<SimpleBot> robots = new ArrayList<>(worldRobots.values());
@@ -138,9 +163,21 @@ public class FireCommand extends Command {
         return "MISS";
     }
 
+    /**
+     * Get the enemy robot that was hit.
+     *
+     * @return the enemy robot that was hit.
+     */
     public SimpleBot getEnemyRobot() {
         return enemyRobot;
     }
+
+
+    /**
+     * Set the enemy robot that was hit.
+     *
+     * @param enemyRobot the enemy robot that was hit.
+     */
 
     public void setEnemyRobot(SimpleBot enemyRobot) {
         this.enemyRobot = enemyRobot;

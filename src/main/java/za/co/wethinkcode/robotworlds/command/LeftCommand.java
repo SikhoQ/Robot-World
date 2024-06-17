@@ -8,6 +8,10 @@ import za.co.wethinkcode.robotworlds.world.IWorld;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * The LeftCommand class is responsible for handling the action of turning a robot to the left.
+ * It extends the Command class and provides the implementation for the execute method.
+ */
 public class LeftCommand extends Command {
 
     public LeftCommand() {

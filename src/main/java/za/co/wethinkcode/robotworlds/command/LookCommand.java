@@ -10,6 +10,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+
+/**
+ * The LookCommand class is responsible for handling the action of looking around in all four directions.
+ * It extends the Command class and provides the implementation for the execute method.
+ */
 public class LookCommand extends Command {
     public LookCommand() {
         super("look", null);
@@ -26,6 +31,7 @@ public class LookCommand extends Command {
         Map<String, Object> data = new HashMap<>();
         List<Map<String, Object>> objects = new ArrayList<>();
 
+        // Process objects found in each direction and add them to the list
         if (!north.isEmpty()) {
             for (Map.Entry<Object, Position> entry: north.entrySet()) {
                 Map<String, Object> object = getObjectMap(target, entry, "NORTH");
@@ -51,6 +57,7 @@ public class LookCommand extends Command {
             }
         }
 
+        // Prepare the state field of the response
         Map<String, Object> state = new HashMap<>();
         state.put("position", target.getPosition());
         state.put("direction", target.getDirection());
@@ -58,6 +65,7 @@ public class LookCommand extends Command {
         state.put("shots", target.getGun().getNumberOfShots());
         state.put("status", target.getStatus());
 
+        // Add the detected objects to the data field of the response
         data.put("objects", objects);
 
         return new ServerResponse(result, data, state);

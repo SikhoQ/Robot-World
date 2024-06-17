@@ -1,14 +1,16 @@
 package za.co.wethinkcode.robotworlds.client;
 
-import za.co.wethinkcode.robotworlds.Json;
-import za.co.wethinkcode.robotworlds.Position;
+import za.co.wethinkcode.robotworlds.JsonUtility;
 import za.co.wethinkcode.robotworlds.Sleep;
 import za.co.wethinkcode.robotworlds.server.ServerResponse;
-import za.co.wethinkcode.robotworlds.world.configuration.Config;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.io.BufferedReader;
 import java.net.Socket;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Class to represent a client application that connects to a robot server.
@@ -19,8 +21,11 @@ import java.util.*;
  */
 public class RobotClient {
     private Socket clientSocket;
-    private PrintWriter out;
+    PrintWriter out;
     private BufferedReader in;
+    boolean isRobotLaunched = false;
+    private String robotName;
+    private boolean serverRunning = true;
 
     /**
      * Main entry point for the RobotClient application.
@@ -29,18 +34,25 @@ public class RobotClient {
      * @param args Command line arguments (not used in this application)
      */
     public static void main(String[] args) {
+<<<<<<< HEAD
         String ADDRESS = "";
         int PORT = 0;
+=======
+        String serverAddress = null;
+        int serverPort = 0;
+>>>>>>> sikho
 
         if (args.length == 2) {
             try {
                 ADDRESS = args[0];
                 PORT = Integer.parseInt(args[1]);
             } catch (NumberFormatException e) {
-                throw new RuntimeException("\nInvalid argument for \"ADDRESS\" and/or \"PORT\"\n\nQuitting...");
+                System.err.println("\nInvalid argument for \"ADDRESS\" and/or \"PORT\"\n\nQuitting...");
+                System.exit(1);
             }
         } else {
-            throw new RuntimeException("\nInvalid argument for \"ADDRESS\" and/or \"PORT\"\n\nQuitting...");
+            System.err.println("\nInvalid argument for \"ADDRESS\" and/or \"PORT\"\n\nQuitting...");
+            System.exit(1);
         }
 
         System.out.println("|====================================|");
@@ -49,9 +61,14 @@ public class RobotClient {
 
         RobotClient client = new RobotClient();
 
+<<<<<<< HEAD
         client.startConnection(ADDRESS, PORT);
         String robotName = client.launchRobot();
         client.run(robotName);
+=======
+        client.startConnection(serverAddress, serverPort);
+        client.run();
+>>>>>>> sikho
     }
 
     /**
@@ -64,11 +81,15 @@ public class RobotClient {
      */
     public void startConnection(String ipAddress, int port) {
         System.out.println("Connecting...");
-        Sleep.sleep(1000);
         try {
             clientSocket = new Socket(ipAddress, port);
         } catch (IOException e) {
+<<<<<<< HEAD
             throw new RuntimeException("clientSocket exception: "+e);
+=======
+            System.err.println("Error connecting to server. Check port");
+            System.exit(1);
+>>>>>>> sikho
         }
         try {
             out = new PrintWriter(clientSocket.getOutputStream(), true);
@@ -81,6 +102,7 @@ public class RobotClient {
         } catch (IOException e) {
             throw new RuntimeException("in exception: "+e);
         }
+<<<<<<< HEAD
         System.out.println("Connected to server on port: " + port);
         Sleep.sleep(1500);
     }
@@ -116,22 +138,21 @@ public class RobotClient {
                     stopConnection();
                 } catch (IOException ignored) {}
                 System.exit(0);
+=======
+        System.out.println("Connected to server on port: " + serverPort);
+    }
+
+    public void stopConnection() {
+        try {
+            if (clientSocket != null) {
+                clientSocket.close();
+>>>>>>> sikho
             }
-            String robotName = "";
-            String[] userInputSplit = userInput.split(" ", 2);
-            if (userInputSplit.length == 2) {
-                robotName = (userInputSplit[1].split(" ").length == 2) ? (userInputSplit[1].split(" ")[1]) : "";
-            }
-            request = UserInput.handleUserInput(robotName, userInput);
-            String clientRequest = Json.toJson(request);
-            out.println(clientRequest);
-            String serverResponse = getServerResponse();
-            serverResponseObject = getServerResponseObject(serverResponse);
-            if (serverResponseObject.getResult().equals("OK")) {
-                break;
-            }
-            System.out.println(serverResponseObject.getData().get("message"));
+            in.close();
+        } catch (IOException e) {
+            System.out.println("Error closing client socket: " + e.getMessage());
         }
+<<<<<<< HEAD
 
         Map<String, Object> state = serverResponseObject.getState();
         String robotName = request.robot();
@@ -155,13 +176,31 @@ public class RobotClient {
     private void run(String robotName) {
         String userInput = UserInput.getInput("\n"+robotName+"> What must I do next?");
         while (!userInput.equalsIgnoreCase("exit")) {
+=======
+    }
+
+    public void run() {
+        while (true) {
+            while (!isRobotLaunched) {
+                String userInput = UserInput.getInput("\nLaunch a robot:\nUse 'launch <make> <name>'");
+                robotName = RobotLaunch.launchRobot(this, userInput);
+            }
+            String userInput = UserInput.getInput("\n" + robotName + "> What must I do next?");
+
+            if (userInput.equalsIgnoreCase("EXIT")) {break;}
+
+>>>>>>> sikho
             ClientRequest request = UserInput.handleUserInput(robotName, userInput);
-            String clientRequest = Json.toJson(request);
+            String clientRequest = JsonUtility.toJson(request);
             sendClientRequest(clientRequest);
             String serverResponse = getServerResponse();
             ServerResponse serverResponseObject = getServerResponseObject(serverResponse);
+<<<<<<< HEAD
             printRequestResult(robotName, request.command(), serverResponseObject, request);
             userInput = UserInput.getInput("\n"+robotName+"> What must I do next?");
+=======
+            printRequestResult(robotName, request.command(), serverResponseObject);
+>>>>>>> sikho
         }
 
     }
@@ -174,13 +213,14 @@ public class RobotClient {
         out.println(clientRequest);
     }
 
-    private void printRequestResult(String robotName, String command, ServerResponse serverResponse, ClientRequest request) {
+    private void printRequestResult(String robotName, String command, ServerResponse serverResponse) {
         String result = serverResponse.getResult();
         Map<String, Object> data = serverResponse.getData();
         Map<String, Object> state = serverResponse.getState();
         Config config = Config.readConfiguration();
 
         if (result.equalsIgnoreCase("OK")) {
+<<<<<<< HEAD
             @SuppressWarnings("unchecked")
             Map<String, Integer> position = (Map<String, Integer>) state.get("position");
             String robotDirection = (String) state.get("direction");
@@ -260,26 +300,129 @@ public class RobotClient {
                     System.out.println("\n"+robotName+"> No shots left. Reload!");
             } else if (command.equalsIgnoreCase("RELOAD")) {
                 System.out.println(robotName+"> Fully reloaded! "+state.get("shots")+" shot(s) left");
+=======
+            switch (command.toLowerCase()) {
+                case "look":
+                    printLookResult(robotName, data);
+                    break;
+                case "forward":
+                case "back":
+                    printMoveResult(robotName, data);
+                    break;
+                case "turn":
+                    printTurnResult(robotName, data);
+                    break;
+                case "fire":
+                    printFireResult(robotName, robotName, data, state);
+                    break;
+                case "reload":
+                    printReloadResult(robotName, state);
+                    break;
+                case "repair":
+                    printRepairResult(robotName, state);
+                    break;
+                case "shield":
+                case "state":
+                    printRobotState(robotName, state);
+                    break;
+                default:
+                    System.out.println(data.get("message"));
+>>>>>>> sikho
             }
         } else {
             System.out.println(data.get("message"));
         }
     }
 
+<<<<<<< HEAD
     /**
      * Reads the server's response.
      * @return the server's response as a string
      * @throws RuntimeException if an I/O error occurs while reading the response
      */
     private String getServerResponse() {
-        try {
-            return in.readLine();
-        } catch (IOException e) {
-            System.out.println("serverResponse exception");
-            throw new RuntimeException(e);
+=======
+    private void printRepairResult(String robotName, Map<String, Object> state) {
+        System.out.println(robotName + "> Shield repaired.\nShield strength: "+state.get("shields"));
+    }
+
+    private void printRobotState(String robotName, Map<String, Object> state) {
+        @SuppressWarnings("unchecked")
+        Map<String, Integer> robotPosition = (Map<String, Integer>) state.get("position");
+
+        if (robotPosition != null) {
+            String robotFacing = (String) state.get("direction");
+
+            System.out.println(robotName + " is at [" + robotPosition.get("x") + "," + robotPosition.get("y") + "], facing " + robotFacing);
         }
     }
 
+    private void printLookResult(String robotName, Map<String, Object> data) {
+        @SuppressWarnings("unchecked")
+        List<Map<String, Object>> objects = (List<Map<String, Object>>) data.get("objects");
+
+        if (!objects.isEmpty()) {
+            System.out.println(robotName + "> Objects detected:");
+            for (Map<String, Object> object : objects) {
+                String objectDirection = (String) object.get("direction");
+                String objectType = (String) object.get("type");
+                int objectDistance = (int) object.get("distance");
+
+                System.out.println(" - Direction: [" + objectDirection + "], Type: [" + objectType + "], Distance: [" + objectDistance + "]");
+            }
+        } else {
+            System.out.println(robotName + "> No objects detected:");
+        }
+    }
+
+    private void printMoveResult(String robotName, Map<String, Object> data) {
+        System.out.println(robotName + "> " + data.get("message"));
+    }
+
+    private void printTurnResult(String robotName, Map<String, Object> data) {
+        System.out.println(robotName + "> " + data.get("message"));
+    }
+
+    private void printFireResult(String robotName, String enemyName, Map<String, Object> data, Map<String, Object> state) {
+        String message = (String) data.get("message");
+
+        if (message.equalsIgnoreCase("HIT")) {
+            @SuppressWarnings("unchecked")
+            Map<String, Object> enemyState = (Map<String, Object>) data.get("state");
+            printRobotState(enemyName, enemyState);
+        } else if (message.equalsIgnoreCase("MISS")) {
+            System.out.println(robotName + "> Missed!");
+        }
+
+        int robotShots = (int) state.get("shots");
+        if (robotShots != 0) {
+            System.out.println("\n" + robotName + "> " + robotShots + " shot(s) left");
+        } else {
+            System.out.println("\n" + robotName + "> No shots left. Reload gun");
+        }
+    }
+
+    private void printReloadResult(String robotName, Map<String, Object> state) {
+        System.out.println(robotName + "> Gun reloaded. " + state.get("shots") + " shot(s) left");
+    }
+
+    public String getServerResponse() {
+>>>>>>> sikho
+        try {
+            String response = in.readLine();
+            if (response == null) {
+                System.out.println("Server connection closed by the server.");
+                serverRunning = false; // Set flag to false when server shuts down
+            }
+            return response;
+        } catch (IOException e) {
+            System.out.println("Error reading server response: " + e.getMessage());
+            serverRunning = false; // Set flag to false if an exception occurs
+            return null;
+        }
+    }
+
+<<<<<<< HEAD
     /**
      * Converts the server's response from JSON to a ServerResponse object.
      * @param serverResponse the server's response as a JSON string
@@ -287,5 +430,10 @@ public class RobotClient {
      */
     private ServerResponse getServerResponseObject(String serverResponse) {
         return Json.fromJson(serverResponse);
+=======
+
+    public ServerResponse getServerResponseObject(String serverResponse) {
+        return JsonUtility.fromJson(serverResponse);
+>>>>>>> sikho
     }
 }

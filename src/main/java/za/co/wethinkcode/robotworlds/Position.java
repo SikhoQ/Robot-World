@@ -1,6 +1,10 @@
 package za.co.wethinkcode.robotworlds;
 
 import za.co.wethinkcode.robotworlds.world.IWorld;
+<<<<<<< HEAD
+=======
+
+>>>>>>> sikho
 import java.util.Random;
 
 public class Position {

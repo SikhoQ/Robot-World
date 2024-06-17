@@ -2,7 +2,12 @@ package za.co.wethinkcode.robotworlds.world;
 
 import za.co.wethinkcode.robotworlds.Direction;
 import za.co.wethinkcode.robotworlds.Position;
+<<<<<<< HEAD
 import za.co.wethinkcode.robotworlds.robot.SimpleBot;
+=======
+import za.co.wethinkcode.robotworlds.robot.Robot;
+
+>>>>>>> sikho
 import java.util.*;
 
 public interface IWorld {
@@ -44,9 +49,10 @@ public interface IWorld {
 
     void showObstacles();
 
-    SimpleBot launchRobot(String make, String name, int maximumShots, int PORT);
+    Robot addRobotToWorld(String[] nameAndMake, int maximumShots, int PORT);
+    void addRobotToList(Robot robot, int PORT);
     void removeRobot(int PORT);
-    Map<Integer, SimpleBot> getRobots();
+    Map<Integer, Robot> getRobots();
     Position validateLaunchPosition(Position position);
 
     void showWorldState();

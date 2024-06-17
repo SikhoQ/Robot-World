@@ -3,7 +3,12 @@ package za.co.wethinkcode.robotworlds.maze;
 import za.co.wethinkcode.robotworlds.world.Obstacle;
 import za.co.wethinkcode.robotworlds.world.SquareObstacle;
 import za.co.wethinkcode.robotworlds.Position;
+<<<<<<< HEAD
 import za.co.wethinkcode.robotworlds.world.configuration.Config;
+=======
+import za.co.wethinkcode.robotworlds.ConfigUtility;
+
+>>>>>>> sikho
 import java.util.*;
 
 /**
@@ -62,15 +67,20 @@ public class RandomMaze implements Maze {
 
     private void createObstacles() {
         Random random = new Random();
-        Config config = Config.readConfiguration();
 
+<<<<<<< HEAD
         int worldSize = config.getWorldSize().getHeight() * config.getWorldSize().getWidth();
         int minimumObstacles = 1;
         int maximumObstacles = 3;
 
+=======
+        int worldSize = ConfigUtility.getWorldSize().getHeight() * ConfigUtility.getWorldSize().getWidth();
+        int minimumObstacles = (int) (worldSize * 0.001);
+        int maximumObstacles = (int) (worldSize * 0.002);
+>>>>>>> sikho
         int numberOfObstacles = random.nextInt((maximumObstacles - minimumObstacles) + 1) + minimumObstacles;
-        int worldX = config.getWorldSize().getWidth() / 2;
-        int worldY = config.getWorldSize().getHeight() / 2;
+        int worldX = ConfigUtility.getWorldSize().getWidth() / 2;
+        int worldY = ConfigUtility.getWorldSize().getHeight() / 2;
 
         for (int i = 0; i < numberOfObstacles; i++) {
             int xCoord = random.nextInt((worldX + worldX) + 1) - worldX;

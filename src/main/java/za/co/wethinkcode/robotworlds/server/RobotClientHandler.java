@@ -5,9 +5,16 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+<<<<<<< HEAD
 import com.fasterxml.jackson.databind.JsonNode;
 import za.co.wethinkcode.robotworlds.Json;
 import za.co.wethinkcode.robotworlds.robot.SimpleBot;
+=======
+
+import com.fasterxml.jackson.databind.JsonNode;
+import za.co.wethinkcode.robotworlds.JsonUtility;
+import za.co.wethinkcode.robotworlds.robot.Robot;
+>>>>>>> sikho
 import za.co.wethinkcode.robotworlds.command.Command;
 import za.co.wethinkcode.robotworlds.command.LaunchCommand;
 import za.co.wethinkcode.robotworlds.world.IWorld;
@@ -20,7 +27,7 @@ import za.co.wethinkcode.robotworlds.world.IWorld;
 public class RobotClientHandler implements Runnable {
     private final Socket clientSocket;
     private final IWorld world;
-    private SimpleBot robot;
+    private Robot robot;
 
     public RobotClientHandler(Socket clientSocket, IWorld world) {
         this.clientSocket = clientSocket;
@@ -76,15 +83,15 @@ public class RobotClientHandler implements Runnable {
     * returns a ServerResponse object
     */
     public String processRequest(String clientRequest) {
-        JsonNode rootNode = Json.jsonFieldAccess(clientRequest);
+        JsonNode rootNode = JsonUtility.jsonFieldAccess(clientRequest);
         Command command = getCommand(rootNode, world);
 
-        System.out.println("Command ["+command.getCommand()+"] received from client on local port: "+clientSocket.getPort());
+        System.out.println("\u001B[32mCommand \u001B[0m["+command.getCommand()+"] \u001B[32mreceived from client on local port: \u001B[0m"+clientSocket.getPort());
         if (command.getCommand().equalsIgnoreCase("LAUNCH")) {
             LaunchCommand launchCommand = (LaunchCommand) command;
             robot = launchCommand.createRobot(rootNode, world, clientSocket.getPort());
         }
         ServerResponse serverResponseObject = command.execute(robot, world);
-        return Json.toJson(serverResponseObject);
+        return JsonUtility.toJson(serverResponseObject);
     }
 }

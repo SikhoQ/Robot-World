@@ -166,6 +166,10 @@ public class RobotClient {
 
     }
 
+    /**
+     * Sends a client request to the server.
+     * @param clientRequest the request to send to the server
+     */
     private void sendClientRequest(String clientRequest) {
         out.println(clientRequest);
     }

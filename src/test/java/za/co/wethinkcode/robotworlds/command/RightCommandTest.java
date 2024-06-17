@@ -11,11 +11,17 @@ import za.co.wethinkcode.robotworlds.world.IWorld;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
+/**
+ * Test class for RightCommand.
+ */
 public class RightCommandTest {
     private Command command;
     private Robot robot;
     private IWorld world;
 
+    /**
+     * Set up before each test.
+     */
     @BeforeEach
     void setUp() {
         command = new RightCommand();
@@ -23,11 +29,17 @@ public class RightCommandTest {
         robot = new Robot(new String[] {"make", "name"}, 3, new Position(1, 1), Direction.NORTH, 8080);
     }
 
+    /**
+     * Test for getting the command name.
+     */
     @Test
     void testRightName() {
         assertEquals("right", command.getCommand());
     }
 
+    /**
+     * Test for executing the right command.
+     */
     @Test
     void executeRight() {
         ServerResponse response = command.execute(robot, world);

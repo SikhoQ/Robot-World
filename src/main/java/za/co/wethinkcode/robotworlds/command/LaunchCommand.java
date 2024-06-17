@@ -6,16 +6,28 @@ import za.co.wethinkcode.robotworlds.robot.Gun;
 import za.co.wethinkcode.robotworlds.robot.Robot;
 import za.co.wethinkcode.robotworlds.server.ServerResponse;
 import za.co.wethinkcode.robotworlds.world.IWorld;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
+
+/**
+ * The LaunchCommand class is responsible for handling the launch action for a robot.
+ * It extends the Command class and provides the implementation for the execute method.
+ */
 public class LaunchCommand extends Command {
 
     public LaunchCommand(Object[] arguments) {
         super("launch", arguments);
     }
+    /**
+     * Creates a new robot in the given world.
+     *
+     * @param rootNode the JsonNode containing the details of the robot to be created.
+     * @param world the IWorld in which the robot will be created.
+     * @param PORT the port number assigned to the robot.
+     * @return the created SimpleBot instance.
+     */
 
     public Robot createRobot(JsonNode rootNode, IWorld world, int PORT) {
         Optional<Map<String, Object>> jsonFieldsOptional = JsonUtility.getJsonFields(rootNode);
@@ -32,7 +44,11 @@ public class LaunchCommand extends Command {
     }
 
     @Override
+<<<<<<< HEAD
+    public ServerResponse execute(SimpleBot target, IWorld world) {
+=======
     public ServerResponse execute (Robot target, IWorld world) {
+>>>>>>> sikho
         String result = "OK";
         Map<String, Object> data = new HashMap<>();
         data.put("position", target.getPosition());
@@ -50,3 +66,4 @@ public class LaunchCommand extends Command {
         return new ServerResponse(result, data, state);
     }
 }
+

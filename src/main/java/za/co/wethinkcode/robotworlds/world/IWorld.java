@@ -2,8 +2,12 @@ package za.co.wethinkcode.robotworlds.world;
 
 import za.co.wethinkcode.robotworlds.Direction;
 import za.co.wethinkcode.robotworlds.Position;
+<<<<<<< HEAD
+import za.co.wethinkcode.robotworlds.robot.SimpleBot;
+=======
 import za.co.wethinkcode.robotworlds.robot.Robot;
 
+>>>>>>> sikho
 import java.util.*;
 
 public interface IWorld {

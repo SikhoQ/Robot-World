@@ -4,9 +4,15 @@ import za.co.wethinkcode.robotworlds.Direction;
 import za.co.wethinkcode.robotworlds.Position;
 import za.co.wethinkcode.robotworlds.TitleCaseConverter;
 import za.co.wethinkcode.robotworlds.maze.RandomMaze;
+<<<<<<< HEAD
+import za.co.wethinkcode.robotworlds.robot.SimpleBot;
+import za.co.wethinkcode.robotworlds.robot.SniperBot;
+import za.co.wethinkcode.robotworlds.world.configuration.Config;
+=======
 import za.co.wethinkcode.robotworlds.robot.Robot;
 import za.co.wethinkcode.robotworlds.ConfigUtility;
 
+>>>>>>> sikho
 import java.util.*;
 
 

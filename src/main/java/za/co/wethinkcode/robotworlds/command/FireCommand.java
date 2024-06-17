@@ -22,6 +22,10 @@ public class FireCommand extends Command {
     }
 
     @Override
+<<<<<<< HEAD
+    public ServerResponse execute(SimpleBot target, IWorld world) {
+        target.getGun().fireShot();
+=======
     public ServerResponse execute(Robot target, IWorld world) {
         if (Gun.getNumberOfShots() != 0) {
             target.getGun().fireShot();
@@ -36,12 +40,9 @@ public class FireCommand extends Command {
             state.put("shields", target.getShields());
             state.put("shots", Gun.getNumberOfShots());
             state.put("status", target.getStatus());
+>>>>>>> sikho
 
-            return new ServerResponse(result, data, state);
-        }
-
-
-        String result = "OK";
+        String result = "Ok";
         Position position = target.getPosition();
         Direction direction = target.getDirection();
 

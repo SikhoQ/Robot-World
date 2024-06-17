@@ -15,6 +15,11 @@ public class RobotClient {
     private PrintWriter out;
     private BufferedReader in;
 
+    // ANSI color codes
+    private static final String ANSI_RESET = "\u001B[0m";
+    private static final String ANSI_GREEN = "\u001B[32m";
+    private static final String ANSI_RED = "\u001B[31m";
+
     public static void main(String[] args) {
         String serverAddress = "";
         int serverPort = 0;
@@ -24,10 +29,10 @@ public class RobotClient {
                 serverAddress = args[0];
                 serverPort = Integer.parseInt(args[1]);
             } catch (NumberFormatException e) {
-                throw new RuntimeException("\nInvalid argument for \"ADDRESS\" and/or \"PORT\"\n\nQuitting...");
+                throw new RuntimeException(ANSI_RED + "\nInvalid argument for \"ADDRESS\" and/or \"PORT\"\n\nQuitting..." + ANSI_RESET);
             }
         } else {
-            throw new RuntimeException("\nInvalid argument for \"ADDRESS\" and/or \"PORT\"\n\nQuitting...");
+            throw new RuntimeException(ANSI_RED + "\nInvalid argument for \"ADDRESS\" and/or \"PORT\"\n\nQuitting..." + ANSI_RESET);
         }
 
         System.out.println("|====================================|");
@@ -47,17 +52,17 @@ public class RobotClient {
         try {
             clientSocket = new Socket(serverAddress, serverPort);
         } catch (IOException e) {
-            throw new RuntimeException("clientSocket exception: " + e);
+            throw new RuntimeException(ANSI_RED + "clientSocket exception: " + e + ANSI_RESET);
         }
         try {
             out = new PrintWriter(clientSocket.getOutputStream(), true);
         } catch (IOException e) {
-            throw new RuntimeException("out exception: " + e);
+            throw new RuntimeException(ANSI_RED + "out exception: " + e + ANSI_RESET);
         }
         try {
             in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
         } catch (IOException e) {
-            throw new RuntimeException("in exception: " + e);
+            throw new RuntimeException(ANSI_RED + "in exception: " + e + ANSI_RESET);
         }
         System.out.println("Connected to server on port: " + serverPort);
         Sleep.sleep(1500);
@@ -95,7 +100,7 @@ public class RobotClient {
             if (serverResponseObject.getResult().equals("OK")) {
                 break;
             }
-            System.out.println(serverResponseObject.getData().get("message"));
+            System.out.println(ANSI_RED + serverResponseObject.getData().get("message") + ANSI_RESET);
         }
 
         Map<String, Object> state = serverResponseObject.getState();
@@ -107,7 +112,7 @@ public class RobotClient {
         int robotPositionY = robotPosition.get("y");
         String robotFacing = (String) state.get("direction");
 
-        System.out.println(robotName + " launched at [" + robotPositionX + "," + robotPositionY + "], facing " + robotFacing);
+        System.out.println(ANSI_GREEN + robotName + " launched at [" + robotPositionX + "," + robotPositionY + "], facing " + robotFacing + ANSI_RESET);
         return robotName;
     }
 
@@ -165,12 +170,12 @@ public class RobotClient {
                     System.out.println(data.get("message"));
             }
         } else {
-            System.out.println(data.get("message"));
+            System.out.println(ANSI_RED + data.get("message") + ANSI_RESET);
         }
     }
 
     private void printRepairResult(String robotName, Map<String, Object> state) {
-        System.out.println(robotName + "> Shield repaired.\nShield strength: "+state.get("shields"));
+        System.out.println(ANSI_GREEN + robotName + "> Shield repaired.\nShield strength: " + state.get("shields") + ANSI_RESET);
     }
 
     private void printRobotState(String robotName, Map<String, Object> state) {
@@ -180,7 +185,7 @@ public class RobotClient {
         if (robotPosition != null) {
             String robotFacing = (String) state.get("direction");
 
-            System.out.println(robotName + " is at [" + robotPosition.get("x") + "," + robotPosition.get("y") + "], facing " + robotFacing);
+            System.out.println(ANSI_GREEN + robotName + " is at [" + robotPosition.get("x") + "," + robotPosition.get("y") + "], facing " + robotFacing + ANSI_RESET);
         }
     }
 
@@ -189,25 +194,25 @@ public class RobotClient {
         List<Map<String, Object>> objects = (List<Map<String, Object>>) data.get("objects");
 
         if (!objects.isEmpty()) {
-            System.out.println(robotName + "> Objects detected:");
+            System.out.println(ANSI_GREEN + robotName + "> Objects detected:" + ANSI_RESET);
             for (Map<String, Object> object : objects) {
                 String objectDirection = (String) object.get("direction");
                 String objectType = (String) object.get("type");
                 int objectDistance = (int) object.get("distance");
 
-                System.out.println(" - Direction: [" + objectDirection + "], Type: [" + objectType + "], Distance: [" + objectDistance + "]");
+                System.out.println(ANSI_GREEN + " - Direction: [" + objectDirection + "], Type: [" + objectType + "], Distance: [" + objectDistance + "]" + ANSI_RESET);
             }
         } else {
-            System.out.println(robotName + "> No objects detected:");
+            System.out.println(ANSI_GREEN + robotName + "> No objects detected:" + ANSI_RESET);
         }
     }
 
     private void printMoveResult(String robotName, Map<String, Object> data) {
-        System.out.println(robotName + "> " + data.get("message"));
+        System.out.println(ANSI_GREEN + robotName + "> " + data.get("message") + ANSI_RESET);
     }
 
     private void printTurnResult(String robotName, Map<String, Object> data) {
-        System.out.println(robotName + "> " + data.get("message"));
+        System.out.println(ANSI_GREEN + robotName + "> " + data.get("message") + ANSI_RESET);
     }
 
     private void printFireResult(String robotName, String enemyName, Map<String, Object> data, Map<String, Object> state) {
@@ -218,26 +223,26 @@ public class RobotClient {
             Map<String, Object> enemyState = (Map<String, Object>) data.get("state");
             printRobotState(enemyName, enemyState);
         } else if (message.equalsIgnoreCase("MISS")) {
-            System.out.println(robotName + "> Missed!");
+            System.out.println(ANSI_RED + robotName + "> Missed!" + ANSI_RESET);
         }
 
         int robotShots = (int) state.get("shots");
         if (robotShots != 0) {
-            System.out.println("\n" + robotName + "> " + robotShots + " shot(s) left");
+            System.out.println(ANSI_GREEN + "\n" + robotName + "> " + robotShots + " shot(s) left" + ANSI_RESET);
         } else {
-            System.out.println("\n" + robotName + "> No shots left. Reload gun");
+            System.out.println(ANSI_RED + "\n" + robotName + "> No shots left. Reload gun" + ANSI_RESET);
         }
     }
 
     private void printReloadResult(String robotName, Map<String, Object> state) {
-        System.out.println(robotName + "> Gun reloaded. " + state.get("shots") + " shot(s) left");
+        System.out.println(ANSI_GREEN + robotName + "> Gun reloaded. " + state.get("shots") + " shot(s) left" + ANSI_RESET);
     }
 
     private String getServerResponse() {
         try {
             return in.readLine();
         } catch (IOException e) {
-            System.out.println("serverResponse exception");
+            System.out.println(ANSI_RED + "serverResponse exception" + ANSI_RESET);
             throw new RuntimeException(e);
         }
     }

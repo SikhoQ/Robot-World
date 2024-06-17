@@ -1,16 +1,13 @@
 package za.co.wethinkcode.robotworlds.command;
 
 import za.co.wethinkcode.robotworlds.Direction;
-import za.co.wethinkcode.robotworlds.robot.SimpleBot;
+import za.co.wethinkcode.robotworlds.robot.Robot;
 import za.co.wethinkcode.robotworlds.server.ServerResponse;
 import za.co.wethinkcode.robotworlds.world.IWorld;
+
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * The RightCommand class represents a command to rotate a SimpleBot to the right (clockwise).
- * It extends the Command class and provides the implementation for the execute method.
- */
 public class RightCommand extends Command {
 
     public RightCommand() {
@@ -18,8 +15,7 @@ public class RightCommand extends Command {
     }
 
     @Override
-    public ServerResponse execute(SimpleBot target, IWorld world) {
-        // Rotate the target SimpleBot to the right (clockwise)
+    public ServerResponse execute(Robot target, IWorld world) {
         switch (target.getDirection()){
             case NORTH:
                 target.setDirection(Direction.EAST);
@@ -35,11 +31,9 @@ public class RightCommand extends Command {
                 break;
         }
 
-        // Construct the response fields
         String result = "OK";
         Map<String, Object> data = new HashMap<>();
-        data.put("message", "DONE");
-        // Populate state field with current state of the SimpleBot
+        data.put("message", "Done");
         Map<String, Object> state = new HashMap<>();
         state.put("position", target.getPosition());
         state.put("direction", target.getDirection());

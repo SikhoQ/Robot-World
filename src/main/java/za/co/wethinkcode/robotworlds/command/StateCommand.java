@@ -1,6 +1,6 @@
 package za.co.wethinkcode.robotworlds.command;
 
-import za.co.wethinkcode.robotworlds.robot.SimpleBot;
+import za.co.wethinkcode.robotworlds.robot.Robot;
 import za.co.wethinkcode.robotworlds.world.IWorld;
 import za.co.wethinkcode.robotworlds.server.ServerResponse;
 import java.util.HashMap;
@@ -23,7 +23,7 @@ public class StateCommand extends Command {
      * and returns them in the response.
      */
     @Override
-    public ServerResponse execute(SimpleBot target, IWorld world) {
+    public ServerResponse execute(Robot target, IWorld world) {
         String result = "OK";
         Map<String, Object> data = new HashMap<>() {};
         Map<String, Object> state = new HashMap<>();

@@ -3,12 +3,11 @@ package za.co.wethinkcode.robotworlds.maze;
 import za.co.wethinkcode.robotworlds.world.Obstacle;
 import za.co.wethinkcode.robotworlds.world.SquareObstacle;
 import za.co.wethinkcode.robotworlds.Position;
-import za.co.wethinkcode.robotworlds.world.configuration.Config;
+import za.co.wethinkcode.robotworlds.ConfigUtility;
+
 import java.util.*;
 
-/**
- * Class to represent a simple maze implementation containing obstacles.
- */
+
 public class RandomMaze implements Maze {
 
     List<Obstacle> obstacles;
@@ -17,24 +16,12 @@ public class RandomMaze implements Maze {
         this.obstacles = new ArrayList<>();
     }
 
-    /**
-     * Returns the list of obstacles in the maze.
-     *
-     * @return a list of Obstacle objects representing the obstacles in the maze.
-     */
     @Override
     public List<Obstacle> getObstacles() {
         createObstacles();
         return obstacles;
     }
 
-    /**
-     * Checks if the path from the start position to the destination position is blocked by any obstacle.
-     *
-     * @param start the starting position of the path
-     * @param dest the destination position of the path
-     * @return true if the path is blocked by an obstacle, false otherwise
-     */
     @Override
     public boolean blocksPath(Position start, Position dest) {
 
@@ -62,15 +49,13 @@ public class RandomMaze implements Maze {
 
     private void createObstacles() {
         Random random = new Random();
-        Config config = Config.readConfiguration();
 
-        int worldSize = config.getWorldSize().getHeight() * config.getWorldSize().getWidth();
-        int minimumObstacles = 1;
-        int maximumObstacles = 3;
-
+        int worldSize = ConfigUtility.getWorldSize().getHeight() * ConfigUtility.getWorldSize().getWidth();
+        int minimumObstacles = (int) (worldSize * 0.001);
+        int maximumObstacles = (int) (worldSize * 0.002);
         int numberOfObstacles = random.nextInt((maximumObstacles - minimumObstacles) + 1) + minimumObstacles;
-        int worldX = config.getWorldSize().getWidth() / 2;
-        int worldY = config.getWorldSize().getHeight() / 2;
+        int worldX = ConfigUtility.getWorldSize().getWidth() / 2;
+        int worldY = ConfigUtility.getWorldSize().getHeight() / 2;
 
         for (int i = 0; i < numberOfObstacles; i++) {
             int xCoord = random.nextInt((worldX + worldX) + 1) - worldX;

@@ -3,33 +3,36 @@ package za.co.wethinkcode.robotworlds.robot;
 import za.co.wethinkcode.robotworlds.Direction;
 import za.co.wethinkcode.robotworlds.Position;
 import za.co.wethinkcode.robotworlds.world.IWorld;
-import za.co.wethinkcode.robotworlds.world.configuration.Config;
+import za.co.wethinkcode.robotworlds.ConfigUtility;
 
-public class SimpleBot {
-
+public class Robot {
     private final String name;
+    private final String make;
     private String status;
     private Position position;
     private Direction direction;
     protected int shields;
-    private final int MAX_SHIELDS = 10;
-    private Gun gun;
+    private final Gun gun;
     private final int reloadTime;
     private final int repairTime;
     private final int PORT;
-    protected Config config;
 
-    public SimpleBot(String name, Position position, Direction direction, int PORT) {
-        this.name = name;
+    public Robot(String[] makeAndName, int maxShots, Position position, Direction direction, int PORT) {
+        this.name = makeAndName[0];
+        this.make = makeAndName[1];
         this.status = "NORMAL";
-        this.shields = MAX_SHIELDS;
+        this.shields = ConfigUtility.getShields();
+        this.gun = new Gun(maxShots);
         this.position = position;
         this.direction = direction;
         this.PORT = PORT;
 
-        this.config = Config.readConfiguration();
-        this.reloadTime = config.getReload();
-        this.repairTime = config.getRepair();
+        this.reloadTime = ConfigUtility.getReload();
+        this.repairTime = ConfigUtility.getRepair();
+    }
+
+    public String getMake() {
+        return make;
     }
 
     public String getStatus() {
@@ -60,10 +63,6 @@ public class SimpleBot {
         return shields;
     }
 
-    public void setGun(int maximumShots) {
-        this.gun = new Gun(maximumShots);
-    }
-
     public Gun getGun() {
         return gun;
     }
@@ -73,7 +72,7 @@ public class SimpleBot {
     }
 
     public long getRepairTime() {
-        return config.getRepair();
+        return ConfigUtility.getRepair();
     }
 
     public int getPORT() {
@@ -84,7 +83,9 @@ public class SimpleBot {
         int newX = position.getX();
         int newY = position.getY();
         boolean goingBack = numSteps < 0;
+
         numSteps = Math.abs(numSteps);
+
         for (int step = 1; step <= numSteps; step++) {
             switch (direction) {
                 case NORTH:
@@ -124,11 +125,11 @@ public class SimpleBot {
         position = new Position(0, 0);
         direction = Direction.NORTH;
         status = "NORMAL";
-        shields = MAX_SHIELDS;
+        shields = ConfigUtility.getShields();
     }
 
     public void repair() {
-        this.shields = MAX_SHIELDS;
+        this.shields = ConfigUtility.getShields();
     }
 
     @Override

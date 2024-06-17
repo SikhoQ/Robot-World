@@ -1,6 +1,6 @@
 package za.co.wethinkcode.robotworlds.command;
 
-import za.co.wethinkcode.robotworlds.robot.SimpleBot;
+import za.co.wethinkcode.robotworlds.robot.Robot;
 import za.co.wethinkcode.robotworlds.server.ServerResponse;
 import za.co.wethinkcode.robotworlds.world.IWorld;
 import java.util.HashMap;
@@ -10,7 +10,7 @@ public class RepairCommand extends Command {
     public RepairCommand() {super("repair", null);}
 
     @Override
-    public ServerResponse execute(SimpleBot target, IWorld world) {
+    public ServerResponse execute(Robot target, IWorld world) {
         String name = target.getName();
         String make = target.getClass().getSimpleName();
 

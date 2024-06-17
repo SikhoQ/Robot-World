@@ -18,27 +18,22 @@ public class ServerConsole implements Runnable {
 
     @Override
     public void run() {
-        try (Scanner scanner = new Scanner(System.in)) {
-            String input;
-            do {
-                System.out.print("Server Console > ");
-                input = scanner.nextLine();
-                processInput(input);
-            } while (!input.equalsIgnoreCase("QUIT"));
-        } catch (Exception e) {
-            System.err.println("An error occurred while reading input: " + e.getMessage());
+        Scanner scanner = new Scanner(System.in);
+        while (scanner.hasNextLine()) {
+            String command = scanner.nextLine();
+            handleCommand(command);
         }
     }
 
-    private void processInput(String input) {
-        if (input.equalsIgnoreCase("QUIT")) {
+    private void handleCommand(String command) {
+        if (command.equalsIgnoreCase("QUIT")) {
             server.shutdown();
-        } else if (input.equalsIgnoreCase("ROBOTS")) {
+        } else if (command.equalsIgnoreCase("ROBOTS")) {
             world.showRobots();
-        } else if (input.equalsIgnoreCase("DUMP")) {
+        } else if (command.equalsIgnoreCase("DUMP")) {
             world.showWorldState();
         } else {
-            System.out.println("Unknown command: " + input);
+            System.out.println("Unknown command: " + command);
         }
     }
 }

@@ -15,8 +15,7 @@ public class UserInput {
 
         if (command.equalsIgnoreCase("RELOAD")) {
             System.out.println(robotName + "> Reloading gun...");
-        }
-        else if (command.equalsIgnoreCase("REPAIR")) {
+        } else if (command.equalsIgnoreCase("REPAIR")) {
             System.out.println(robotName + "> Repairing shield...");
         }
 
@@ -49,11 +48,16 @@ public class UserInput {
     }
 
     private static int getMaximumShots() {
-        try {
-            return Integer.parseInt(UserInput.getInput("Maximum number of shots: "));
-        } catch (NumberFormatException e) {
-            System.out.println("Invalid input.");
-            return getMaximumShots();
+        while (true) {
+            try {
+                final int maxShots = Integer.parseInt(UserInput.getInput("Maximum number of shots [0 - 5]: "));
+                if (maxShots >= 0 && maxShots <= 5)
+                    return maxShots;
+                System.out.println("Invalid input.");
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input.");
+                return getMaximumShots();
+            }
         }
     }
 

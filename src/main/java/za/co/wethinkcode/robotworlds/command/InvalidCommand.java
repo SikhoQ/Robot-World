@@ -1,6 +1,6 @@
 package za.co.wethinkcode.robotworlds.command;
 
-import za.co.wethinkcode.robotworlds.robot.SimpleBot;
+import za.co.wethinkcode.robotworlds.robot.Robot;
 import za.co.wethinkcode.robotworlds.world.IWorld;
 import za.co.wethinkcode.robotworlds.server.ServerResponse;
 import java.util.HashMap;
@@ -18,7 +18,7 @@ public class InvalidCommand extends Command {
      * @param error the error message indicating the type of invalid command.
      */
     public InvalidCommand(String error) {
-        super("unknown", null);
+        super("invalid", null);
         this.error = error;
     }
 
@@ -30,7 +30,7 @@ public class InvalidCommand extends Command {
      * @return a ServerResponse containing the error result and message.
      */
     @Override
-    public ServerResponse execute(SimpleBot target, IWorld world) {
+    public ServerResponse execute(Robot target, IWorld world) {
         String result = "ERROR";
         Map<String, Object> data = new HashMap<>();
         Map<String, Object> state = new HashMap<>() {};
@@ -47,6 +47,9 @@ public class InvalidCommand extends Command {
                 break;
             case "NAME TAKEN":
                 data.put("message", "Too many of you in this world");
+                break;
+            case "INVALID JSON FIELDS":
+                data.put("message", "Invalid JSON fields");
                 break;
         }
 

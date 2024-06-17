@@ -1,77 +1,73 @@
 package za.co.wethinkcode.robotworlds.command;
 
-import org.junit.jupiter.api.Test;
-import za.co.wethinkcode.robotworlds.robot.SimpleBot;
+
+import za.co.wethinkcode.robotworlds.robot.Robot;
 import za.co.wethinkcode.robotworlds.server.ServerResponse;
 import za.co.wethinkcode.robotworlds.world.IWorld;
 
-
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 
-class InvalidCommandTest {
+public class InvalidCommandTest {
 
     @Test
-    void testUnknownCommandError() {
-        InvalidCommand command = new InvalidCommand("UNKNOWN COMMAND");
+    public void testUnknownCommandError() {
+        InvalidCommand invalidCommand = new InvalidCommand("UNKNOWN COMMAND");
+        Robot mockRobot = mock(Robot.class);
         IWorld mockWorld = mock(IWorld.class);
-        SimpleBot mockBot = mock(SimpleBot.class);
 
-        ServerResponse response = command.execute(mockBot, mockWorld);
+        ServerResponse response = invalidCommand.execute(mockRobot, mockWorld);
 
         assertEquals("ERROR", response.getResult());
-        assertTrue(response.getData().containsKey("message"));
         assertEquals("Unsupported command", response.getData().get("message"));
     }
 
     @Test
-    void testBadArgumentsError() {
-        InvalidCommand command = new InvalidCommand("BAD ARGUMENTS");
+    public void testBadArgumentsError() {
+        InvalidCommand invalidCommand = new InvalidCommand("BAD ARGUMENTS");
+        Robot mockRobot = mock(Robot.class);
         IWorld mockWorld = mock(IWorld.class);
-        SimpleBot mockBot = mock(SimpleBot.class);
 
-        ServerResponse response = command.execute(mockBot, mockWorld);
+        ServerResponse response = invalidCommand.execute(mockRobot, mockWorld);
 
         assertEquals("ERROR", response.getResult());
-        assertTrue(response.getData().containsKey("message"));
         assertEquals("Could not parse arguments", response.getData().get("message"));
     }
 
     @Test
-    void testNoSpaceError() {
-        InvalidCommand command = new InvalidCommand("NO SPACE");
+    public void testNoSpaceError() {
+        InvalidCommand invalidCommand = new InvalidCommand("NO SPACE");
+        Robot mockRobot = mock(Robot.class);
         IWorld mockWorld = mock(IWorld.class);
-        SimpleBot mockBot = mock(SimpleBot.class);
 
-        ServerResponse response = command.execute(mockBot, mockWorld);
+        ServerResponse response = invalidCommand.execute(mockRobot, mockWorld);
 
         assertEquals("ERROR", response.getResult());
-        assertTrue(response.getData().containsKey("message"));
         assertEquals("No more space in this world", response.getData().get("message"));
     }
 
     @Test
-    void testNameTakenError() {
-        InvalidCommand command = new InvalidCommand("NAME TAKEN");
+    public void testNameTakenError() {
+        InvalidCommand invalidCommand = new InvalidCommand("NAME TAKEN");
+        Robot mockRobot = mock(Robot.class);
         IWorld mockWorld = mock(IWorld.class);
-        SimpleBot mockBot = mock(SimpleBot.class);
 
-        ServerResponse response = command.execute(mockBot, mockWorld);
+        ServerResponse response = invalidCommand.execute(mockRobot, mockWorld);
 
         assertEquals("ERROR", response.getResult());
-        assertTrue(response.getData().containsKey("message"));
         assertEquals("Too many of you in this world", response.getData().get("message"));
     }
 
     @Test
-    void testUnknownError() {
-        InvalidCommand command = new InvalidCommand("UNKNOWN ERROR");
+    public void testInvalidJsonFieldsError() {
+        InvalidCommand invalidCommand = new InvalidCommand("INVALID JSON FIELDS");
+        Robot mockRobot = mock(Robot.class);
         IWorld mockWorld = mock(IWorld.class);
-        SimpleBot mockBot = mock(SimpleBot.class);
 
-        ServerResponse response = command.execute(mockBot, mockWorld);
+        ServerResponse response = invalidCommand.execute(mockRobot, mockWorld);
 
         assertEquals("ERROR", response.getResult());
-        assertFalse(response.getData().containsKey("message"));
+        assertEquals("Invalid JSON fields", response.getData().get("message"));
     }
 }

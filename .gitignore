@@ -1,5 +1,6 @@
 .idea/
 Untitled-1.ini
 javadocs.txt
-MANAGING WORLD VIA CONSOLE.txt
-Context.java
+server_log.txt
+*.class
+target/

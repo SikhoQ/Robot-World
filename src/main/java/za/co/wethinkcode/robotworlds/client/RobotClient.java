@@ -146,6 +146,12 @@ public class RobotClient {
         return robotName;
     }
 
+    /**
+     * Runs the main interaction loop for the specified robot.
+     * <p>Continuously prompts the user for commands to control the robot until the user types "exit".
+     * Sends the commands to the server and processes the server's response.
+     * @param robotName the name of the robot to control
+     */
     private void run(String robotName) {
         String userInput = UserInput.getInput("\n"+robotName+"> What must I do next?");
         while (!userInput.equalsIgnoreCase("exit")) {

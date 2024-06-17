@@ -3,7 +3,6 @@ package za.co.wethinkcode.robotworlds.maze;
 import za.co.wethinkcode.robotworlds.world.Obstacle;
 import za.co.wethinkcode.robotworlds.world.SquareObstacle;
 import za.co.wethinkcode.robotworlds.Position;
-
 import java.util.*;
 
 
@@ -26,7 +25,6 @@ public class SimpleMaze implements Maze {
 
         Obstacle[] obstaclesArray = obstacles.toArray(new Obstacle[obstacles.size() - 1]);
         for (Obstacle obs: obstaclesArray) {
-            // vertical path
             if (start.getX() == destination.getX()) {
                 if ((obs.getBottomLeftY() >= Math.min(start.getY(), destination.getY())
                         && obs.getBottomLeftY() <= Math.max(start.getY(), destination.getY()))
@@ -34,7 +32,7 @@ public class SimpleMaze implements Maze {
                     return true;
                 }
             }
-            // horizontal
+
             else {
                 if ((obs.getBottomLeftX() >= Math.min(start.getX(), destination.getX())
                         && obs.getBottomLeftX() <= Math.max(start.getX(), destination.getX()))

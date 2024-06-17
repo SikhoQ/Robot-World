@@ -10,9 +10,6 @@ import za.co.wethinkcode.robotworlds.server.ServerResponse;
  */
 public class HelpCommand extends Command {
 
-    /**
-     * Constructs a HelpCommand object with the command name set to "help".
-     */
     public HelpCommand() {
         super("help", null);
     }

@@ -1,7 +1,5 @@
 package za.co.wethinkcode.robotworlds.server;
 
-import za.co.wethinkcode.robotworlds.client.RobotClient;
-import za.co.wethinkcode.robotworlds.world.IWorld;
 
 import java.net.Socket;
 

@@ -15,6 +15,11 @@ import za.co.wethinkcode.robotworlds.command.Command;
 import za.co.wethinkcode.robotworlds.command.LaunchCommand;
 import za.co.wethinkcode.robotworlds.world.IWorld;
 
+/**
+ * Class to handle communication between a server and a single client.
+ * It processes commands received from the client and sends responses back to the client.
+ * This class implements Runnable to allow handling client communication in a separate thread.
+ */
 public class RobotClientHandler implements Runnable {
     private final Socket clientSocket;
     private final IWorld world;
@@ -30,6 +35,9 @@ public class RobotClientHandler implements Runnable {
         return clientSocket;
     }
 
+    /**
+     * Handles communication with the client.
+     */
     @Override
     public void run() {
         try {
@@ -52,6 +60,11 @@ public class RobotClientHandler implements Runnable {
         }
     }
 
+    /**
+     * Disconnects the client from the server.
+     *
+     * @throws IOException if an I/O error occurs while closing the client socket
+     */
     public void disconnectClient() throws IOException {
         this.clientSocket.close();
     }

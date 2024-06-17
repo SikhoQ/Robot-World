@@ -28,16 +28,8 @@ public class HelpCommand extends Command {
         System.out.println("Available commands:");
         System.out.println("   launch [Bot type] [Bot name] - launch robot into world");
         System.out.println("   look                 - look around in robot's field of view");
-        System.out.println("   state                - robot state");
-        System.out.println("   forward [steps]      - move robot forward");
-        System.out.println("   back [steps]         - move robot backward");
-        System.out.println("   turn [direction]     - turn robot left or right");
-        System.out.println("   Orientation          - get robot's current orientation");
-        System.out.println("   quit                 - quit the server");
+        System.out.println("   state                - robot state\n");
 
-        return new ServerResponse("OK",null,null);
+        return null;
     }
-
-    }
-
-
+}

@@ -22,7 +22,7 @@ public class LaunchCommand extends Command {
     }
 
     @Override
-    public ServerResponse execute (SimpleBot target, IWorld world) {
+    public ServerResponse execute(SimpleBot target, IWorld world) {
         String result = "OK";
         Map<String, Object> data = new HashMap<>();
         data.put("position", target.getPosition());

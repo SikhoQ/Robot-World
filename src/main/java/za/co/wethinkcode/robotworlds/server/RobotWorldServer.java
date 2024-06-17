@@ -14,8 +14,7 @@ public class RobotWorldServer extends Thread{
     private final TextWorld world;
 
 
-    public RobotWorldServer() {
-        int PORT = 5000;
+    public RobotWorldServer(int PORT) {
         clients = new ArrayList<>();
         world = new TextWorld();
         try {
@@ -28,11 +27,7 @@ public class RobotWorldServer extends Thread{
     public void run() {
         ServerConsole console = new ServerConsole(this, world);
         new Thread(console).start();
-        // RemoveClient is supposed to run an infinite loop checking for disconnected clients
-        // and remove them from the list (therefore from the world)
-        // -----currently not working------
-
-
+      
         try {
             System.out.println("Server started. Waiting for clients...");
             while (true) {
@@ -49,11 +44,6 @@ public class RobotWorldServer extends Thread{
         }
     }
 
-    /**
-     * Shuts down the server and all its clients.
-     * This method disconnects all clients and then closes the server socket.
-     * Finally, it terminates the server process.
-     */
     public void shutdown() {
         for (RobotClientHandler client: clients) {
             try {
@@ -62,42 +52,42 @@ public class RobotWorldServer extends Thread{
                 throw new RuntimeException(e);
             }
         }
-        closeServer();
+        try {
+            closeServer();
+        } catch (IOException e) {
+            throw new RuntimeException("Error while closing server:\n"+e);
+        }
         System.exit(0);
     }
 
-    /**
-     * Retrieves the list of active {@link RobotClientHandler} instances.
-     *
-     * @return a list of active {@link RobotClientHandler} instances
-     */
     public List<RobotClientHandler> getClients() {
         return clients;
     }
-
     public void removeClient(RobotClientHandler disconnectedClient) {
         clients.remove(disconnectedClient);
         world.removeRobot(disconnectedClient.getClientSocket().getPort());
     }
 
-    private void closeServer() {
+    public void closeServer() throws IOException {
         try {
             serverSocket.close();
         } catch (IOException e) {
-            // handle in calling code
             throw new RuntimeException(e);
         }
     }
 
-    /**
-     * The main entry point of the server.
-     * It initializes the server, sets up the world, and starts accepting client connections.
-     *
-     * @param args Command line arguments, not used in this context.
-     * @throws IOException If an error occurs while accepting client connections.
-     */
     public static void main(String[] args) throws IOException {
-        RobotWorldServer server = new RobotWorldServer();
+        int PORT = 0;
+        if (args.length == 1) {
+            try {
+                PORT = Integer.parseInt(args[0]);
+            } catch (NumberFormatException e) {
+                throw new RuntimeException("\nInvalid argument for \"PORT\"\n\nQuitting...");
+            }
+        } else {
+            throw new RuntimeException("\nInvalid argument for \"PORT\"\n\nQuitting...");
+        }
+        RobotWorldServer server = new RobotWorldServer(PORT);
         server.start();
     }
 }

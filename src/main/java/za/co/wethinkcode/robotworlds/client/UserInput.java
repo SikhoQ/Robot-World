@@ -1,36 +1,35 @@
 package za.co.wethinkcode.robotworlds.client;
 
-public class UserInput {
+import java.sql.SQLOutput;
+import java.util.Scanner;
 
+public class UserInput {
     public UserInput() {}
 
-    /**
-     * This method should process user input and return the corresponding
-     * ClientRequest instance
-     * ClientRequest is a class used for formatting the request protocol
-     */
-    public static ClientRequest handleUserInput(String userInput) {
-        // NEED TO CHANGE THIS IMPLEMENTATION TO USE A VALIDATING
-        // METHOD TO CHECK IF THE INPUT IS A VALID COMMAND BEFORE
-        // SPLITTING STRING FOR COMMAND, OR FIND A WAY TO RE-JOIN
-        // IF NOT VALID COMMAND INPUT
+    public static ClientRequest handleUserInput(String robotName, String userInput) {
         String[] userInputArray = userInput.trim().split(" ", 2);
         String commandInput = userInputArray[0].trim().toUpperCase();
 
         String command = commandInput.toLowerCase();
-        String name = "";
         Object[] arguments = getArguments(commandInput, userInputArray);
 
-        return new ClientRequest(name, command, arguments);
+        if (command.equalsIgnoreCase("RELOAD")) {
+            System.out.println(robotName + "> Reloading gun...");
+        }
+        else if (command.equalsIgnoreCase("REPAIR")) {
+            System.out.println(robotName + "> Repairing shield...");
+        }
+
+        return new ClientRequest(robotName, command, arguments);
     }
 
     private static Object[] getArguments(String commandInput, String[] userInputArray) {
         Object[] arguments = new Object[] {""};
         if (commandInput.equals("LAUNCH") && userInputArray.length > 1) {
             String[] argsArray = userInputArray[1].trim().split(" ");
-            if (argsArray.length > 1) {
-                arguments = new String[] {argsArray[0], argsArray[1]};
-            }
+            int maximumShots = getMaximumShots();
+            int shieldStrength = getShieldStrength();
+            arguments = new Object[] {argsArray[0], shieldStrength, maximumShots};
         } else if ((commandInput.equals("FORWARD") || commandInput.equals("BACK")) &&
                 userInputArray.length > 1) {
             arguments = new Integer[] {Integer.parseInt(userInputArray[1])};
@@ -38,5 +37,33 @@ public class UserInput {
             arguments = new String[] {userInputArray[1]};
         }
         return arguments;
+    }
+
+    private static int getShieldStrength() {
+        try {
+            return Integer.parseInt(UserInput.getInput("Maximum shield strength: "));
+        } catch (NumberFormatException e) {
+            System.out.println("Invalid input.");
+            return getShieldStrength();
+        }
+    }
+
+    private static int getMaximumShots() {
+        try {
+            return Integer.parseInt(UserInput.getInput("Maximum number of shots: "));
+        } catch (NumberFormatException e) {
+            System.out.println("Invalid input.");
+            return getMaximumShots();
+        }
+    }
+
+    public static String getInput(String prompt) {
+        String input;
+        Scanner scanner = new Scanner(System.in);
+        do {
+            System.out.println(prompt);
+            input = scanner.nextLine();;
+        } while (input.isBlank());
+        return input;
     }
 }

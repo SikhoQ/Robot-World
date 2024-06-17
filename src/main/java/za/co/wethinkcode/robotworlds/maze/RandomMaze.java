@@ -8,9 +8,7 @@ import za.co.wethinkcode.robotworlds.world.configuration.Config;
 import java.io.IOException;
 import java.util.*;
 
-/**
- * Class to represent a simple maze implementation containing obstacles.
- */
+
 public class RandomMaze implements Maze {
 
     List<Obstacle> obstacles;
@@ -19,24 +17,12 @@ public class RandomMaze implements Maze {
         this.obstacles = new ArrayList<>();
     }
 
-    /**
-     * Returns the list of obstacles in the maze.
-     *
-     * @return a list of Obstacle objects representing the obstacles in the maze.
-     */
     @Override
     public List<Obstacle> getObstacles() {
         createObstacles();
         return obstacles;
     }
 
-    /**
-     * Checks if the path from the start position to the destination position is blocked by any obstacle.
-     *
-     * @param start the starting position of the path
-     * @param dest the destination position of the path
-     * @return true if the path is blocked by an obstacle, false otherwise
-     */
     @Override
     public boolean blocksPath(Position start, Position dest) {
 

@@ -19,31 +19,23 @@ public class OrientationCommandTest {
      */
     @Test
     void testExecute() {
-        // Create a Position and Direction for the SimpleBot
         Position position = new Position(0, 0); // Example position (adjust as per your Position class)
         Direction direction = Direction.NORTH; // Example direction
 
-        // Create a SimpleBot instance with required parameters
         SimpleBot bot = new SimpleBot("BotName", position, direction, 100); // Adjust parameters as per your constructor
 
-        // Mock IWorld interface if needed, or create a test implementation
 
-        // Create an instance of OrientationCommand
         OrientationCommand orientationCommand = new OrientationCommand();
 
-        // Execute the command
         ServerResponse serverResponse = orientationCommand.execute(bot, null); // Pass null for IWorld for simplicity
 
-        // Verify the result
         assertNotNull(serverResponse);
         assertEquals("OK", serverResponse.getResult());
 
-        // Verify data field
         Map<String, Object> data = serverResponse.getData();
         assertNotNull(data);
         assertNull(data.get("message")); // Ensure there is no message field in data for orientation command
 
-        // Verify state field
         Map<String, Object> state = serverResponse.getState();
         assertNotNull(state);
         assertEquals(bot.getDirection(), state.get("direction")); // Verify direction field in state

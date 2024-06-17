@@ -40,5 +40,5 @@ class SniperBotTest {
         assertEquals(Direction.NORTH, direction, "Initial direction should be NORTH");
     }
 
-    // Add more tests specific to SniperBot's behavior if needed
+
 }

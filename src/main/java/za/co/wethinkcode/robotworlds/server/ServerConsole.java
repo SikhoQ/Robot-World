@@ -3,6 +3,10 @@ package za.co.wethinkcode.robotworlds.server;
 import za.co.wethinkcode.robotworlds.world.TextWorld;
 import java.util.Scanner;
 
+/**
+ * The ServerConsole class represents a console that allows the user to interact with the server.
+ * It extends the Thread class and provides the implementation for the run method.
+ */
 public class ServerConsole implements Runnable {
     private final RobotWorldServer server;
     private final TextWorld world;

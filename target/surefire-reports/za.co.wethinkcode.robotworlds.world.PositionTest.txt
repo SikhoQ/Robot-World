@@ -1,7 +1,7 @@
 -------------------------------------------------------------------------------
 Test set: za.co.wethinkcode.robotworlds.world.PositionTest
 -------------------------------------------------------------------------------
-Tests run: 2, Failures: 0, Errors: 2, Skipped: 0, Time elapsed: 0.028 s <<< FAILURE! -- in za.co.wethinkcode.robotworlds.world.PositionTest
+Tests run: 2, Failures: 0, Errors: 2, Skipped: 0, Time elapsed: 0.016 s <<< FAILURE! -- in za.co.wethinkcode.robotworlds.world.PositionTest
 za.co.wethinkcode.robotworlds.world.PositionTest.gettingXandY -- Time elapsed: 0.001 s <<< ERROR!
 java.lang.Error: 
 Unresolved compilation problems: 

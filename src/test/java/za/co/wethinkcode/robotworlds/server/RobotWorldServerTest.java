@@ -5,7 +5,6 @@ import static org.junit.Assert.*;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.net.ServerSocket;
 import java.net.Socket;
 
 import org.junit.*;
@@ -62,15 +61,4 @@ public class RobotWorldServerTest {
         }
     }
 
-//    @Test
-//    public void testClientConnection() {
-//        // Assuming your server prints out client connections
-//        assertTrue(outContent.toString().contains(" Client connected: "));
-//    }
-//
-//    @Ignore
-//    @Test
-//    public void testQuitCommand() {
-//        // Implement your test for the quit command here
-//    }
 }

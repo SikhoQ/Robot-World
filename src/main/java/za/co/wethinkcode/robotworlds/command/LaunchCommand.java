@@ -5,7 +5,6 @@ import za.co.wethinkcode.robotworlds.Json;
 import za.co.wethinkcode.robotworlds.robot.SimpleBot;
 import za.co.wethinkcode.robotworlds.server.ServerResponse;
 import za.co.wethinkcode.robotworlds.world.IWorld;
-
 import java.util.HashMap;
 import java.util.Map;
 

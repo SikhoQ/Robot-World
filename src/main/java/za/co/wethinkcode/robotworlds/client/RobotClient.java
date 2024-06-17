@@ -20,12 +20,7 @@ public class RobotClient {
     private String robotName;
     private boolean serverRunning = true;
 
-    /**
-     * Main method to start the client.
-     * @param args Command line arguments containing server address and port.
-     */
     public static void main(String[] args) {
-        // Command line arguments parsing
         String serverAddress = null;
         int serverPort = 0;
 
@@ -48,16 +43,10 @@ public class RobotClient {
 
         RobotClient client = new RobotClient();
 
-        // Start the client connection and run the client
         client.startConnection(serverAddress, serverPort);
         client.run();
     }
 
-    /**
-     * Establishes connection with the server.
-     * @param serverAddress The address of the server.
-     * @param serverPort The port of the server.
-     */
     public void startConnection(String serverAddress, int serverPort) {
         System.out.println("Connecting...");
         try {
@@ -79,9 +68,6 @@ public class RobotClient {
         System.out.println("Connected to server on port: " + serverPort);
     }
 
-    /**
-     * Closes connection with the server.
-     */
     public void stopConnection() {
         try {
             if (clientSocket != null) {
@@ -93,11 +79,7 @@ public class RobotClient {
         }
     }
 
-    /**
-     * Runs the client, taking user inputs and interacting with the server.
-     */
     public void run() {
-        // Main client loop
         while (true) {
             while (!isRobotLaunched) {
                 String userInput = UserInput.getInput("\nLaunch a robot:\nUse 'launch <make> <name>'");
@@ -116,20 +98,10 @@ public class RobotClient {
         }
     }
 
-    /**
-     * Sends a client request to the server.
-     * @param clientRequest The request to be sent.
-     */
     private void sendClientRequest(String clientRequest) {
         out.println(clientRequest);
     }
 
-    /**
-     * Prints the result of the client's request.
-     * @param robotName The name of the robot.
-     * @param command The command issued.
-     * @param serverResponse The server's response.
-     */
     private void printRequestResult(String robotName, String command, ServerResponse serverResponse) {
         String result = serverResponse.getResult();
         Map<String, Object> data = serverResponse.getData();
@@ -168,21 +140,10 @@ public class RobotClient {
         }
     }
 
-
-    /**
-     * Prints the result of a repair action.
-     * @param robotName The name of the robot.
-     * @param state The state after repair.
-     */
     private void printRepairResult(String robotName, Map<String, Object> state) {
         System.out.println(robotName + "> Shield repaired.\nShield strength: "+state.get("shields"));
     }
 
-    /**
-     * Prints the current state of the robot.
-     * @param robotName The name of the robot.
-     * @param state The current state of the robot.
-     */
     private void printRobotState(String robotName, Map<String, Object> state) {
         @SuppressWarnings("unchecked")
         Map<String, Integer> robotPosition = (Map<String, Integer>) state.get("position");
@@ -194,11 +155,6 @@ public class RobotClient {
         }
     }
 
-    /**
-     * Prints the result of a 'look' action.
-     * @param robotName The name of the robot.
-     * @param data The data returned from the server.
-     */
     private void printLookResult(String robotName, Map<String, Object> data) {
         @SuppressWarnings("unchecked")
         List<Map<String, Object>> objects = (List<Map<String, Object>>) data.get("objects");
@@ -217,31 +173,14 @@ public class RobotClient {
         }
     }
 
-    /**
-     * Prints the result of a movement action.
-     * @param robotName The name of the robot.
-     * @param data The data returned from the server.
-     */
     private void printMoveResult(String robotName, Map<String, Object> data) {
         System.out.println(robotName + "> " + data.get("message"));
     }
 
-    /**
-     * Prints the result of a turn action.
-     * @param robotName The name of the robot.
-     * @param data The data returned from the server.
-     */
     private void printTurnResult(String robotName, Map<String, Object> data) {
         System.out.println(robotName + "> " + data.get("message"));
     }
 
-    /**
-     * Prints the result of a fire action.
-     * @param robotName The name of the robot.
-     * @param enemyName The name of the enemy robot.
-     * @param data The data returned from the server.
-     * @param state The state of the robot after the action.
-     */
     private void printFireResult(String robotName, String enemyName, Map<String, Object> data, Map<String, Object> state) {
         String message = (String) data.get("message");
 
@@ -261,12 +200,27 @@ public class RobotClient {
         }
     }
 
-    /**
-     * Prints the result of a reload action.
-     * @param robotName The name of the robot.
-     * @param state The state after reloading.
-     */
     private void printReloadResult(String robotName, Map<String, Object> state) {
         System.out.println(robotName + "> Gun reloaded. " + state.get("shots") + " shot(s) left");
+    }
+
+    public String getServerResponse() {
+        try {
+            String response = in.readLine();
+            if (response == null) {
+                System.out.println("Server connection closed by the server.");
+                serverRunning = false; // Set flag to false when server shuts down
+            }
+            return response;
+        } catch (IOException e) {
+            System.out.println("Error reading server response: " + e.getMessage());
+            serverRunning = false; // Set flag to false if an exception occurs
+            return null;
+        }
+    }
+
+
+    public ServerResponse getServerResponseObject(String serverResponse) {
+        return JsonUtility.fromJson(serverResponse);
     }
 }

@@ -3,6 +3,10 @@ package za.co.wethinkcode.robotworlds.server;
 
 import java.net.Socket;
 
+/**
+ * The RemoveClient class represents a thread that removes disconnected clients from the server.
+ * It extends the Thread class and provides the implementation for the run method.
+ */
 public class RemoveClient extends Thread {
     RobotWorldServer server;
 

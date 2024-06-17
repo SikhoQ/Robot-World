@@ -17,8 +17,6 @@ class GunTest {
         gun = new Gun(initialShots);
     }
 
-
-
     @Test
     void testGetNumberOfShots() {
         int numberOfShots = gun.getNumberOfShots();
@@ -45,5 +43,6 @@ class GunTest {
         int reloadedShots = gun.getNumberOfShots();
         assertEquals(5, reloadedShots, "Reloading should set numberOfShots back to MAX_SHOTS (5)");
     }
+
 
 }

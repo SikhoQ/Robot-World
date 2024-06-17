@@ -6,12 +6,10 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.*;
 
-
-public class RobotWorldServer extends Thread{
+public class RobotWorldServer extends Thread {
     private final List<RobotClientHandler> clients;
     private final ServerSocket serverSocket;
     private final TextWorld world;
-
 
     public RobotWorldServer(int PORT) {
         clients = new ArrayList<>();
@@ -19,9 +17,10 @@ public class RobotWorldServer extends Thread{
         try {
             serverSocket = new ServerSocket(PORT);
         } catch (IOException e) {
-            throw new RuntimeException("Failed to connect server on port: "+PORT);
+            throw new RuntimeException("Failed to connect server on port: " + PORT);
         }
     }
+
     /**
      * The run method is the entry point for the server thread.
      * It initializes a ServerConsole instance, starts it in a separate thread,
@@ -29,20 +28,18 @@ public class RobotWorldServer extends Thread{
      * For each new client, it creates a new RobotClientHandler instance,
      * adds it to the list of clients, and starts a new thread to handle the client.
      * If an IOException occurs during the server's operation, it prints a message and exits.
-     *
-     * @throws IOException If an error occurs while accepting client connections.
-    */
+     */
     public void run() {
         ServerConsole console = new ServerConsole(this, world);
         new Thread(console).start();
-      
+
         try {
             System.out.println("Server started. Waiting for clients...");
             while (true) {
                 RemoveClient checkDisconnectedClient = new RemoveClient(this);
                 checkDisconnectedClient.start();
                 Socket clientSocket = serverSocket.accept();
-                System.out.println("\nNew client connected on local port: "+clientSocket.getPort());
+                System.out.println("\nNew client connected on local port: " + clientSocket.getPort());
                 RobotClientHandler clientHandler = new RobotClientHandler(clientSocket, world);
                 clients.add(clientHandler);
                 new Thread(clientHandler).start();
@@ -51,13 +48,14 @@ public class RobotWorldServer extends Thread{
             System.out.println("Quitting server...");
         }
     }
+
     /**
      * Shuts down the server and all its clients.
      * This method disconnects all clients and then closes the server socket.
      * Finally, it terminates the server process.
      */
     public void shutdown() {
-        for (RobotClientHandler client: clients) {
+        for (RobotClientHandler client : clients) {
             try {
                 client.disconnectClient();
             } catch (IOException e) {
@@ -67,10 +65,11 @@ public class RobotWorldServer extends Thread{
         try {
             closeServer();
         } catch (IOException e) {
-            throw new RuntimeException("Error while closing server:\n"+e);
+            throw new RuntimeException("Error while closing server:\n" + e);
         }
         System.exit(0);
     }
+
     /**
      * Retrieves the list of active {@link RobotClientHandler} instances.
      *
@@ -79,10 +78,17 @@ public class RobotWorldServer extends Thread{
     public List<RobotClientHandler> getClients() {
         return clients;
     }
+
+    /**
+     * Removes a disconnected client from the list and updates the world.
+     *
+     * @param disconnectedClient the client to be removed
+     */
     public void removeClient(RobotClientHandler disconnectedClient) {
         clients.remove(disconnectedClient);
         world.removeRobot(disconnectedClient.getClientSocket().getPort());
     }
+
     /**
      * Closes the server socket and stops accepting new client connections.
      * This method is called when the server needs to shut down gracefully.
@@ -97,6 +103,7 @@ public class RobotWorldServer extends Thread{
             throw new RuntimeException(e);
         }
     }
+
     /**
      * The main entry point of the server.
      * It initializes the server, sets up the world, and starts accepting client connections.

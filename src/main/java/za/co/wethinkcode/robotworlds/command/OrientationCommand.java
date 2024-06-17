@@ -6,6 +6,10 @@ import za.co.wethinkcode.robotworlds.world.IWorld;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * The OrientationCommand class represents a command to retrieve the current orientation of a SimpleBot.
+ * It extends the Command class and provides the implementation for the execute method.
+ */
 public class OrientationCommand extends Command {
     public OrientationCommand() {
         super("orientation", null);

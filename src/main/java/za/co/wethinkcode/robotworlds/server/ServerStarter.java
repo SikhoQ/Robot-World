@@ -3,6 +3,10 @@ package za.co.wethinkcode.robotworlds.server;
 import java.io.File;
 import java.io.IOException;
 
+/**
+ * The ServerStarter class provides a main method to start the server and client processes.
+ * It builds the classpath for the server and client, starts the server process, and starts the client process.
+ */
 public class ServerStarter {
     public static void main(String[] args) throws IOException, InterruptedException {
         // Start the server in a separate process

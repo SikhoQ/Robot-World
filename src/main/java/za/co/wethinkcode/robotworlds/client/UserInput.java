@@ -17,6 +17,9 @@ public class UserInput {
         String command = commandInput.toLowerCase();
         Object[] arguments = getArguments(commandInput, userInputArray);
 
+        if (command.equalsIgnoreCase("RELOAD"))
+            System.out.println(robotName+"> Reloading...");
+
         return new ClientRequest(robotName, command, arguments);
     }
 

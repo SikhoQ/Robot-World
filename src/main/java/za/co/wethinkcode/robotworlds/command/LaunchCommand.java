@@ -35,17 +35,14 @@ public class LaunchCommand extends Command {
     }
 
     @Override
-    public ServerResponse execute (SimpleBot target, IWorld world) {
-        // result field of response
+    public ServerResponse execute(SimpleBot target, IWorld world) {
         String result = "OK";
-        // data field of response
         Map<String, Object> data = new HashMap<>();
         data.put("position", target.getPosition());
         data.put("visibility", world.getVisibility());
         data.put("reload", world.getReload());
         data.put("repair", world.getRepair());
         data.put("shields", world.getShields());
-        // state field of response
         Map<String, Object> state = new HashMap<>();
         state.put("position", target.getPosition());
         state.put("direction", target.getDirection());
@@ -56,3 +53,4 @@ public class LaunchCommand extends Command {
         return new ServerResponse(result, data, state);
     }
 }
+

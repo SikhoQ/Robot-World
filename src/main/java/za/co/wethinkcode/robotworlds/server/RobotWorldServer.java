@@ -95,7 +95,6 @@ public class RobotWorldServer extends Thread{
         try {
             serverSocket.close();
         } catch (IOException e) {
-            // handle in calling code
             throw new RuntimeException(e);
         }
     }

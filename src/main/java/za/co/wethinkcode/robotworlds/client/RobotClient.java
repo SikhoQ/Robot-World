@@ -4,6 +4,7 @@ import za.co.wethinkcode.robotworlds.Json;
 import za.co.wethinkcode.robotworlds.Position;
 import za.co.wethinkcode.robotworlds.Sleep;
 import za.co.wethinkcode.robotworlds.server.ServerResponse;
+import za.co.wethinkcode.robotworlds.world.configuration.Config;
 
 import java.io.*;
 import java.net.Socket;
@@ -53,6 +54,14 @@ public class RobotClient {
         client.run(robotName);
     }
 
+    /**
+     * Establishes a connection to the server using the specified IP address and port.
+     * <p>Attempts to create a socket connection and initialize the input and output streams.
+     * Throws a RuntimeException if an IOException occurs.
+     * @param ipAddress the IP address of the server
+     * @param port the port number of the server
+     * @throws RuntimeException if an I/O error occurs during connection setup
+     */
     public void startConnection(String ipAddress, int port) {
         System.out.println("Connecting...");
         Sleep.sleep(1000);
@@ -76,17 +85,29 @@ public class RobotClient {
         Sleep.sleep(1500);
     }
 
+    /**
+     * Closes the connection to the server.
+     * <p>Closes the input stream, output stream, and socket.
+     * Propagates any IOException that occurs.
+     * @throws IOException if an I/O error occurs when closing the connection
+     */
     public void stopConnection() throws IOException {
         in.close();
         out.close();
         clientSocket.close();
     }
 
+    /**
+     * Launches a robot based on user input.
+     * <p>Prompts the user to input a robot make and name, sends a request to the server, and waits for a successful response.
+     * If the server response is "OK", it prints the robot's launch position and direction.
+     * <p>If the user inputs "EXIT", the connection is closed, and the program exits.
+     * @return the name of the launched robot
+     */
     public String launchRobot() {
         ServerResponse serverResponseObject;
         ClientRequest request;
         while (true) {
-            // prompt user for launch and get input
             String prompt = "\nLaunch a robot:\nUse 'launch <make> <name>'" +
                     "\nAvailable robot makes:\n* SNIPERBOT\n* SIMPLEBOT";
             String userInput = UserInput.getInput(prompt);
@@ -96,23 +117,15 @@ public class RobotClient {
                 } catch (IOException ignored) {}
                 System.exit(0);
             }
-            // process input and get relevant ClientRequest instance
             String robotName = "";
             String[] userInputSplit = userInput.split(" ", 2);
             if (userInputSplit.length == 2) {
                 robotName = (userInputSplit[1].split(" ").length == 2) ? (userInputSplit[1].split(" ")[1]) : "";
             }
             request = UserInput.handleUserInput(robotName, userInput);
-            // use this instance to serialize user input as client request to send to server
             String clientRequest = Json.toJson(request);
-            // send serialized request to server
             out.println(clientRequest);
-            // get server response
             String serverResponse = getServerResponse();
-            /////////////////////////////////////////////
-            System.out.println(serverResponse);
-            /////////////////////////////////////////////
-            // get server response object
             serverResponseObject = getServerResponseObject(serverResponse);
             if (serverResponseObject.getResult().equals("OK")) {
                 break;
@@ -133,6 +146,12 @@ public class RobotClient {
         return robotName;
     }
 
+    /**
+     * Runs the main interaction loop for the specified robot.
+     * <p>Continuously prompts the user for commands to control the robot until the user types "exit".
+     * Sends the commands to the server and processes the server's response.
+     * @param robotName the name of the robot to control
+     */
     private void run(String robotName) {
         String userInput = UserInput.getInput("\n"+robotName+"> What must I do next?");
         while (!userInput.equalsIgnoreCase("exit")) {
@@ -140,9 +159,6 @@ public class RobotClient {
             String clientRequest = Json.toJson(request);
             sendClientRequest(clientRequest);
             String serverResponse = getServerResponse();
-            /////////////////////////////////////////////
-            System.out.println(serverResponse);
-            /////////////////////////////////////////////
             ServerResponse serverResponseObject = getServerResponseObject(serverResponse);
             printRequestResult(robotName, request.command(), serverResponseObject, request);
             userInput = UserInput.getInput("\n"+robotName+"> What must I do next?");
@@ -150,6 +166,10 @@ public class RobotClient {
 
     }
 
+    /**
+     * Sends a client request to the server.
+     * @param clientRequest the request to send to the server
+     */
     private void sendClientRequest(String clientRequest) {
         out.println(clientRequest);
     }
@@ -158,6 +178,7 @@ public class RobotClient {
         String result = serverResponse.getResult();
         Map<String, Object> data = serverResponse.getData();
         Map<String, Object> state = serverResponse.getState();
+        Config config = Config.readConfiguration();
 
         if (result.equalsIgnoreCase("OK")) {
             @SuppressWarnings("unchecked")
@@ -170,12 +191,9 @@ public class RobotClient {
                 xCoord = position.get("x");
                 yCoord = position.get("y");
             }
-            // "LOOK" command
             if (command.equalsIgnoreCase("LOOK")) {
-                // "data" for "LOOK" command is a list of maps
                 @SuppressWarnings("unchecked")
                 List<Map<String, Object>> objects = (List<Map<String, Object>>) data.get("objects");
-                // Get the data map from the server response
                 if (!objects.isEmpty()) {
                     System.out.println(robotName + "> Objects detected:");
                     for (Map<String, Object> object : objects) {
@@ -204,9 +222,9 @@ public class RobotClient {
                 assert position != null;
                 System.out.println("Position : ["+position.get("x")+","+position.get("y")+"]");
                 System.out.println("Direction: ["+robotDirection+"]");
-                System.out.println("Shields  : ["+shields+"]");
-                System.out.println("Shots    : "+"["+shots+"]");
-                System.out.println("Status   : "+status);
+                System.out.println("Shields  :  "+shields);
+                System.out.println("Shots    :  "+shots);
+                System.out.println("Status   : ["+status+"]");
             } else if (command.equalsIgnoreCase("ORIENTATION")) {
                 System.out.println("Direction: ["+robotDirection+"]");
             } else if (command.equalsIgnoreCase("FIRE")) {
@@ -237,15 +255,22 @@ public class RobotClient {
                 }
                 int robotShots = (int) state.get("shots");
                 if (robotShots != 0)
-                    System.out.println("\n"+robotName+"> "+robotShots+" shots left");
+                    System.out.println("\n"+robotName+"> "+robotShots+" shot(s) left");
                 else
                     System.out.println("\n"+robotName+"> No shots left. Reload!");
+            } else if (command.equalsIgnoreCase("RELOAD")) {
+                System.out.println(robotName+"> Fully reloaded! "+state.get("shots")+" shot(s) left");
             }
         } else {
             System.out.println(data.get("message"));
         }
     }
 
+    /**
+     * Reads the server's response.
+     * @return the server's response as a string
+     * @throws RuntimeException if an I/O error occurs while reading the response
+     */
     private String getServerResponse() {
         try {
             return in.readLine();
@@ -255,6 +280,11 @@ public class RobotClient {
         }
     }
 
+    /**
+     * Converts the server's response from JSON to a ServerResponse object.
+     * @param serverResponse the server's response as a JSON string
+     * @return the ServerResponse object
+     */
     private ServerResponse getServerResponseObject(String serverResponse) {
         return Json.fromJson(serverResponse);
     }

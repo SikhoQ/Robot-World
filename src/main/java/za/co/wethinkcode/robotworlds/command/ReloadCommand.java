@@ -16,14 +16,22 @@ public class ReloadCommand extends Command {
 
     @Override
     public ServerResponse execute(SimpleBot target, IWorld world) {
+        String name = target.getName();
+        String make = target.getClass().getSimpleName();
+
+        target.setStatus("RELOAD");
+        target.getGun().reload();
+        System.out.println("\n"+name+" ("+make+") reloading gun...");
+
         try {
             Thread.sleep(target.getReloadTime());
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         }
-        target.getGun().reload();
-        target.setStatus("RELOAD");
 
+        System.out.println(name+" ("+make+") gun reloaded");
+
+        target.setStatus("NORMAL");
         String result = "OK";
         Map<String, Object> data = new HashMap<>();
         Map<String, Object> state = new HashMap<>();

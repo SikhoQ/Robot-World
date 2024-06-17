@@ -1,4 +1,3 @@
-/*
 package za.co.wethinkcode.robotworlds.server;
 
 import static org.junit.Assert.*;
@@ -29,7 +28,7 @@ public class RobotWorldServerTest {
     @AfterClass
     public static void tearDownAfterClass() {
         System.setOut(originalOut);
-        server.shutdown();  // Ensure you have a stop method to cleanly shutdown the server
+        server.shutdown();
         try {
             serverThread.join();
         } catch (InterruptedException e) {
@@ -47,45 +46,31 @@ public class RobotWorldServerTest {
         outContent.reset();
     }
 
+    @Test
+    public void testServerStart() {
+        assertTrue(server.isAlive());
+    }
 
     @Test
     public void testAcceptMultipleClients() throws IOException, InterruptedException {
-        int PORT = 5000;
-        RobotWorldServer server = new RobotWorldServer(PORT);
-        server.start();
-
         // Simulate multiple client connections
         try (Socket clientSocket1 = new Socket("localhost", PORT);
-            Socket clientSocket2 = new Socket("localhost", PORT)) {
+             Socket clientSocket2 = new Socket("localhost", PORT)) {
             // Verify that both clients are accepted
             assertTrue(clientSocket1.isConnected());
             assertTrue(clientSocket2.isConnected());
         }
+    }
 
-        server.shutdown();
+//    @Test
+//    public void testClientConnection() {
+//        // Assuming your server prints out client connections
+//        assertTrue(outContent.toString().contains(" Client connected: "));
+//    }
+//
+//    @Ignore
+//    @Test
+//    public void testQuitCommand() {
+//        // Implement your test for the quit command here
+//    }
 }
-    @Test
-    public void testServerStart() {
-        try (ServerSocket serverSocket = new ServerSocket(PORT);
-             Socket clientSocket = new Socket("localhost", PORT)) {
-            // Test logic here
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Test
-    public void testClientConnection() {
-        try (Socket clientSocket = new Socket("localhost", PORT)) {
-            assertTrue(outContent.toString().contains(" Client connected: " + clientSocket));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Ignore
-    public void testQuitCommand() {
-        // Implement your test for the quit command here
-    }
-}
-*/

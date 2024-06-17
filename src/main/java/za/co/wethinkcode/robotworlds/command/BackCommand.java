@@ -20,9 +20,7 @@ public class BackCommand extends Command {
 
     @Override
     public ServerResponse execute(SimpleBot target, IWorld world) {
-        // result field of response
         String result = "OK";
-        // data field of response
         Map<String, Object> data = new HashMap<>();
         // Get the number of steps to move backward
         int nrSteps = Integer.parseInt(String.valueOf(getArguments()[0]));
@@ -31,7 +29,6 @@ public class BackCommand extends Command {
 
         data.put("message", message);
 
-        // state field of response
         Map<String, Object> state = new HashMap<>();
         state.put("position", target.getPosition());
         state.put("direction", target.getDirection());

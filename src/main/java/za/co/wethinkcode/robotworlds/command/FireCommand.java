@@ -39,7 +39,6 @@ public class FireCommand extends Command {
         target.getGun().fireShot();
 
         String result = "Ok";
-        // get the robot's position and direction
         Position position = target.getPosition();
         Direction direction = target.getDirection();
 
@@ -95,7 +94,6 @@ public class FireCommand extends Command {
             data.put("distance", enemyRobotDistance);
             data.put("name", enemyRobot.getName());
             Map<String, Object> robotShotState = new HashMap<>();
-            // move this code to method later
             robotShotState.put("position", enemyRobot.getPosition());
             robotShotState.put("direction", enemyRobot.getDirection());
             robotShotState.put("shields", enemyRobot.getShields());
@@ -127,7 +125,6 @@ public class FireCommand extends Command {
         int robotX = robotPosition.getX();
         int robotY = robotPosition.getY();
 
-        // Check if the bullet hits any obstacles or world edges
         for (Obstacle obstacle : obstacles) {
             if ((direction == Direction.WEST && bulletPosition == (obstacle.getBottomLeftX() + 4) &&
                     (robotY >= obstacle.getBottomLeftY() && robotY <= (obstacle.getBottomLeftY() + 4))) ||
@@ -141,7 +138,6 @@ public class FireCommand extends Command {
             }
         }
 
-        // Check if the bullet hits any world edges
         if ((direction == Direction.WEST && bulletPosition == world.getWorldEdges().getMinimumX()) ||
                 (direction == Direction.EAST && bulletPosition == world.getWorldEdges().getMaximumX()) ||
                 (direction == Direction.SOUTH && bulletPosition == world.getWorldEdges().getMinimumY()) ||
@@ -149,7 +145,6 @@ public class FireCommand extends Command {
             return "MISS";
         }
 
-        // Check if the bullet hits a robot
         for (SimpleBot robot : robots) {
             if ((bulletPosition == robot.getPosition().getX() && robotY == robot.getPosition().getY()) ||
                     (bulletPosition == robot.getPosition().getY() && robotX == robot.getPosition().getX())) {
@@ -165,7 +160,6 @@ public class FireCommand extends Command {
                 return "HIT";
             }
         }
-        // If none of the above conditions are met, it was a miss
         return "MISS";
     }
 

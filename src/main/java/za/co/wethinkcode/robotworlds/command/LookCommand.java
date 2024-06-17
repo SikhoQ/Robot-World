@@ -114,26 +114,18 @@ public class LookCommand extends Command {
     }
 
     private Object detectObject(String direction, IWorld world, int x, int y) {
-        // it takes obstacle list, robots list, world instance, and x,y values of current position, it returns Object List
-        // in the method, iterate through each list and check if objects are in line of sight
         List<Obstacle> obstacles = world.getObstacles();
         Map<Integer, SimpleBot> robots = world.getRobots();
         Edge worldEdges = world.getWorldEdges();
 
-        // SHOULD PROBABLY BREAK AFTER DETECTING OBJECT,
-        // SINCE THERE'LL ONLY BE ONE OBJ FOR THIS POSITION
-
-        // obstacles
         for (Obstacle obstacle: obstacles) {
             int obstacleX = obstacle.getBottomLeftX();
             int obstacleY = obstacle.getBottomLeftY();
-            // if this is true then this position is on an obstacle's boundary
             if ((x >= obstacleX && x <= obstacleX + 4) && (y >= obstacleY && y <= obstacleY + 4)) {
                 return obstacle;
             }
         }
 
-        // robots
         for (Map.Entry<Integer, SimpleBot> entry: robots.entrySet()) {
             SimpleBot robot = entry.getValue();
             if (robot.getPosition().equals(new Position(x, y))) {
@@ -141,7 +133,6 @@ public class LookCommand extends Command {
             }
         }
 
-        // edges
         if (direction.equalsIgnoreCase("EAST") && x == worldEdges.getMaximumX() ||
                 direction.equalsIgnoreCase("WEST") && x == worldEdges.getMinimumX() ||
                 direction.equalsIgnoreCase("NORTH") && x == worldEdges.getMaximumY() ||

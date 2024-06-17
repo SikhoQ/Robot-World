@@ -17,11 +17,7 @@ class GunTest {
         gun = new Gun(initialShots);
     }
 
-//    @Test
-//    void testGetShotDistance() {
-//        int shotDistance = gun.getShotDistance();
-//        assertEquals(4, shotDistance, "Shot distance should be 4 for 5 initial shots");
-//    }
+
 
     @Test
     void testGetNumberOfShots() {
@@ -50,5 +46,4 @@ class GunTest {
         assertEquals(5, reloadedShots, "Reloading should set numberOfShots back to MAX_SHOTS (5)");
     }
 
-    // Add more tests for edge cases and additional behaviors as needed
 }

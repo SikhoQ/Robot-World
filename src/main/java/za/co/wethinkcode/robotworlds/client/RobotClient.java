@@ -280,6 +280,11 @@ public class RobotClient {
         }
     }
 
+    /**
+     * Converts the server's response from JSON to a ServerResponse object.
+     * @param serverResponse the server's response as a JSON string
+     * @return the ServerResponse object
+     */
     private ServerResponse getServerResponseObject(String serverResponse) {
         return Json.fromJson(serverResponse);
     }

@@ -7,7 +7,6 @@ import za.co.wethinkcode.robotworlds.maze.RandomMaze;
 import za.co.wethinkcode.robotworlds.robot.SimpleBot;
 import za.co.wethinkcode.robotworlds.robot.SniperBot;
 import za.co.wethinkcode.robotworlds.world.configuration.Config;
-
 import java.util.*;
 
 

@@ -5,11 +5,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import za.co.wethinkcode.robotworlds.Json;
-import za.co.wethinkcode.robotworlds.client.UserInput;
 import za.co.wethinkcode.robotworlds.robot.SimpleBot;
 import za.co.wethinkcode.robotworlds.command.Command;
 import za.co.wethinkcode.robotworlds.command.LaunchCommand;
@@ -74,10 +71,10 @@ public class RobotClientHandler implements Runnable {
         return Command.create(rootNode, world);
     }
 
-    /*
+    /**
     * use this function to handle error responses since each command's execute
     * returns a ServerResponse object
-    * */
+    */
     public String processRequest(String clientRequest) {
         JsonNode rootNode = Json.jsonFieldAccess(clientRequest);
         Command command = getCommand(rootNode, world);

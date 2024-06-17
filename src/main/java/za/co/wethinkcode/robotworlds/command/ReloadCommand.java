@@ -25,7 +25,7 @@ public class ReloadCommand extends Command {
             Thread.currentThread().interrupt();
         }
 
-        System.out.println(name+" ("+make+") done reloading");
+        System.out.println(name+" ("+make+") gun reloaded");
 
         target.setStatus("NORMAL");
         String result = "OK";

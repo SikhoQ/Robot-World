@@ -8,7 +8,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class SleepTest {
 
     @Test
-    public void sleepDoesNotThroeExceptionWithCorrectValue() {
+    public void sleepDoesNotThrowExceptionWithCorrectValue() {
         assertDoesNotThrow(() -> Sleep.sleep(1000));
     }
 

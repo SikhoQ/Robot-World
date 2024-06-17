@@ -19,19 +19,19 @@ public class DirectionTest {
         assertTrue(directions.contains(Direction.getRandomDirection()));
     }
 
-//    @Test
-//    public void fromOrdinalExceptionGreaterThanFour(){
-//        assertThrows(IllegalArgumentException.class,
-//                ()->{
-//            Direction.fromOrdinal(5);
-//                });
-//    }
-//
-//    @Test
-//    public void fromOrdinalExceptionLessThanOne(){
-//        assertThrows(IllegalArgumentException.class,
-//                ()->{
-//            Direction.fromOrdinal(-1);
-//                });
-//    }
+    @Test
+    public void fromOrdinalExceptionGreaterThanFour(){
+        assertThrows(IllegalArgumentException.class,
+                ()->{
+            Direction.fromOrdinal(5);
+                });
+    }
+
+    @Test
+    public void fromOrdinalExceptionLessThanOne(){
+        assertThrows(IllegalArgumentException.class,
+                ()->{
+            Direction.fromOrdinal(-1);
+                });
+    }
 }

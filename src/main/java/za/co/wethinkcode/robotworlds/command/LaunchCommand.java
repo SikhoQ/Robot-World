@@ -40,3 +40,4 @@ public class LaunchCommand extends Command {
         return new ServerResponse(result, data, state);
     }
 }
+

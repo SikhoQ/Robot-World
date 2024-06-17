@@ -85,6 +85,12 @@ public class RobotClient {
         Sleep.sleep(1500);
     }
 
+    /**
+     * Closes the connection to the server.
+     * <p>Closes the input stream, output stream, and socket.
+     * Propagates any IOException that occurs.
+     * @throws IOException if an I/O error occurs when closing the connection
+     */
     public void stopConnection() throws IOException {
         in.close();
         out.close();

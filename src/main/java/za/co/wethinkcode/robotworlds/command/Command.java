@@ -66,7 +66,7 @@ public abstract class Command {
         }
     }
 
-    private static String validateCommand(String name, String command, Object[] arguments, IWorld world) {
+    static String validateCommand(String name, String command, Object[] arguments, IWorld world) {
         List<String> validCommands = new ArrayList<>(Arrays.asList("LAUNCH", "LOOK", "STATE", "FORWARD", "BACK", "TURN",
                                                                     "ORIENTATION", "FIRE", "RELOAD", "REPAIR"));
 
@@ -111,11 +111,11 @@ public abstract class Command {
         return "VALID COMMAND";
     }
 
-    private static boolean invalidRobotProperties(int shieldStrength, int maximumShots) {
+    static boolean invalidRobotProperties(int shieldStrength, int maximumShots) {
         return shieldStrength < 0 || maximumShots < 0;
     }
 
-    private static boolean invalidRobotName(String robotName, IWorld world) {
+    static boolean invalidRobotName(String robotName, IWorld world) {
         for (Map.Entry<Integer, Robot> entry: world.getRobots().entrySet()) {
             if (entry.getValue().getName().equalsIgnoreCase(robotName)) {
                 return true;

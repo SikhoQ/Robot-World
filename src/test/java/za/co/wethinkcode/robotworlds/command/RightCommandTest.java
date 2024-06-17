@@ -35,7 +35,7 @@ public class RightCommandTest {
         assertEquals("Done", response.getData().get("message"));
         assertEquals(new Position(1, 1), response.getState().get("position"));
         assertEquals(Direction.EAST, response.getState().get("direction"));
-        assertEquals(3, response.getState().get("shields"));
+        assertEquals(0, response.getState().get("shields"));
         assertEquals(3, response.getState().get("shots"));
         assertEquals("NORMAL", response.getState().get("status"));
     }

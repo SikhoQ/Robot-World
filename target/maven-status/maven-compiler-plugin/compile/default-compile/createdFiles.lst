@@ -3,7 +3,6 @@ za/co/wethinkcode/robotworlds/maze/Maze.class
 za/co/wethinkcode/robotworlds/JsonUtility.class
 za/co/wethinkcode/robotworlds/command/OrientationCommand.class
 za/co/wethinkcode/robotworlds/Sleep.class
-za/co/wethinkcode/robotworlds/world/configuration/WorldSize.class
 za/co/wethinkcode/robotworlds/command/FireCommand$1.class
 za/co/wethinkcode/robotworlds/client/UserInput.class
 za/co/wethinkcode/robotworlds/client/ClientRequest.class
@@ -12,7 +11,6 @@ za/co/wethinkcode/robotworlds/server/ServerResponse.class
 za/co/wethinkcode/robotworlds/robot/Gun.class
 za/co/wethinkcode/robotworlds/world/IWorld$UpdateResponse.class
 za/co/wethinkcode/robotworlds/world/IWorld$WorldDirection.class
-za/co/wethinkcode/robotworlds/robot/SniperBot.class
 za/co/wethinkcode/robotworlds/command/OrientationCommand$1.class
 za/co/wethinkcode/robotworlds/command/LookCommand.class
 za/co/wethinkcode/robotworlds/command/HelpCommand.class
@@ -22,12 +20,10 @@ za/co/wethinkcode/robotworlds/command/LeftCommand.class
 za/co/wethinkcode/robotworlds/client/RobotClient.class
 za/co/wethinkcode/robotworlds/command/LeftCommand$1.class
 za/co/wethinkcode/robotworlds/maze/RandomMaze.class
-za/co/wethinkcode/robotworlds/robot/SimpleBot$1.class
 za/co/wethinkcode/robotworlds/server/RemoveClient.class
 za/co/wethinkcode/robotworlds/command/ReloadCommand.class
 za/co/wethinkcode/robotworlds/command/StateCommand$1.class
 za/co/wethinkcode/robotworlds/command/RightCommand$1.class
-za/co/wethinkcode/robotworlds/world/configuration/Config.class
 za/co/wethinkcode/robotworlds/world/Edge.class
 za/co/wethinkcode/robotworlds/server/RobotWorldServer.class
 za/co/wethinkcode/robotworlds/world/TextWorld.class
@@ -43,6 +39,5 @@ za/co/wethinkcode/robotworlds/command/FireCommand.class
 za/co/wethinkcode/robotworlds/command/InvalidCommand.class
 za/co/wethinkcode/robotworlds/command/StateCommand.class
 za/co/wethinkcode/robotworlds/world/Obstacle.class
-za/co/wethinkcode/robotworlds/robot/SimpleBot.class
 za/co/wethinkcode/robotworlds/server/ServerConsole.class
 za/co/wethinkcode/robotworlds/command/InvalidCommand$1.class

@@ -10,7 +10,7 @@ import java.util.Map;
 public class InvalidCommand extends Command {
     private final String error;
     public InvalidCommand(String error) {
-        super("unknown", null);
+        super("invalid", null);
         this.error = error;
     }
 

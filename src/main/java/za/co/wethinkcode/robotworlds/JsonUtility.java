@@ -32,11 +32,7 @@ public class JsonUtility {
         }
     }
 
-    public static Optional<Map<String, Object>> getJsonFields(JsonNode rootNode) throws IllegalArgumentException {
-        String name = rootNode.get("robot").asText();
-        String command = rootNode.get("command").asText();
-        JsonNode argumentsNode = rootNode.get("arguments");
-        Object[] arguments = new Object[]{};
+    public static Optional<Map<String, Object>> getJsonFields(JsonNode rootNode) throws IllegalArgumentException {String name = rootNode.get("robot").asText(), command = rootNode.get("command").asText();JsonNode argumentsNode = rootNode.get("arguments");Object[] arguments = new Object[]{};
 
         if (argumentsNode != null && argumentsNode.isArray()) {
             List<Object> argumentsList = new ArrayList<>();

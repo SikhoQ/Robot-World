@@ -1,7 +1,7 @@
 package za.co.wethinkcode.robotworlds.command;
 
 import za.co.wethinkcode.robotworlds.Direction;
-import za.co.wethinkcode.robotworlds.robot.SimpleBot;
+import za.co.wethinkcode.robotworlds.robot.Robot;
 import za.co.wethinkcode.robotworlds.server.ServerResponse;
 import za.co.wethinkcode.robotworlds.world.IWorld;
 
@@ -15,7 +15,7 @@ public class LeftCommand extends Command {
     }
 
     @Override
-    public ServerResponse execute(SimpleBot target, IWorld world) {
+    public ServerResponse execute(Robot target, IWorld world) {
         switch (target.getDirection()){
             case NORTH:
                 target.setDirection(Direction.WEST);
@@ -33,7 +33,7 @@ public class LeftCommand extends Command {
 
         String result = "OK";
         Map<String, Object> data = new HashMap<>();
-        data.put("message", "DONE");
+        data.put("message", "Done");
         Map<String, Object> state = new HashMap<>();
         state.put("position", target.getPosition());
         state.put("direction", target.getDirection());

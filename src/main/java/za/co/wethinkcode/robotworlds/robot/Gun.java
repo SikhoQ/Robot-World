@@ -2,24 +2,22 @@ package za.co.wethinkcode.robotworlds.robot;
 
 public class Gun {
     private final int MAX_SHOTS;
-    private int shotDistance;
-    private int numberOfShots;
+    private static int numberOfShots;
 
     public Gun(int numberOfShots) {
-        this.numberOfShots = numberOfShots;
+        Gun.numberOfShots = numberOfShots;
         this.MAX_SHOTS = numberOfShots;
-        setShotDistance(numberOfShots);
     }
 
     public int getShotDistance() {
-        return shotDistance;
+        return new int[] {0, 5, 4, 3, 2, 1}[MAX_SHOTS];
     }
 
-    public int getNumberOfShots() {
+    public static int getNumberOfShots() {
         return numberOfShots;
     }
 
-    public int getMAX_SHOTS() {
+    public int getMaximumShots() {
         return MAX_SHOTS;
     }
 
@@ -30,11 +28,10 @@ public class Gun {
     }
 
     public void reload() {
-        this.numberOfShots = MAX_SHOTS;
+        numberOfShots = MAX_SHOTS;
     }
 
-    private void setShotDistance(int numberOfShots) {
-        int[] distance = new int[] {0, 5, 4, 3, 2, 1};
-        this.shotDistance = distance[numberOfShots];
+    public void setNumberOfShots(int numberOfShots) {
+        Gun.numberOfShots = numberOfShots;
     }
 }

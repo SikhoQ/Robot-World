@@ -8,7 +8,7 @@ import java.net.Socket;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import za.co.wethinkcode.robotworlds.JsonUtility;
-import za.co.wethinkcode.robotworlds.robot.SimpleBot;
+import za.co.wethinkcode.robotworlds.robot.Robot;
 import za.co.wethinkcode.robotworlds.command.Command;
 import za.co.wethinkcode.robotworlds.command.LaunchCommand;
 import za.co.wethinkcode.robotworlds.world.IWorld;
@@ -16,7 +16,7 @@ import za.co.wethinkcode.robotworlds.world.IWorld;
 public class RobotClientHandler implements Runnable {
     private final Socket clientSocket;
     private final IWorld world;
-    private SimpleBot robot;
+    private Robot robot;
 
     public RobotClientHandler(Socket clientSocket, IWorld world) {
         this.clientSocket = clientSocket;

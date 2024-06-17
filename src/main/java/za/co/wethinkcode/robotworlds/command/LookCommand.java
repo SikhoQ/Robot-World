@@ -1,8 +1,7 @@
 package za.co.wethinkcode.robotworlds.command;
 
 import za.co.wethinkcode.robotworlds.Position;
-import za.co.wethinkcode.robotworlds.robot.SimpleBot;
-import za.co.wethinkcode.robotworlds.robot.SniperBot;
+import za.co.wethinkcode.robotworlds.robot.Robot;
 import za.co.wethinkcode.robotworlds.world.*;
 import za.co.wethinkcode.robotworlds.server.ServerResponse;
 import java.util.ArrayList;
@@ -16,7 +15,7 @@ public class LookCommand extends Command {
     }
 
     @Override
-    public ServerResponse execute(SimpleBot target, IWorld world) {
+    public ServerResponse execute(Robot target, IWorld world) {
         Map<Object, Position> north = lookInDirection("NORTH", target, world);
         Map<Object, Position> south = lookInDirection("SOUTH", target, world);
         Map<Object, Position> east = lookInDirection("EAST", target, world);
@@ -63,7 +62,7 @@ public class LookCommand extends Command {
         return new ServerResponse(result, data, state);
     }
 
-    private Map<Object, Position> lookInDirection(String direction, SimpleBot target, IWorld world) {
+    private Map<Object, Position> lookInDirection(String direction, Robot target, IWorld world) {
         Position robotPosition = target.getPosition();
         int robotX = robotPosition.getX();
         int robotY = robotPosition.getY();
@@ -107,7 +106,7 @@ public class LookCommand extends Command {
 
     private Object detectObject(String direction, IWorld world, int x, int y) {
         List<Obstacle> obstacles = world.getObstacles();
-        Map<Integer, SimpleBot> robots = world.getRobots();
+        Map<Integer, Robot> robots = world.getRobots();
         Edge worldEdges = world.getWorldEdges();
 
         for (Obstacle obstacle: obstacles) {
@@ -118,8 +117,8 @@ public class LookCommand extends Command {
             }
         }
 
-        for (Map.Entry<Integer, SimpleBot> entry: robots.entrySet()) {
-            SimpleBot robot = entry.getValue();
+        for (Map.Entry<Integer, Robot> entry: robots.entrySet()) {
+            Robot robot = entry.getValue();
             if (robot.getPosition().equals(new Position(x, y))) {
                 return robot;
             }
@@ -135,15 +134,14 @@ public class LookCommand extends Command {
         return null;
     }
 
-    private static Map<String, Object> getObjectMap(SimpleBot target, Map.Entry<Object, Position> entry, String direction) {
+    private static Map<String, Object> getObjectMap(Robot target, Map.Entry<Object, Position> entry, String direction) {
         Map<String, Object> object = new HashMap<>();
         String type = "";
         Object detectedObject = entry.getKey();
         if (detectedObject.getClass().equals(SquareObstacle.class)) {
             type = "OBSTACLE";
         }
-        else if (detectedObject.getClass().equals(SimpleBot.class) ||
-        detectedObject.getClass().equals(SniperBot.class)) {
+        else if (detectedObject.getClass().equals(Robot.class)) {
             type = "ROBOT";
         }
         else if (detectedObject.getClass().equals(Edge.class)) {

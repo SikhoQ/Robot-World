@@ -1,12 +1,10 @@
 {
-  "worldSize": {
-    "width": "",
-    "height": ""
+  "worldSize" : {
+    "width" : 40,
+    "height" : 80
   },
-  "visibility": "",
-  "reload": "",
-  "repair": "",
-  "shields": "",
-  "port": "",
-  "serverName": ""
+  "visibility" : 20,
+  "reload" : 2000,
+  "repair" : 2000,
+  "shields" : 10
 }

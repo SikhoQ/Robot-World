@@ -2,7 +2,8 @@ package za.co.wethinkcode.robotworlds.command;
 
 import za.co.wethinkcode.robotworlds.Direction;
 import za.co.wethinkcode.robotworlds.Position;
-import za.co.wethinkcode.robotworlds.robot.SimpleBot;
+import za.co.wethinkcode.robotworlds.robot.Gun;
+import za.co.wethinkcode.robotworlds.robot.Robot;
 import za.co.wethinkcode.robotworlds.server.ServerResponse;
 import za.co.wethinkcode.robotworlds.world.IWorld;
 import za.co.wethinkcode.robotworlds.world.Obstacle;
@@ -13,7 +14,7 @@ import java.util.List;
 import java.util.Map;
 
 public class FireCommand extends Command {
-    private SimpleBot enemyRobot;
+    private Robot enemyRobot;
     protected int enemyRobotDistance = 0;
 
     public FireCommand() {
@@ -21,8 +22,8 @@ public class FireCommand extends Command {
     }
 
     @Override
-    public ServerResponse execute(SimpleBot target, IWorld world) {
-        if (target.getGun().getNumberOfShots() != 0) {
+    public ServerResponse execute(Robot target, IWorld world) {
+        if (Gun.getNumberOfShots() != 0) {
             target.getGun().fireShot();
         }
         else {
@@ -33,7 +34,7 @@ public class FireCommand extends Command {
             state.put("position", target.getPosition());
             state.put("direction", target.getDirection());
             state.put("shields", target.getShields());
-            state.put("shots", target.getGun().getNumberOfShots());
+            state.put("shots", Gun.getNumberOfShots());
             state.put("status", target.getStatus());
 
             return new ServerResponse(result, data, state);
@@ -110,8 +111,8 @@ public class FireCommand extends Command {
     }
 
     public String reportHit(IWorld world, Position robotPosition, int bulletPosition, Direction direction) {
-        Map<Integer, SimpleBot> worldRobots = world.getRobots();
-        List<SimpleBot> robots = new ArrayList<>(worldRobots.values());
+        Map<Integer, Robot> worldRobots = world.getRobots();
+        List<Robot> robots = new ArrayList<>(worldRobots.values());
         List<Obstacle> obstacles = world.getObstacles();
         int robotX = robotPosition.getX();
         int robotY = robotPosition.getY();
@@ -136,7 +137,7 @@ public class FireCommand extends Command {
             return "MISS";
         }
 
-        for (SimpleBot robot : robots) {
+        for (Robot robot : robots) {
             if ((bulletPosition == robot.getPosition().getX() && robotY == robot.getPosition().getY()) ||
                     (bulletPosition == robot.getPosition().getY() && robotX == robot.getPosition().getX())) {
 
@@ -154,11 +155,11 @@ public class FireCommand extends Command {
         return "MISS";
     }
 
-    public SimpleBot getEnemyRobot() {
+    public Robot getEnemyRobot() {
         return enemyRobot;
     }
 
-    public void setEnemyRobot(SimpleBot enemyRobot) {
+    public void setEnemyRobot(Robot enemyRobot) {
         this.enemyRobot = enemyRobot;
     }
 }

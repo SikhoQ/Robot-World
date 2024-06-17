@@ -1,4 +1,4 @@
-package za.co.wethinkcode.robotworlds.world.configuration;
+package za.co.wethinkcode.robotworlds.server.configuration;
 
 import java.io.IOException;
 import java.io.OutputStream;

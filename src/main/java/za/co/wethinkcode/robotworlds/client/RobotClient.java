@@ -18,20 +18,23 @@ public class RobotClient {
     private BufferedReader in;
     boolean isRobotLaunched = false;
     private String robotName;
+    private boolean serverRunning = true;
 
     public static void main(String[] args) {
-        String serverAddress;
-        int serverPort;
+        String serverAddress = null;
+        int serverPort = 0;
 
         if (args.length == 2) {
             try {
                 serverAddress = args[0];
                 serverPort = Integer.parseInt(args[1]);
             } catch (NumberFormatException e) {
-                throw new RuntimeException("\nInvalid argument for \"ADDRESS\" and/or \"PORT\"\n\nQuitting...");
+                System.err.println("\nInvalid argument for \"ADDRESS\" and/or \"PORT\"\n\nQuitting...");
+                System.exit(1);
             }
         } else {
-            throw new RuntimeException("\nInvalid argument for \"ADDRESS\" and/or \"PORT\"\n\nQuitting...");
+            System.err.println("\nInvalid argument for \"ADDRESS\" and/or \"PORT\"\n\nQuitting...");
+            System.exit(1);
         }
 
         System.out.println("|====================================|");
@@ -41,18 +44,16 @@ public class RobotClient {
         RobotClient client = new RobotClient();
 
         client.startConnection(serverAddress, serverPort);
-//        String robotName = client.launchRobot();
         client.run();
-        client.stopConnection();
     }
 
     public void startConnection(String serverAddress, int serverPort) {
         System.out.println("Connecting...");
-//        Sleep.sleep(1000);
         try {
             clientSocket = new Socket(serverAddress, serverPort);
         } catch (IOException e) {
-            throw new RuntimeException("clientSocket exception: " + e);
+            System.err.println("Error connecting to server. Check port");
+            System.exit(1);
         }
         try {
             out = new PrintWriter(clientSocket.getOutputStream(), true);
@@ -65,20 +66,16 @@ public class RobotClient {
             throw new RuntimeException("in exception: " + e);
         }
         System.out.println("Connected to server on port: " + serverPort);
-//        Sleep.sleep(1500);
     }
 
     public void stopConnection() {
         try {
+            if (clientSocket != null) {
+                clientSocket.close();
+            }
             in.close();
         } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        out.close();
-        try {
-            clientSocket.close();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+            System.out.println("Error closing client socket: " + e.getMessage());
         }
     }
 
@@ -209,12 +206,19 @@ public class RobotClient {
 
     public String getServerResponse() {
         try {
-            return in.readLine();
+            String response = in.readLine();
+            if (response == null) {
+                System.out.println("Server connection closed by the server.");
+                serverRunning = false; // Set flag to false when server shuts down
+            }
+            return response;
         } catch (IOException e) {
-            System.out.println("serverResponse exception");
-            throw new RuntimeException(e);
+            System.out.println("Error reading server response: " + e.getMessage());
+            serverRunning = false; // Set flag to false if an exception occurs
+            return null;
         }
     }
+
 
     public ServerResponse getServerResponseObject(String serverResponse) {
         return JsonUtility.fromJson(serverResponse);

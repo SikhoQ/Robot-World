@@ -2,7 +2,7 @@ package za.co.wethinkcode.robotworlds.command;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import za.co.wethinkcode.robotworlds.JsonUtility;
-import za.co.wethinkcode.robotworlds.robot.SimpleBot;
+import za.co.wethinkcode.robotworlds.robot.Robot;
 import za.co.wethinkcode.robotworlds.server.ServerResponse;
 import za.co.wethinkcode.robotworlds.world.IWorld;
 
@@ -15,7 +15,7 @@ import java.util.Optional;
 public abstract class Command {
     private final String command;
     private final Object[] arguments;
-    public abstract ServerResponse execute(SimpleBot target, IWorld world);
+    public abstract ServerResponse execute(Robot target, IWorld world);
 
     public Command(String command, Object[] arguments){
         this.command = command.trim();
@@ -116,7 +116,7 @@ public abstract class Command {
     }
 
     private static boolean invalidRobotName(String robotName, IWorld world) {
-        for (Map.Entry<Integer, SimpleBot> entry: world.getRobots().entrySet()) {
+        for (Map.Entry<Integer, Robot> entry: world.getRobots().entrySet()) {
             if (entry.getValue().getName().equalsIgnoreCase(robotName)) {
                 return true;
             }

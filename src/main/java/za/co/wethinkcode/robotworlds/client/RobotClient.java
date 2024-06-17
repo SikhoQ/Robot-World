@@ -10,19 +10,32 @@ import java.io.*;
 import java.net.Socket;
 import java.util.*;
 
+/**
+ * Class to represent a client application that connects to a robot server.
+ * It enables the user to send commands to the server and receive responses.
+ *x
+ * The application reads commands from the user through the standard input and sends them to the server.
+ * It then prints the server's responses to the standard output.
+ */
 public class RobotClient {
     private Socket clientSocket;
     private PrintWriter out;
     private BufferedReader in;
 
+    /**
+     * Main entry point for the RobotClient application.
+     * Establishes a connection to the server, reads and processes user commands.
+     *
+     * @param args Command line arguments (not used in this application)
+     */
     public static void main(String[] args) {
-        String serverAddress = "";
-        int serverPort = 0;
+        String ADDRESS = "";
+        int PORT = 0;
 
         if (args.length == 2) {
             try {
-                serverAddress = args[0];
-                serverPort = Integer.parseInt(args[1]);
+                ADDRESS = args[0];
+                PORT = Integer.parseInt(args[1]);
             } catch (NumberFormatException e) {
                 throw new RuntimeException("\nInvalid argument for \"ADDRESS\" and/or \"PORT\"\n\nQuitting...");
             }
@@ -36,30 +49,31 @@ public class RobotClient {
 
         RobotClient client = new RobotClient();
 
-        client.startConnection(serverAddress, serverPort);
+        client.startConnection(ADDRESS, PORT);
         String robotName = client.launchRobot();
         client.run(robotName);
     }
 
-    public void startConnection(String serverAddress, int serverPort) {
+    public void startConnection(String ipAddress, int port) {
         System.out.println("Connecting...");
         Sleep.sleep(1000);
         try {
-            clientSocket = new Socket(serverAddress, serverPort);
+            clientSocket = new Socket(ipAddress, port);
         } catch (IOException e) {
-            throw new RuntimeException("clientSocket exception: " + e);
+            throw new RuntimeException("clientSocket exception: "+e);
         }
         try {
             out = new PrintWriter(clientSocket.getOutputStream(), true);
         } catch (IOException e) {
-            throw new RuntimeException("out exception: " + e);
+            throw new RuntimeException("out exception: "+e);
         }
         try {
-            in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+            in = new BufferedReader(new InputStreamReader(
+                    clientSocket.getInputStream()));
         } catch (IOException e) {
-            throw new RuntimeException("in exception: " + e);
+            throw new RuntimeException("in exception: "+e);
         }
-        System.out.println("Connected to server on port: " + serverPort);
+        System.out.println("Connected to server on port: " + port);
         Sleep.sleep(1500);
     }
 
@@ -102,17 +116,17 @@ public class RobotClient {
         String robotName = request.robot();
 
         @SuppressWarnings("unchecked")
-        Map<String, Integer> robotPosition = (Map<String, Integer>) state.get("position");
-        int robotPositionX = robotPosition.get("x");
-        int robotPositionY = robotPosition.get("y");
-        String robotFacing = (String) state.get("direction");
+        Map<String, Integer> position = (Map<String, Integer>) state.get("position");
+        int xCoord = position.get("x");
+        int yCoord = position.get("y");
+        String direction = (String) state.get("direction");
 
-        System.out.println(robotName + " launched at [" + robotPositionX + "," + robotPositionY + "], facing " + robotFacing);
+        System.out.println(robotName+" launched at ["+xCoord+","+yCoord+"], facing "+direction);
         return robotName;
     }
 
     private void run(String robotName) {
-        String userInput = UserInput.getInput("\n" + robotName + "> What must I do next?");
+        String userInput = UserInput.getInput("\n"+robotName+"> What must I do next?");
         while (!userInput.equalsIgnoreCase("exit")) {
             ClientRequest request = UserInput.handleUserInput(robotName, userInput);
             String clientRequest = Json.toJson(request);
@@ -120,8 +134,9 @@ public class RobotClient {
             String serverResponse = getServerResponse();
             ServerResponse serverResponseObject = getServerResponseObject(serverResponse);
             printRequestResult(robotName, request.command(), serverResponseObject, request);
-            userInput = UserInput.getInput("\n" + robotName + "> What must I do next?");
+            userInput = UserInput.getInput("\n"+robotName+"> What must I do next?");
         }
+
     }
 
     private void sendClientRequest(String clientRequest) {
@@ -132,105 +147,92 @@ public class RobotClient {
         String result = serverResponse.getResult();
         Map<String, Object> data = serverResponse.getData();
         Map<String, Object> state = serverResponse.getState();
+        Config config = Config.readConfiguration();
 
         if (result.equalsIgnoreCase("OK")) {
-            switch (command.toLowerCase()) {
-                case "launch":
-                    launchRobot();
-                    break;
-                case "look":
-                    printLookResult(robotName, data);
-                    break;
-                case "forward":
-                case "back":
-                    printMoveResult(robotName, data);
-                    break;
-                case "turn":
-                    printTurnResult(robotName, data);
-                    break;
-                case "fire":
-                    printFireResult(robotName, robotName, data, state);
-                    break;
-                case "reload":
-                    printReloadResult(robotName, state);
-                    break;
-                case "repair":
-                    printRepairResult(robotName, state);
-                    break;
-                case "shield":
-                case "state":
-                    printRobotState(robotName, state);
-                    break;
-                default:
-                    System.out.println(data.get("message"));
+            @SuppressWarnings("unchecked")
+            Map<String, Integer> position = (Map<String, Integer>) state.get("position");
+            String robotDirection = (String) state.get("direction");
+
+            int xCoord = 0;
+            int yCoord = 0;
+            if (position != null) {
+                xCoord = position.get("x");
+                yCoord = position.get("y");
+            }
+            if (command.equalsIgnoreCase("LOOK")) {
+                @SuppressWarnings("unchecked")
+                List<Map<String, Object>> objects = (List<Map<String, Object>>) data.get("objects");
+                if (!objects.isEmpty()) {
+                    System.out.println(robotName + "> Objects detected:");
+                    for (Map<String, Object> object : objects) {
+                        String objectDirection = (String) object.get("direction");
+                        String type = (String) object.get("type");
+                        int distance = (int) object.get("distance");
+
+                        System.out.println(" - Direction: [" + objectDirection + "], Type: [" + type + "], Distance: [" + distance + "]");
+                    }
+                } else {
+                    System.out.println(robotName + "> No objects detected:");
+                }
+
+            } else if (command.equalsIgnoreCase("FORWARD") ||
+                    command.equalsIgnoreCase("BACK")) {
+                System.out.println(robotName+"> "+data.get("message"));
+                System.out.println("Now at ["+xCoord+","+yCoord+"], facing "+robotDirection);
+            } else if (command.equalsIgnoreCase("TURN")) {
+                System.out.println(robotName+"> "+data.get("message"));
+                System.out.println("Now at ["+xCoord+","+yCoord+"], facing "+robotDirection);
+            } else if (command.equalsIgnoreCase("STATE")) {
+                int shields = (int) state.get("shields");
+                int shots = (int) state.get("shots");
+                String status = (String) state.get("status");
+
+                assert position != null;
+                System.out.println("Position : ["+position.get("x")+","+position.get("y")+"]");
+                System.out.println("Direction: ["+robotDirection+"]");
+                System.out.println("Shields  :  "+shields);
+                System.out.println("Shots    :  "+shots);
+                System.out.println("Status   : ["+status+"]");
+            } else if (command.equalsIgnoreCase("ORIENTATION")) {
+                System.out.println("Direction: ["+robotDirection+"]");
+            } else if (command.equalsIgnoreCase("FIRE")) {
+                String message = (String) data.get("message");
+                if (message.equalsIgnoreCase("HIT")) {
+                    String enemyName = (String) data.get("name");
+                    int enemyDistance = (int) data.get("distance");
+                    @SuppressWarnings("unchecked")
+                    Map<String, Object> enemyState = (Map<String, Object>) data.get("state");
+                    @SuppressWarnings("unchecked")
+                    Map<String, Integer> enemyPosition = (Map<String, Integer>) enemyState.get("position");
+                    Integer enemyPositionX = enemyPosition.get("x");
+                    Integer enemyPositionY = enemyPosition.get("y");
+                    String enemyDirection = (String) enemyState.get("direction");
+                    int enemyShields = (int) enemyState.get("shields");
+                    int enemyShots = (int) enemyState.get("shots");
+                    String enemyStatus = (String) enemyState.get("status");
+
+                    System.out.println(robotName+"> HIt!");
+                    System.out.println(" ".repeat(robotName.length())+"Enemy state:\n"+"_".repeat(11));
+                    System.out.println(" ".repeat(robotName.length())+"position: ["+enemyPositionX+","+enemyPositionY+"]");
+                    System.out.println(" ".repeat(robotName.length())+"direction: ["+enemyDirection+"]");
+                    System.out.println(" ".repeat(robotName.length())+"shields: "+enemyShields);
+                    System.out.println(" ".repeat(robotName.length())+"shots: "+enemyShots);
+                    System.out.println(" ".repeat(robotName.length())+"status: "+enemyStatus);
+                } else {
+                    System.out.println(robotName+"> Miss!");
+                }
+                int robotShots = (int) state.get("shots");
+                if (robotShots != 0)
+                    System.out.println("\n"+robotName+"> "+robotShots+" shot(s) left");
+                else
+                    System.out.println("\n"+robotName+"> No shots left. Reload!");
+            } else if (command.equalsIgnoreCase("RELOAD")) {
+                System.out.println(robotName+"> Fully reloaded! "+state.get("shots")+" shot(s) left");
             }
         } else {
             System.out.println(data.get("message"));
         }
-    }
-
-    private void printRepairResult(String robotName, Map<String, Object> state) {
-        System.out.println(robotName + "> Shield repaired.\nShield strength: "+state.get("shields"));
-    }
-
-    private void printRobotState(String robotName, Map<String, Object> state) {
-        @SuppressWarnings("unchecked")
-        Map<String, Integer> robotPosition = (Map<String, Integer>) state.get("position");
-
-        if (robotPosition != null) {
-            String robotFacing = (String) state.get("direction");
-
-            System.out.println(robotName + " is at [" + robotPosition.get("x") + "," + robotPosition.get("y") + "], facing " + robotFacing);
-        }
-    }
-
-    private void printLookResult(String robotName, Map<String, Object> data) {
-        @SuppressWarnings("unchecked")
-        List<Map<String, Object>> objects = (List<Map<String, Object>>) data.get("objects");
-
-        if (!objects.isEmpty()) {
-            System.out.println(robotName + "> Objects detected:");
-            for (Map<String, Object> object : objects) {
-                String objectDirection = (String) object.get("direction");
-                String objectType = (String) object.get("type");
-                int objectDistance = (int) object.get("distance");
-
-                System.out.println(" - Direction: [" + objectDirection + "], Type: [" + objectType + "], Distance: [" + objectDistance + "]");
-            }
-        } else {
-            System.out.println(robotName + "> No objects detected:");
-        }
-    }
-
-    private void printMoveResult(String robotName, Map<String, Object> data) {
-        System.out.println(robotName + "> " + data.get("message"));
-    }
-
-    private void printTurnResult(String robotName, Map<String, Object> data) {
-        System.out.println(robotName + "> " + data.get("message"));
-    }
-
-    private void printFireResult(String robotName, String enemyName, Map<String, Object> data, Map<String, Object> state) {
-        String message = (String) data.get("message");
-
-        if (message.equalsIgnoreCase("HIT")) {
-            @SuppressWarnings("unchecked")
-            Map<String, Object> enemyState = (Map<String, Object>) data.get("state");
-            printRobotState(enemyName, enemyState);
-        } else if (message.equalsIgnoreCase("MISS")) {
-            System.out.println(robotName + "> Missed!");
-        }
-
-        int robotShots = (int) state.get("shots");
-        if (robotShots != 0) {
-            System.out.println("\n" + robotName + "> " + robotShots + " shot(s) left");
-        } else {
-            System.out.println("\n" + robotName + "> No shots left. Reload gun");
-        }
-    }
-
-    private void printReloadResult(String robotName, Map<String, Object> state) {
-        System.out.println(robotName + "> Gun reloaded. " + state.get("shots") + " shot(s) left");
     }
 
     private String getServerResponse() {

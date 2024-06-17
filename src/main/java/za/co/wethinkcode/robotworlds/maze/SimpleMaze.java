@@ -47,8 +47,8 @@ public class SimpleMaze implements Maze {
     }
 
     private void createObstacles() {
-//        SquareObstacle obstacle = new SquareObstacle(1, 1);
-//        obstacles.add(obstacle);
+        SquareObstacle obstacle = new SquareObstacle(1, 1);
+        obstacles.add(obstacle);
     }
 }
 

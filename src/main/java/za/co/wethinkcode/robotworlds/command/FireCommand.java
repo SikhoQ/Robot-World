@@ -22,25 +22,9 @@ public class FireCommand extends Command {
 
     @Override
     public ServerResponse execute(SimpleBot target, IWorld world) {
-        if (target.getGun().getNumberOfShots() != 0) {
-            target.getGun().fireShot();
-        }
-        else {
-            String result = "OK";
-            Map<String, Object> data = new HashMap<>();
-            data.put("message", "Empty");
-            Map<String, Object> state = new HashMap<>();
-            state.put("position", target.getPosition());
-            state.put("direction", target.getDirection());
-            state.put("shields", target.getShields());
-            state.put("shots", target.getGun().getNumberOfShots());
-            state.put("status", target.getStatus());
+        target.getGun().fireShot();
 
-            return new ServerResponse(result, data, state);
-        }
-
-
-        String result = "OK";
+        String result = "Ok";
         Position position = target.getPosition();
         Direction direction = target.getDirection();
 

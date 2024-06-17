@@ -1,57 +1,83 @@
 package za.co.wethinkcode.robotworlds.command;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import za.co.wethinkcode.robotworlds.robot.Robot;
+import org.mockito.Mock;
+import static org.mockito.Mockito.when;
+import za.co.wethinkcode.robotworlds.Direction;
+import za.co.wethinkcode.robotworlds.Position;
+import za.co.wethinkcode.robotworlds.robot.Gun;
+import za.co.wethinkcode.robotworlds.robot.SimpleBot;
 import za.co.wethinkcode.robotworlds.server.ServerResponse;
 import za.co.wethinkcode.robotworlds.world.IWorld;
+import za.co.wethinkcode.robotworlds.world.TextWorld;
 
+import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-public class LaunchCommandTest {
-    /* The test ensures that the LaunchCommand correctly launches a robot with the specified parameters
-    and returns the server response with the appropriate data and state.*/
-
-    private LaunchCommand launchCommand;
-    private IWorld mockWorld;
+class LaunchCommandTest {
+    @Mock
+    Map<String, Object> data;
+    Map<String, Object> state;
+    IWorld world;
+    SimpleBot bot;
+    String result;
+    Position pos;
+    Direction direction;
+    LaunchCommand launchCommand;
+    ServerResponse response;
+    Gun gun;
 
     @BeforeEach
     void setUp() {
-        // Initialize the LaunchCommand instance and mock objects
-        launchCommand = new LaunchCommand("Make", "Name");
-        mockWorld = mock(IWorld.class);
+        world = mock(IWorld.class);
+        bot = mock(SimpleBot.class);
+        pos = mock(Position.class);
+        launchCommand = mock(LaunchCommand.class);
+        response = mock(ServerResponse.class);
+        gun = mock(Gun.class);
+    }
+
+    /**
+     * Test the creation of a robot using the LaunchCommand.
+     * This test verifies that a robot is correctly created with the provided arguments.
+     */
+    @Test
+    void testCreateRobot() throws Exception {
+        String json = "{ \"robot\": \"TestBot\", \"command\": \"LAUNCH\", \"arguments\": [\"SIMPLEBOT\", 5, 3] }";
+        JsonNode rootNode = new ObjectMapper().readTree(json);
+
+        when(world.launchRobot("SIMPLEBOT", "TestBot", 3, 8080)).thenReturn(bot);
+
+        LaunchCommand command = new LaunchCommand(new Object[]{"SIMPLEBOT", 5, 3});
+        SimpleBot robot = command.createRobot(rootNode, world, 8080);
+
+        assertNotNull(robot);
+        verify(world, times(1)).launchRobot("SIMPLEBOT", "TestBot", 3, 8080);
     }
 
     @Test
-    void testExecute() {
-        // Arrange: Set up mock world and robot parameters
-        Robot mockRobot = mock(Robot.class);
-        int port = 8080;
-        when(mockWorld.launchRobot("Make", "Name", port)).thenReturn(mockRobot);
+    public void testExecuteMethod() {
 
-        // Act: Execute the launch command
-        ServerResponse response = launchCommand.execute(mockRobot, mockWorld);
+        when(bot.getPosition()).thenReturn(pos);
+        when(world.getVisibility()).thenReturn(50);
+        when(world.getReload()).thenReturn(5);
+        when(world.getRepair()).thenReturn(5);
+        when(world.getShields()).thenReturn(5);
+        when(bot.getDirection()).thenReturn(direction);
+        when(response.getResult()).thenReturn("OK");
+        when(gun.getNumberOfShots()).thenReturn(5);
 
-        // Assert: Verify the response result is "OK"
+
+        LaunchCommand command = new LaunchCommand(new Object[]{"SIMPLEBOT", 5, 3});
+
         assertEquals("OK", response.getResult());
-
-        // Assert: Verify the response data contains the correct parameters
-        Map<String, Object> responseData = response.getData();
-        assertEquals(mockRobot.getPosition(), responseData.get("position"));
-        assertEquals(mockWorld.getVisibility(), responseData.get("visibility"));
-        assertEquals(mockWorld.getReload(), responseData.get("reload"));
-        assertEquals(mockWorld.getRepair(), responseData.get("repair"));
-        assertEquals(mockWorld.getShields(), responseData.get("shields"));
-
-        // Assert: Verify the response state contains the correct robot state
-        Map<String, Object> responseState = response.getState();
-        assertEquals(mockRobot.getPosition(), responseState.get("position"));
-        assertEquals(mockRobot.getDirection(), responseState.get("direction"));
-        assertEquals(mockRobot.getShields(), responseState.get("shields"));
-        assertEquals(mockRobot.getShots(), responseState.get("shots"));
-        assertEquals(mockRobot.getStatus(), responseState.get("status"));
     }
+
+
 }

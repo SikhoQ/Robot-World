@@ -97,6 +97,13 @@ public class RobotClient {
         clientSocket.close();
     }
 
+    /**
+     * Launches a robot based on user input.
+     * <p>Prompts the user to input a robot make and name, sends a request to the server, and waits for a successful response.
+     * If the server response is "OK", it prints the robot's launch position and direction.
+     * <p>If the user inputs "EXIT", the connection is closed, and the program exits.
+     * @return the name of the launched robot
+     */
     public String launchRobot() {
         ServerResponse serverResponseObject;
         ClientRequest request;

@@ -43,15 +43,7 @@ public class RobotClient {
             throw new RuntimeException("\nInvalid argument for \"ADDRESS\" and/or \"PORT\"\n\nQuitting...");
         }
 
-        System.out.println("|====================================|");
-        System.out.println("|=========   ROBOT WORLDS   =========|");
-        System.out.println("|====================================|\n");
 
-        RobotClient client = new RobotClient();
-
-        client.startConnection(ADDRESS, PORT);
-        String robotName = client.launchRobot();
-        client.run(robotName);
     }
 
     /**

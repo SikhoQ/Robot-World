@@ -12,11 +12,7 @@ import za.co.wethinkcode.robotworlds.robot.Gun;
 import za.co.wethinkcode.robotworlds.robot.SimpleBot;
 import za.co.wethinkcode.robotworlds.server.ServerResponse;
 import za.co.wethinkcode.robotworlds.world.IWorld;
-import za.co.wethinkcode.robotworlds.world.TextWorld;
-
-import java.util.HashMap;
 import java.util.Map;
-
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -43,10 +39,6 @@ class LaunchCommandTest {
         gun = mock(Gun.class);
     }
 
-    /**
-     * Test the creation of a robot using the LaunchCommand.
-     * This test verifies that a robot is correctly created with the provided arguments.
-     */
     @Test
     void testCreateRobot() throws Exception {
         String json = "{ \"robot\": \"TestBot\", \"command\": \"LAUNCH\", \"arguments\": [\"SIMPLEBOT\", 5, 3] }";
@@ -72,7 +64,6 @@ class LaunchCommandTest {
         when(bot.getDirection()).thenReturn(direction);
         when(response.getResult()).thenReturn("OK");
         when(gun.getNumberOfShots()).thenReturn(5);
-
 
         LaunchCommand command = new LaunchCommand(new Object[]{"SIMPLEBOT", 5, 3});
 

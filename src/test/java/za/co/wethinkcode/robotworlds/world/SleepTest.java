@@ -10,7 +10,7 @@ public class SleepTest {
     @Test
     public void sleepDoesNotThrowExceptionWithCorrectValue() {
 
-//        assertDoesNotThrow(() -> Sleep.sleep(1000));
+        assertDoesNotThrow(() -> Sleep.sleep(1000));
     }
 
     @Test

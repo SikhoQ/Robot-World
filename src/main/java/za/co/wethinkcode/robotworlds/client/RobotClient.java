@@ -266,6 +266,11 @@ public class RobotClient {
         }
     }
 
+    /**
+     * Reads the server's response.
+     * @return the server's response as a string
+     * @throws RuntimeException if an I/O error occurs while reading the response
+     */
     private String getServerResponse() {
         try {
             return in.readLine();

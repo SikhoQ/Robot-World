@@ -54,6 +54,14 @@ public class RobotClient {
         client.run(robotName);
     }
 
+    /**
+     * Establishes a connection to the server using the specified IP address and port.
+     * <p>Attempts to create a socket connection and initialize the input and output streams.
+     * Throws a RuntimeException if an IOException occurs.
+     * @param ipAddress the IP address of the server
+     * @param port the port number of the server
+     * @throws RuntimeException if an I/O error occurs during connection setup
+     */
     public void startConnection(String ipAddress, int port) {
         System.out.println("Connecting...");
         Sleep.sleep(1000);

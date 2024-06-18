@@ -5,10 +5,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Map;
 
-/**
- * The ServerResponse class represents the response sent by the server to the client.
- * It contains the result of the command, the arguments passed to the command, and the state of the world.
- */
 public class ServerResponse {
     String result;
     Map<String, Object> data;
@@ -34,4 +30,3 @@ public class ServerResponse {
         return state;
     }
 }
-

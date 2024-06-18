@@ -1,7 +1,7 @@
 package za.co.wethinkcode.robotworlds.world.configuration;
 
 import org.junit.jupiter.api.Test;
-import za.co.wethinkcode.robotworlds.world.configuration.WorldSize;
+import za.co.wethinkcode.robotworlds.server.configuration.WorldSize;
 
 import static org.junit.jupiter.api.Assertions.*;
 

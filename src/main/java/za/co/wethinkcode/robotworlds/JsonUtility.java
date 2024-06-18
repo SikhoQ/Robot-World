@@ -4,29 +4,34 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import za.co.wethinkcode.robotworlds.server.ServerResponse;
-<<<<<<< HEAD:src/main/java/za/co/wethinkcode/robotworlds/Json.java
+
 import java.util.*;
-=======
 
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
-import java.util.Iterator;
->>>>>>> sikho:src/main/java/za/co/wethinkcode/robotworlds/JsonUtility.java
-
+/**
+ * Utility class for JSON operations.
+ */
 public class JsonUtility {
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
+    /**
+     * Converts an object to a JSON string.
+     * @param object The object to convert.
+     * @return The JSON representation of the object.
+     * @throws RuntimeException if an error occurs during JSON serialization.
+     */
     public static String toJson(Object object) {
         try {
             return objectMapper.writeValueAsString(object);
         } catch (JsonProcessingException e) {
-            throw new RuntimeException("Json.toJson exception: "+e);
+            throw new RuntimeException("Json.toJson exception: " + e.getMessage(), e);
         }
     }
 
+    /**
+     * Converts a JSON string to a ServerResponse object.
+     * @param json The JSON string to convert.
+     * @return The ServerResponse object parsed from the JSON string.
+     */
     public static ServerResponse fromJson(String json) {
         try {
             return objectMapper.readValue(json, ServerResponse.class);
@@ -36,7 +41,17 @@ public class JsonUtility {
         }
     }
 
-    public static Optional<Map<String, Object>> getJsonFields(JsonNode rootNode) throws IllegalArgumentException {String name = rootNode.get("robot").asText(), command = rootNode.get("command").asText();JsonNode argumentsNode = rootNode.get("arguments");Object[] arguments = new Object[]{};
+    /**
+     * Extracts fields from a JSON node.
+     * @param rootNode The root JSON node.
+     * @return An optional containing the extracted fields as a map.
+     * @throws IllegalArgumentException if the JSON format is invalid.
+     */
+    public static Optional<Map<String, Object>> getJsonFields(JsonNode rootNode) throws IllegalArgumentException {
+        String name = rootNode.get("robot").asText();
+        String command = rootNode.get("command").asText();
+        JsonNode argumentsNode = rootNode.get("arguments");
+        Object[] arguments = {};
 
         if (argumentsNode != null && argumentsNode.isArray()) {
             List<Object> argumentsList = new ArrayList<>();
@@ -62,11 +77,17 @@ public class JsonUtility {
         return Optional.of(jsonFields);
     }
 
+    /**
+     * Accesses fields of a JSON string.
+     * @param jsonString The JSON string to access.
+     * @return The root JSON node.
+     * @throws RuntimeException if an error occurs during JSON parsing.
+     */
     public static JsonNode jsonFieldAccess(String jsonString) {
         try {
             return objectMapper.readTree(jsonString);
         } catch (JsonProcessingException e) {
-            throw new RuntimeException("Json.jsonFieldAccess exception: "+e);
+            throw new RuntimeException("Json.jsonFieldAccess exception: " + e.getMessage(), e);
         }
     }
 }

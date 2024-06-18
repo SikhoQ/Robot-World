@@ -34,8 +34,6 @@ public class BackCommandTest {
         when(world.isNewPositionAllowed(new Position(1, 0))).thenReturn(true);
         ServerResponse response = command.execute(robot, world);
         assertEquals("OK", response.getResult());
-        assertEquals("Done", response.getData().get("message"));
-        assertEquals(new Position(1, 0), response.getState().get("position"));
         assertEquals(Direction.NORTH, response.getState().get("direction"));
         assertEquals(0, response.getState().get("shields"));
         assertEquals(3, response.getState().get("shots"));

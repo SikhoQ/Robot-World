@@ -5,17 +5,27 @@ import java.util.Scanner;
 
 /**
  * The ServerConsole class represents a console that allows the user to interact with the server.
- * It extends the Thread class and provides the implementation for the run method.
+ * It implements the Runnable interface and provides the implementation for the run method.
  */
 public class ServerConsole implements Runnable {
     private final RobotWorldServer server;
     private final TextWorld world;
 
+    /**
+     * Constructs a ServerConsole with the specified server and world.
+     *
+     * @param server the RobotWorldServer instance to interact with.
+     * @param world the TextWorld instance representing the world of the robots.
+     */
     public ServerConsole(RobotWorldServer server, TextWorld world) {
         this.server = server;
         this.world = world;
     }
 
+    /**
+     * The run method of the ServerConsole. It listens for user input from the console
+     * and processes commands accordingly.
+     */
     @Override
     public void run() {
         Scanner scanner = new Scanner(System.in);
@@ -25,6 +35,11 @@ public class ServerConsole implements Runnable {
         }
     }
 
+    /**
+     * Handles the given command entered by the user in the console.
+     *
+     * @param command the command entered by the user.
+     */
     private void handleCommand(String command) {
         if (command.equalsIgnoreCase("QUIT")) {
             server.shutdown();

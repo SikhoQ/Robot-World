@@ -1,6 +1,7 @@
 package za.co.wethinkcode.robotworlds.command;
 
 import za.co.wethinkcode.robotworlds.Position;
+import za.co.wethinkcode.robotworlds.robot.Gun;
 import za.co.wethinkcode.robotworlds.robot.Robot;
 import za.co.wethinkcode.robotworlds.world.*;
 import za.co.wethinkcode.robotworlds.server.ServerResponse;
@@ -19,6 +20,13 @@ public class LookCommand extends Command {
         super("look", null);
     }
 
+    /**
+     * Executes the LookCommand.
+     *
+     * @param target The robot that is executing the command.
+     * @param world The world in which the robot is located.
+     * @return A ServerResponse object containing the result, data, and state of the command execution.
+     */
     @Override
     public ServerResponse execute(Robot target, IWorld world) {
         Map<Object, Position> north = lookInDirection("NORTH", target, world);
@@ -30,7 +38,6 @@ public class LookCommand extends Command {
         Map<String, Object> data = new HashMap<>();
         List<Map<String, Object>> objects = new ArrayList<>();
 
-        // Process objects found in each direction and add them to the list
         if (!north.isEmpty()) {
             for (Map.Entry<Object, Position> entry: north.entrySet()) {
                 Map<String, Object> object = getObjectMap(target, entry, "NORTH");
@@ -56,20 +63,26 @@ public class LookCommand extends Command {
             }
         }
 
-        // Prepare the state field of the response
         Map<String, Object> state = new HashMap<>();
         state.put("position", target.getPosition());
         state.put("direction", target.getDirection());
         state.put("shields", target.getShields());
-        state.put("shots", target.getGun().getNumberOfShots());
+        state.put("shots", Gun.getNumberOfShots());
         state.put("status", target.getStatus());
 
-        // Add the detected objects to the data field of the response
         data.put("objects", objects);
 
         return new ServerResponse(result, data, state);
     }
 
+    /**
+     * Looks in a specific direction for objects in the world.
+     *
+     * @param direction The direction in which to look.
+     * @param target The robot that is executing the command.
+     * @param world The world in which the robot is located.
+     * @return A map of objects and their positions in the specified direction.
+     */
     private Map<Object, Position> lookInDirection(String direction, Robot target, IWorld world) {
         Position robotPosition = target.getPosition();
         int robotX = robotPosition.getX();
@@ -112,6 +125,15 @@ public class LookCommand extends Command {
         return objects;
     }
 
+    /**
+     * Detects an object at a specific position in the world.
+     *
+     * @param direction The direction in which to detect the object.
+     * @param world The world in which the robot is located.
+     * @param x The x-coordinate of the position to detect.
+     * @param y The y-coordinate of the position to detect.
+     * @return The detected object or null if no object is found.
+     */
     private Object detectObject(String direction, IWorld world, int x, int y) {
         List<Obstacle> obstacles = world.getObstacles();
         Map<Integer, Robot> robots = world.getRobots();
@@ -142,6 +164,14 @@ public class LookCommand extends Command {
         return null;
     }
 
+    /**
+     * Creates a map representing an object detected in a specific direction.
+     *
+     * @param target The robot that is executing the command.
+     * @param entry The entry containing the detected object and its position.
+     * @param direction The direction in which the object was detected.
+     * @return A map representing the detected object.
+     */
     private static Map<String, Object> getObjectMap(Robot target, Map.Entry<Object, Position> entry, String direction) {
         Map<String, Object> object = new HashMap<>();
         String type = "";

@@ -3,10 +3,21 @@ package za.co.wethinkcode.robotworlds.client;
 import za.co.wethinkcode.robotworlds.JsonUtility;
 import za.co.wethinkcode.robotworlds.server.ServerResponse;
 
-import java.io.IOException;
 import java.util.Map;
 
+/**
+ * This class is responsible for launching a robot in the RobotWorlds game.
+ * It handles user input, sends requests to the server, and processes the server's response.
+ */
 public class RobotLaunch {
+
+    /**
+     * Launches a robot in the RobotWorlds game.
+     *
+     * @param client The RobotClient instance used to communicate with the server.
+     * @param userInput The user's input for launching the robot.
+     * @return The name of the launched robot.
+     */
     public static String launchRobot(RobotClient client, String userInput) {
         ServerResponse serverResponseObject;
         ClientRequest request;

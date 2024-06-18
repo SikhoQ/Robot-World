@@ -18,14 +18,18 @@ public class BackCommand extends Command {
         super("back", new Object[] {argument});
     }
 
-
+    /**
+     * Executes the back command for the robot.
+     *
+     * @param target The robot that will execute the command.
+     * @param world The world in which the robot operates.
+     * @return A ServerResponse object containing the result, data, and state of the robot after executing the command.
+     */
     @Override
     public ServerResponse execute(Robot target, IWorld world) {
         String result = "OK";
         Map<String, Object> data = new HashMap<>();
-        // Get the number of steps to move backward
         int nrSteps = Integer.parseInt(String.valueOf(getArguments()[0]));
-        // Update the robot's position and get the message
         String message = target.updatePosition(-nrSteps, world);
 
         data.put("message", message);
@@ -37,7 +41,6 @@ public class BackCommand extends Command {
         state.put("shots", Gun.getNumberOfShots());
         state.put("status", target.getStatus());
 
-        // Return the server response with the result, data, and state
         return new ServerResponse(result, data, state);
     }
 }

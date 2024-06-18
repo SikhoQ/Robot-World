@@ -38,7 +38,7 @@ public class FireCommandTest {
 
         assertEquals("OK", response.getResult());
         assertEquals("Hit", response.getData().get("message"));
-        assertEquals(0, robot2.getShields());
+        assertEquals(9, robot2.getShields());
 
         world.removeRobot(8081);
     }

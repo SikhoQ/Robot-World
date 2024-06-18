@@ -10,11 +10,18 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.util.Scanner;
 
+/**
+ * The ServerConfiguration class handles the setup and configuration of the server,
+ * including reading configuration parameters and setting up logging.
+ */
 public class ServerConfiguration {
 
     public static final String LOG_FILE_PATH = "/home/wtc/my_work/dbn_14_robot_worlds/server_log.txt";
     public static final String SERVER_CONFIG_FILE_PATH = "src/main/resources/serverConfig.json";
 
+    /**
+     * Configures the server by loading and prompting for necessary configuration parameters.
+     */
     public static void configureServer() {
         ObjectMapper objectMapper = new ObjectMapper();
         ObjectNode config = ConfigUtility.loadConfiguration();
@@ -66,8 +73,12 @@ public class ServerConfiguration {
         saveConfiguration(objectMapper, config);
     }
 
-
-
+    /**
+     * Saves the configuration to a file.
+     *
+     * @param objectMapper the ObjectMapper used to write the configuration.
+     * @param config the configuration to be saved.
+     */
     private static void saveConfiguration(ObjectMapper objectMapper, ObjectNode config) {
         try {
             objectMapper.writerWithDefaultPrettyPrinter().writeValue(new File(SERVER_CONFIG_FILE_PATH), config);
@@ -76,28 +87,29 @@ public class ServerConfiguration {
         }
     }
 
+    /**
+     * Sets up logging by redirecting System.out and System.err to both the console and a log file.
+     *
+     * @param logFilePath the path to the log file.
+     */
     public static void setupLogging(String logFilePath) {
         try {
-            // Create a FileOutputStream for the log file
             FileOutputStream fileOutputStream = new FileOutputStream(logFilePath);
 
-            // Create TeeOutputStream to write to both console and log file
             TeeOutputStream teeOut = new TeeOutputStream(System.out, fileOutputStream);
             TeeOutputStream teeErr = new TeeOutputStream(System.err, fileOutputStream);
 
-            // Create PrintStreams for the TeeOutputStream
             PrintStream psOut = new PrintStream(teeOut);
             PrintStream psErr = new PrintStream(teeErr);
 
-            // Redirect System.out and System.err
             System.setOut(psOut);
             System.setErr(psErr);
 
-            // Inform the user where the logs are saved
             System.out.println("Console output is saving to: " + logFilePath);
 
         } catch (IOException e) {
-            e.printStackTrace();
+            System.err.println("Error setting up logging");
+            System.exit(1);
         }
     }
 }

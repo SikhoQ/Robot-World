@@ -17,6 +17,13 @@ public class LeftCommand extends Command {
         super("left", null);
     }
 
+    /**
+     * Executes the left command on the given robot in the specified world.
+     *
+     * @param target The robot on which the command will be executed.
+     * @param world The world in which the robot exists.
+     * @return A ServerResponse object containing the result, data, and state of the execution.
+     */
     @Override
     public ServerResponse execute(Robot target, IWorld world) {
         switch (target.getDirection()){

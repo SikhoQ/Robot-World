@@ -15,10 +15,20 @@ public class OrientationCommand extends Command {
         super("orientation", null);
     }
 
+    /**
+     * Executes the orientation command.
+     *
+     * <p>This method retrieves the current orientation of the target robot and constructs a ServerResponse
+     * containing the result "OK" along with the orientation data.</p>
+     *
+     * @param target the Robot object whose orientation is to be retrieved.
+     * @param world the world context in which the command is executed.
+     * @return a ServerResponse containing the result "OK" and the current orientation of the robot.
+     */
     @Override
     public ServerResponse execute(Robot target, IWorld world) {
         String result = "OK";
-        Map<String, Object> data = new HashMap<>() {};
+        Map<String, Object> data = new HashMap<>();
         Map<String, Object> state = new HashMap<>();
         state.put("direction", target.getDirection());
 

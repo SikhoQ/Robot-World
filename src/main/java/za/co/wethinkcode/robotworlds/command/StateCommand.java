@@ -1,5 +1,6 @@
 package za.co.wethinkcode.robotworlds.command;
 
+import za.co.wethinkcode.robotworlds.robot.Gun;
 import za.co.wethinkcode.robotworlds.robot.Robot;
 import za.co.wethinkcode.robotworlds.world.IWorld;
 import za.co.wethinkcode.robotworlds.server.ServerResponse;
@@ -30,7 +31,7 @@ public class StateCommand extends Command {
         state.put("position", target.getPosition());
         state.put("direction", target.getDirection());
         state.put("shields", target.getShields());
-        state.put("shots", target.getGun().getNumberOfShots());
+        state.put("shots", Gun.getNumberOfShots());
         state.put("status", target.getStatus());
 
         return new ServerResponse(result, data, state);

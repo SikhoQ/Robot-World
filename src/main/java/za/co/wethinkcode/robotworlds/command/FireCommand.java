@@ -13,6 +13,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * This class represents a command to fire a shot in the game.
+ * It extends the Command class and overrides the execute method.
+ */
 public class FireCommand extends Command {
     private Robot enemyRobot;
     protected int enemyRobotDistance = 0;
@@ -21,11 +25,18 @@ public class FireCommand extends Command {
         super("fire", null);
     }
 
+    /**
+     * Executes the fire command for the given robot in the specified world.
+     * It checks if there are any shots left in the gun. If not, it returns a response indicating that the gun is empty.
+     * If there are shots left, it simulates the firing of a shot in the specified direction.
+     * It checks for hits, misses, and collisions with obstacles and other robots.
+     * It updates the state of the robot and the world after the shot is fired.
+     *
+     * @param target The robot executing the command.
+     * @param world The world in which the robot is executing the command.
+     * @return The response from the server after executing the command.
+     */
     @Override
-<<<<<<< HEAD
-    public ServerResponse execute(SimpleBot target, IWorld world) {
-        target.getGun().fireShot();
-=======
     public ServerResponse execute(Robot target, IWorld world) {
         if (Gun.getNumberOfShots() != 0) {
             target.getGun().fireShot();
@@ -40,9 +51,12 @@ public class FireCommand extends Command {
             state.put("shields", target.getShields());
             state.put("shots", Gun.getNumberOfShots());
             state.put("status", target.getStatus());
->>>>>>> sikho
 
-        String result = "Ok";
+            return new ServerResponse(result, data, state);
+        }
+
+
+        String result = "OK";
         Position position = target.getPosition();
         Direction direction = target.getDirection();
 
@@ -100,17 +114,28 @@ public class FireCommand extends Command {
             robotShotState.put("position", enemyRobot.getPosition());
             robotShotState.put("direction", enemyRobot.getDirection());
             robotShotState.put("shields", enemyRobot.getShields());
-            robotShotState.put("shots", enemyRobot.getGun().getNumberOfShots());
+            robotShotState.put("shots", Gun.getNumberOfShots());
             robotShotState.put("status", enemyRobot.getStatus());
 
             data.put("state", robotShotState);
         }
 
-        state.put("shots", target.getGun().getNumberOfShots());
+        state.put("shots", Gun.getNumberOfShots());
 
         return new ServerResponse(result, data, state);
     }
 
+    /**
+     * Reports a hit or miss for a bullet at a specific position in the specified direction.
+     * It checks for collisions with obstacles and other robots.
+     * It updates the enemyRobot and enemyRobotDistance if a hit is detected.
+     *
+     * @param world The world in which the bullet is moving.
+     * @param robotPosition The position of the robot firing the bullet.
+     * @param bulletPosition The position of the bullet.
+     * @param direction The direction of the bullet.
+     * @return "HIT" if a hit is detected, "MISS" otherwise.
+     */
     public String reportHit(IWorld world, Position robotPosition, int bulletPosition, Direction direction) {
         Map<Integer, Robot> worldRobots = world.getRobots();
         List<Robot> robots = new ArrayList<>(worldRobots.values());
@@ -156,10 +181,11 @@ public class FireCommand extends Command {
         return "MISS";
     }
 
-    public Robot getEnemyRobot() {
-        return enemyRobot;
-    }
-
+    /**
+     * Setter for the enemyRobot.
+     *
+     * @param enemyRobot The enemy robot that was hit by the bullet.
+     */
     public void setEnemyRobot(Robot enemyRobot) {
         this.enemyRobot = enemyRobot;
     }

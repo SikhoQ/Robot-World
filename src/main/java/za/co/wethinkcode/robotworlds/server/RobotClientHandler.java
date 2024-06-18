@@ -5,42 +5,46 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
-<<<<<<< HEAD
-import com.fasterxml.jackson.databind.JsonNode;
-import za.co.wethinkcode.robotworlds.Json;
-import za.co.wethinkcode.robotworlds.robot.SimpleBot;
-=======
 
 import com.fasterxml.jackson.databind.JsonNode;
 import za.co.wethinkcode.robotworlds.JsonUtility;
 import za.co.wethinkcode.robotworlds.robot.Robot;
->>>>>>> sikho
 import za.co.wethinkcode.robotworlds.command.Command;
 import za.co.wethinkcode.robotworlds.command.LaunchCommand;
 import za.co.wethinkcode.robotworlds.world.IWorld;
 
 /**
- * Class to handle communication between a server and a single client.
- * It processes commands received from the client and sends responses back to the client.
- * This class implements Runnable to allow handling client communication in a separate thread.
+ * The RobotClientHandler class is responsible for handling client connections
+ * and processing their requests in the robot world server.
  */
 public class RobotClientHandler implements Runnable {
     private final Socket clientSocket;
     private final IWorld world;
     private Robot robot;
 
+    /**
+     * Constructs a RobotClientHandler with the specified client socket and world.
+     *
+     * @param clientSocket the socket connection to the client.
+     * @param world the world in which the robot operates.
+     */
     public RobotClientHandler(Socket clientSocket, IWorld world) {
         this.clientSocket = clientSocket;
         this.world = world;
         this.robot = null;
     }
 
+    /**
+     * Gets the client socket.
+     *
+     * @return the client socket.
+     */
     public Socket getClientSocket() {
         return clientSocket;
     }
 
     /**
-     * Handles communication with the client.
+     * Runs the client handler, processing client requests and sending responses.
      */
     @Override
     public void run() {
@@ -65,28 +69,37 @@ public class RobotClientHandler implements Runnable {
     }
 
     /**
-     * Disconnects the client from the server.
+     * Disconnects the client by closing the socket connection.
      *
-     * @throws IOException if an I/O error occurs while closing the client socket
+     * @throws IOException if an I/O error occurs when closing the socket.
      */
     public void disconnectClient() throws IOException {
         this.clientSocket.close();
     }
 
-
+    /**
+     * Creates a command from the given JSON node and world.
+     *
+     * @param rootNode the JSON node representing the command.
+     * @param world the world in which the command will be executed.
+     * @return the created command.
+     */
     public Command getCommand(JsonNode rootNode, IWorld world) {
         return Command.create(rootNode, world);
     }
 
     /**
-    * use this function to handle error responses since each command's execute
-    * returns a ServerResponse object
-    */
+     * Processes the client request, executing the corresponding command and returning
+     * the server response as a JSON string.
+     *
+     * @param clientRequest the client request as a JSON string.
+     * @return the server response as a JSON string.
+     */
     public String processRequest(String clientRequest) {
         JsonNode rootNode = JsonUtility.jsonFieldAccess(clientRequest);
         Command command = getCommand(rootNode, world);
 
-        System.out.println("\u001B[32mCommand \u001B[0m["+command.getCommand()+"] \u001B[32mreceived from client on local port: \u001B[0m"+clientSocket.getPort());
+        System.out.println("\u001B[32mCommand \u001B[0m[" + command.getCommand() + "] \u001B[32mreceived from client on local port: \u001B[0m" + clientSocket.getPort());
         if (command.getCommand().equalsIgnoreCase("LAUNCH")) {
             LaunchCommand launchCommand = (LaunchCommand) command;
             robot = launchCommand.createRobot(rootNode, world, clientSocket.getPort());

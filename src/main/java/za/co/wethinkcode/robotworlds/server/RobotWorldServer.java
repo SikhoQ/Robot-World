@@ -1,59 +1,43 @@
 package za.co.wethinkcode.robotworlds.server;
 
 import za.co.wethinkcode.robotworlds.world.TextWorld;
-<<<<<<< HEAD
-=======
 import za.co.wethinkcode.robotworlds.server.configuration.ServerConfiguration;
 
->>>>>>> sikho
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The RobotWorldServer class manages the server that handles connections from robot clients
+ * and processes their interactions in the robot world.
+ */
 public class RobotWorldServer extends Thread {
     private final List<RobotClientHandler> clients;
     private ServerSocket serverSocket;
     private final TextWorld world;
-<<<<<<< HEAD
-
-    public RobotWorldServer(int PORT) {
-        clients = new ArrayList<>();
-        world = new TextWorld();
-        try {
-            serverSocket = new ServerSocket(PORT);
-        } catch (IOException e) {
-            throw new RuntimeException("Failed to connect server on port: " + PORT);
-        }
-    }
-
-    /**
-     * The run method is the entry point for the server thread.
-     * It initializes a ServerConsole instance, starts it in a separate thread,
-     * and then enters an infinite loop to accept new client connections.
-     * For each new client, it creates a new RobotClientHandler instance,
-     * adds it to the list of clients, and starts a new thread to handle the client.
-     * If an IOException occurs during the server's operation, it prints a message and exits.
-     */
-    public void run() {
-        ServerConsole console = new ServerConsole(this, world);
-        new Thread(console).start();
-=======
     private boolean running;
     private final int port;
 
+    /**
+     * Constructs a RobotWorldServer with the specified port.
+     *
+     * @param PORT the port number on which the server listens for client connections.
+     */
     public RobotWorldServer(int PORT) {
         this.clients = new ArrayList<>();
         this.world = new TextWorld();
         this.port = PORT;
     }
 
+    /**
+     * Runs the server, accepting client connections and starting a new thread for each client.
+     */
     @Override
     public void run() {
         ServerConsole serverConsole = new ServerConsole(this, world);
         new Thread(serverConsole).start();
->>>>>>> sikho
 
         try {
             serverSocket = new ServerSocket(port);
@@ -61,12 +45,6 @@ public class RobotWorldServer extends Thread {
             running = true;
             while (running) {
                 Socket clientSocket = serverSocket.accept();
-<<<<<<< HEAD
-                System.out.println("\nNew client connected on local port: " + clientSocket.getPort());
-                RobotClientHandler clientHandler = new RobotClientHandler(clientSocket, world);
-                clients.add(clientHandler);
-                new Thread(clientHandler).start();
-=======
                 if (clientSocket != null) {
                     System.out.print("\u001B[33mNew client connected on local port: \u001B[0m");
                     System.out.println(clientSocket.getPort());
@@ -74,7 +52,6 @@ public class RobotWorldServer extends Thread {
                     clients.add(clientHandler);
                     new Thread(clientHandler).start();
                 }
->>>>>>> sikho
             }
         } catch (IOException e) {
             System.err.println("Error in server loop: " + e);
@@ -83,15 +60,10 @@ public class RobotWorldServer extends Thread {
     }
 
     /**
-     * Shuts down the server and all its clients.
-     * This method disconnects all clients and then closes the server socket.
-     * Finally, it terminates the server process.
+     * Shuts down the server and disconnects all connected clients.
      */
     public void shutdown() {
-<<<<<<< HEAD
-=======
         running = false;
->>>>>>> sikho
         for (RobotClientHandler client : clients) {
             try {
                 client.disconnectClient();
@@ -108,33 +80,18 @@ public class RobotWorldServer extends Thread {
     }
 
     /**
-     * Retrieves the list of active {@link RobotClientHandler} instances.
+     * Gets the list of connected clients.
      *
-     * @return a list of active {@link RobotClientHandler} instances
+     * @return the list of RobotClientHandler instances.
      */
     public List<RobotClientHandler> getClients() {
         return clients;
     }
 
-<<<<<<< HEAD
     /**
-     * Removes a disconnected client from the list and updates the world.
+     * Closes the server socket.
      *
-     * @param disconnectedClient the client to be removed
-     */
-=======
->>>>>>> sikho
-    public void removeClient(RobotClientHandler disconnectedClient) {
-        clients.remove(disconnectedClient);
-        world.removeRobot(disconnectedClient.getClientSocket().getPort());
-    }
-
-    /**
-     * Closes the server socket and stops accepting new client connections.
-     * This method is called when the server needs to shut down gracefully.
-     * It ensures that all active client connections are closed before terminating the server process.
-     *
-     * @throws IOException If an error occurs while closing the server socket.
+     * @throws IOException if an I/O error occurs when closing the socket.
      */
     public void closeServer() throws IOException {
         try {
@@ -144,37 +101,27 @@ public class RobotWorldServer extends Thread {
         }
     }
 
-<<<<<<< HEAD
     /**
-     * The main entry point of the server.
-     * It initializes the server, sets up the world, and starts accepting client connections.
+     * The main method that starts the RobotWorldServer.
      *
-     * @param args Command line arguments, not used in this context.
-     * @throws IOException If an error occurs while accepting client connections.
+     * @param args command line arguments, where the first argument is the port number.
+     * @throws RuntimeException if an error occurs while starting the server.
      */
-    public static void main(String[] args) throws IOException {
-        int PORT = 0;
-=======
-    public boolean isServerStopped() {
-        return !running;
-    }
-
     public static void main(String[] args) throws RuntimeException {
         ServerConfiguration.configureServer();
         ServerConfiguration.setupLogging(ServerConfiguration.LOG_FILE_PATH);
 
         int PORT;
->>>>>>> sikho
         if (args.length == 1) {
             try {
                 PORT = Integer.parseInt(args[0]);
             } catch (NumberFormatException e) {
-                System.out.println("\nInvalid argument for \"PORT\"\nUsing PORT 8080\n");
-                PORT = 8080;
+                System.out.println("\nInvalid argument for \"PORT\"\nUsing PORT 5000\n");
+                PORT = 5000;
             }
         } else {
-            System.out.println("\nInvalid argument for \"PORT\"\nUsing PORT 8080\n");
-            PORT = 8080;
+            System.out.println("\nInvalid argument for \"PORT\"\nUsing PORT 5000\n");
+            PORT = 5000;
         }
 
         RobotWorldServer server = new RobotWorldServer(PORT);

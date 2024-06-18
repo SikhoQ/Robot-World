@@ -4,15 +4,10 @@ import za.co.wethinkcode.robotworlds.Direction;
 import za.co.wethinkcode.robotworlds.Position;
 import za.co.wethinkcode.robotworlds.TitleCaseConverter;
 import za.co.wethinkcode.robotworlds.maze.RandomMaze;
-<<<<<<< HEAD
-import za.co.wethinkcode.robotworlds.robot.SimpleBot;
-import za.co.wethinkcode.robotworlds.robot.SniperBot;
-import za.co.wethinkcode.robotworlds.world.configuration.Config;
-=======
+import za.co.wethinkcode.robotworlds.robot.Gun;
 import za.co.wethinkcode.robotworlds.robot.Robot;
 import za.co.wethinkcode.robotworlds.ConfigUtility;
 
->>>>>>> sikho
 import java.util.*;
 
 
@@ -50,11 +45,10 @@ public class TextWorld implements IWorld {
             visibility = ConfigUtility.getVisibility();
             reload = ConfigUtility.getReload();
             repair = ConfigUtility.getRepair();
-//            shields = ConfigUtility.getShields();
         } else {
-            worldWidth = 200;
-            worldHeight = 400;
-            visibility = 50;
+            worldWidth = 40;
+            worldHeight = 80;
+            visibility = 20;
             reload = 5;
             repair = 5;
             shields = 5;
@@ -296,7 +290,7 @@ public class TextWorld implements IWorld {
                 System.out.println(" position : "+"["+position.getX()+","+position.getY()+"]");
                 System.out.println(" direction: ["+entry.getValue().getDirection()+"]");
                 System.out.println(" shields  :  "+entry.getValue().getShields());
-                System.out.println(" shots    :  "+entry.getValue().getGun().getNumberOfShots());
+                System.out.println(" shots    :  "+ Gun.getNumberOfShots());
                 System.out.println(" status   : ["+entry.getValue().getStatus()+"]");
             }
         }

@@ -1,6 +1,14 @@
 package za.co.wethinkcode.robotworlds;
 
+/**
+ * A utility class for converting strings to title case.
+ */
 public class TitleCaseConverter {
+    /**
+     * Converts the given string to title case.
+     * @param input The input string to be converted.
+     * @return The input string converted to title case.
+     */
     public static String toTitleCase(String input) {
         if (input == null || input.isEmpty()) {
             return input;
@@ -23,11 +31,5 @@ public class TitleCaseConverter {
         }
 
         return titleCase.toString();
-    }
-
-    public static void main(String[] args) {
-        String text = "this is a sample string";
-        String titleCased = toTitleCase(text);
-        System.out.println(titleCased); // Output: This Is A Sample String
     }
 }

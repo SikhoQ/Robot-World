@@ -15,6 +15,12 @@ class SquareObstacleTest {
         assertTrue(obstacle.blocksPosition(positionInside), "Position inside obstacle should be blocked");
     }
 
+//    @Test
+//    void testBlocksPosition_OutsideObstacle() {
+//        SquareObstacle obstacle = new SquareObstacle(0, 0);
+//        Position positionOutside = new Position(10, 10);
+//        assertFalse(obstacle.blocksPosition(positionOutside), "Position outside obstacle should not be blocked");
+//    }
 
     @Test
     void testBlocksPath_VerticalPathBlocked() {

@@ -28,20 +28,18 @@ public class RobotClient {
      * @param args The command-line arguments.
      */
     public static void main(String[] args) {
-        String serverAddress = null;
-        int serverPort = 0;
+        String serverAddress = "localhost";
+        int serverPort = 5000;
 
         if (args.length == 2) {
             try {
                 serverAddress = args[0];
                 serverPort = Integer.parseInt(args[1]);
             } catch (NumberFormatException e) {
-                System.err.println("\nInvalid argument for \"ADDRESS\" and/or \"PORT\"\n\nQuitting...");
-                System.exit(1);
+                System.err.println("\nInvalid argument for \"ADDRESS\" and/or \"PORT\"\n\nUsing 'localhost' '5000'");
             }
         } else {
-            System.err.println("\nInvalid argument for \"ADDRESS\" and/or \"PORT\"\n\nQuitting...");
-            System.exit(1);
+            System.err.println("\nInvalid argument for \"ADDRESS\" and/or \"PORT\"\n\nUsing 'localhost' '5000'");
         }
 
         System.out.println("|====================================|");

@@ -204,7 +204,7 @@ public class TextWorld implements IWorld {
     }
 
     @Override
-    public Position     validateLaunchPosition(Position position) {
+    public Position validateLaunchPosition(Position position) {
         Map<Integer, Robot> robots = getRobots();
         List<Obstacle> obstacles = getObstacles();
         for (Map.Entry<Integer, Robot> entry: robots.entrySet()) {

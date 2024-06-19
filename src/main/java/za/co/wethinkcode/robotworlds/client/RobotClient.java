@@ -164,7 +164,7 @@ public class RobotClient {
      * @param state The state of the robot after the repair command.
      */
     private void printRepairResult(String robotName, Map<String, Object> state) {
-        System.out.println(robotName + "> Shield repaired.\nShield strength: "+state.get("shields"));
+        System.out.println(robotName + "> Shield repaired.\nShield strength: " + state.get("shields"));
     }
 
     /**
@@ -180,7 +180,7 @@ public class RobotClient {
         if (robotPosition != null) {
             String robotFacing = (String) state.get("direction");
 
-            System.out.println(robotName + " is at [" + robotPosition.get("x") + "," + robotPosition.get("y") + "], facing " + robotFacing);
+            System.out.println(robotName + " is at [\u001B[33m" + robotPosition.get("x") + "\u001B[0m,\u001B[34m" + robotPosition.get("y") + "\u001B[0m], facing \u001B[32m" + robotFacing + "\u001B[0m");
         }
     }
 
@@ -201,7 +201,7 @@ public class RobotClient {
                 String objectType = (String) object.get("type");
                 int objectDistance = (int) object.get("distance");
 
-                System.out.println(" - Direction: [" + objectDirection + "], Type: [" + objectType + "], Distance: [" + objectDistance + "]");
+                System.out.println(" - Direction: [\u001B[33m" + objectDirection + "\u001B[0m], Type: [\u001B[34m" + objectType + "\u001B[0m], Distance: [\u001B[32m" + objectDistance + "\u001B[0m]");
             }
         } else {
             System.out.println(robotName + "> No objects detected:");
@@ -249,9 +249,7 @@ public class RobotClient {
 
         int robotShots = (int) state.get("shots");
         if (robotShots != 0) {
-            System.out.println("\n" + robotName + "> " + robotShots + " shot(s) left");
-        } else {
-            System.out.println("\n" + robotName + "> No shots left. Reload gun");
+            System.out.println("\n" + robotName + "> " + robotShots + " shot(s) left.");
         }
     }
 
@@ -262,33 +260,27 @@ public class RobotClient {
      * @param state The state of the robot after the reload command.
      */
     private void printReloadResult(String robotName, Map<String, Object> state) {
-        System.out.println(robotName + "> Gun reloaded. " + state.get("shots") + " shot(s) left");
+        System.out.println(robotName + "> " + state.get("shots"));
     }
 
     /**
-     * Gets a server response from the server.
+     * Retrieves the server response as a string.
      *
-     * @return The server response in JSON format.
+     * @return The server response.
      */
     public String getServerResponse() {
         try {
-            String response = in.readLine();
-            if (response == null) {
-                System.out.println("Server connection closed by the server.");
-                return null;
-            }
-            return response;
+            return in.readLine();
         } catch (IOException e) {
-            System.out.println("Error reading server response: " + e.getMessage());
-            return null;
+            throw new RuntimeException("IOException reading server response", e);
         }
     }
 
     /**
-     * Parses a server response from JSON format.
+     * Converts the server response JSON string to a ServerResponse object.
      *
-     * @param serverResponse The server response in JSON format.
-     * @return The parsed server response.
+     * @param serverResponse The server response JSON string.
+     * @return The ServerResponse object.
      */
     public ServerResponse getServerResponseObject(String serverResponse) {
         return JsonUtility.fromJson(serverResponse);

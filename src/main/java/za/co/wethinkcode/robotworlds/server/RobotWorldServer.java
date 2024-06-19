@@ -54,8 +54,8 @@ public class RobotWorldServer extends Thread {
                 }
             }
         } catch (IOException e) {
-            System.err.println("Error in server loop: " + e);
-            System.out.println("Quitting server...");
+            System.err.println("\u001B[31mError in server loop: " + e + "\u001B[0m");
+            System.out.println("\u001B[31mQuitting server...\u001B[0m");
         }
     }
 
@@ -116,11 +116,11 @@ public class RobotWorldServer extends Thread {
             try {
                 PORT = Integer.parseInt(args[0]);
             } catch (NumberFormatException e) {
-                System.out.println("\nInvalid argument for \"PORT\"\nUsing PORT 5000\n");
+                System.out.println("\u001B[31m\nInvalid argument for \"PORT\"\nUsing PORT 5000\u001B[0m\n");
                 PORT = 5000;
             }
         } else {
-            System.out.println("\nInvalid argument for \"PORT\"\nUsing PORT 5000\n");
+            System.out.println("\u001B[31m\nInvalid argument for \"PORT\"\nUsing PORT 5000\u001B[0m\n");
             PORT = 5000;
         }
 

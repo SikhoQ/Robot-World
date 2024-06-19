@@ -21,8 +21,9 @@ public class RobotLaunch {
     public static String launchRobot(RobotClient client, String userInput) {
         ServerResponse serverResponseObject;
         ClientRequest request;
-        String robotName= "";
+        String robotName = "";
         String[] userInputSplit = userInput.split(" ", 2);
+
         while (true) {
             if (userInputSplit.length == 2) {
                 robotName = (userInputSplit[1].split(" ").length == 2) ? (userInputSplit[1].split(" ")[1]) : "";
@@ -32,10 +33,12 @@ public class RobotLaunch {
             client.out.println(clientRequest);
             String serverResponse = client.getServerResponse();
             serverResponseObject = client.getServerResponseObject(serverResponse);
+
             if (serverResponseObject.getResult().equals("OK")) {
                 break;
             }
-            System.out.println(serverResponseObject.getData().get("message"));
+
+            System.out.println("\u001B[31m" + serverResponseObject.getData().get("message") + "\u001B[0m");
             client.run();
         }
 
@@ -48,7 +51,7 @@ public class RobotLaunch {
         int robotPositionY = robotPosition.get("y");
         String robotFacing = (String) state.get("direction");
 
-        System.out.println(robotName + " launched at [" + robotPositionX + "," + robotPositionY + "], facing " + robotFacing);
+        System.out.println("\u001B[32m" + robotName + " launched at [" + robotPositionX + "," + robotPositionY + "], facing " + robotFacing + "\u001B[0m");
         client.isRobotLaunched = true;
 
         return robotName;

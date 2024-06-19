@@ -35,37 +35,37 @@ public class ServerConfiguration {
         }
 
         if (!worldSize.has("width") || worldSize.get("width").asText().isEmpty()) {
-            System.out.print("Enter world width: ");
+            System.out.print("\u001B[34mEnter world width: ");
             int width = Integer.parseInt(scanner.nextLine().trim());
             worldSize.put("width", width);
         }
 
         if (!worldSize.has("height") || worldSize.get("height").asText().isEmpty()) {
-            System.out.print("Enter world height: ");
+            System.out.print("\u001B[34mEnter world height: ");
             int height = Integer.parseInt(scanner.nextLine().trim());
             worldSize.put("height", height);
         }
 
         if (!config.has("visibility") || config.get("visibility").asText().isEmpty()) {
-            System.out.print("Enter visibility: ");
+            System.out.print("\u001B[34mEnter visibility: ");
             int visibility = Integer.parseInt(scanner.nextLine().trim());
             config.put("visibility", visibility);
         }
 
         if (!config.has("reload") || config.get("reload").asText().isEmpty()) {
-            System.out.print("Enter reload time (ms): ");
+            System.out.print("\u001B[34mEnter reload time (\u001B[0mms\u001B[34m): ");
             int reload = Integer.parseInt(scanner.nextLine().trim());
             config.put("reload", reload);
         }
 
         if (!config.has("repair") || config.get("repair").asText().isEmpty()) {
-            System.out.print("Enter repair time (ms): ");
+            System.out.print("\u001B[34mEnter repair time (\u001B[0mms\u001B[34m): ");
             int repair = Integer.parseInt(scanner.nextLine().trim());
             config.put("repair", repair);
         }
 
         if (!config.has("shields") || config.get("shields").asText().isEmpty()) {
-            System.out.print("Enter shields: ");
+            System.out.print("\u001B[34mEnter shields: \u001B[0m");
             int shields = Integer.parseInt(scanner.nextLine().trim());
             config.put("shields", shields);
         }
